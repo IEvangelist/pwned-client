@@ -1,0 +1,249 @@
+﻿// Copyright (c) David Pine. All rights reserved.
+// Licensed under the MIT License.
+
+using System;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
+using System.Web;
+using HaveIBeenPwned.Client.Extensions;
+using HaveIBeenPwned.Client.Models;
+using Microsoft.Extensions.Logging;
+using static HaveIBeenPwned.Client.Http.HttpClientNames;
+
+namespace HaveIBeenPwned.Client
+{
+    internal class DefaultPwnedClient : IPwnedClient
+    {
+        readonly IHttpClientFactory _httpClientFactory;
+        readonly ILogger<DefaultPwnedClient> _logger;
+
+        public DefaultPwnedClient(
+            IHttpClientFactory httpClientFactory,
+            ILogger<DefaultPwnedClient> logger) =>
+            (_httpClientFactory, _logger) = (httpClientFactory, logger);
+
+        /// <inheritdoc />
+        async Task<BreachDetails?> IPwnedBreachesClient.GetBreachAsync(string breachName)
+        {
+            if (string.IsNullOrWhiteSpace(breachName))
+            {
+                throw new ArgumentException(
+                    nameof(breachName), "The breachName cannot be either null, empty or whitespace.");
+            }
+
+            try
+            {
+                var client = _httpClientFactory.CreateClient(HibpClient);
+                var breachDetails =
+                    await client.GetFromJsonAsync<BreachDetails>(
+                        $"breach/{breachName}");
+
+                return breachDetails;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return null!;
+            }
+        }
+
+        /// <inheritdoc />
+        async Task<BreachHeader[]> IPwnedBreachesClient.GetBreachesAsync(string? domain)
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient(HibpClient);
+                var queryString = string.IsNullOrWhiteSpace(domain)
+                    ? ""
+                    : $"?domain={domain}";
+
+                var breachHeaders =
+                    await client.GetFromJsonAsync<BreachHeader[]>(
+                        $"breaches{queryString}");
+
+                return breachHeaders ?? Array.Empty<BreachHeader>();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return Array.Empty<BreachHeader>();
+            }
+        }
+
+        /// <inheritdoc />
+        async Task<BreachDetails[]> IPwnedBreachesClient.GetBreachesForAccountAsync(string account)
+        {
+            if (string.IsNullOrWhiteSpace(account))
+            {
+                throw new ArgumentException(
+                    nameof(account), "The account cannot be either null, empty or whitespace.");
+            }
+
+            try
+            {
+                var client = _httpClientFactory.CreateClient(HibpClient);
+                var breachDetails =
+                    await client.GetFromJsonAsync<BreachDetails[]>(
+                        $"breachedaccount/{HttpUtility.UrlEncode(account)}?truncateResponse=false");
+
+                return breachDetails ?? Array.Empty<BreachDetails>();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return Array.Empty<BreachDetails>();
+            }
+        }
+
+        /// <inheritdoc />
+        async Task<BreachHeader[]> IPwnedBreachesClient.GetBreachHeadersForAccountAsync(string account)
+        {
+            if (string.IsNullOrWhiteSpace(account))
+            {
+                throw new ArgumentException(
+                    nameof(account), "The account cannot be either null, empty or whitespace.");
+            }
+
+            try
+            {
+                var client = _httpClientFactory.CreateClient(HibpClient);
+                var breachDetails =
+                    await client.GetFromJsonAsync<BreachDetails[]>(
+                        $"breachedaccount/{HttpUtility.UrlEncode(account)}?truncateResponse=true");
+
+                return breachDetails ?? Array.Empty<BreachDetails>();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return Array.Empty<BreachDetails>();
+            }
+        }
+
+        /// <inheritdoc />
+        async Task<string[]> IPwnedBreachesClient.GetDataClassesAsync()
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient(HibpClient);
+                var dataClasses =
+                    await client.GetFromJsonAsync<string[]>("dataclasses");
+
+                return dataClasses ?? Array.Empty<string>();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return Array.Empty<string>();
+            }
+        }
+
+        /// <inheritdoc />
+        async Task<Pastes[]> IPwnedPastesClient.GetPastesAsync(string account)
+        {
+            if (string.IsNullOrWhiteSpace(account))
+            {
+                throw new ArgumentException(
+                    nameof(account), "The account cannot be either null, empty or whitespace.");
+            }
+
+            try
+            {
+                var client = _httpClientFactory.CreateClient(HibpClient);
+                var pastes =
+                    await client.GetFromJsonAsync<Pastes[]>(
+                        $"pasteaccount/{HttpUtility.UrlEncode(account)}");
+
+                return pastes ?? Array.Empty<Pastes>();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return Array.Empty<Pastes>();
+            }
+        }
+
+        /// <inheritdoc />
+        async Task<PwnedPassword> IPwnedPasswordsClient.GetPwnedPasswordAsync(string plainTextPassword)
+        {
+            if (plainTextPassword is null or { Length: 0 })
+            {
+                throw new ArgumentException(
+                    nameof(plainTextPassword), "The plainTextPassword cannot be either null, or empty.");
+            }
+
+            var pwnedPassword = new PwnedPassword(plainTextPassword);
+            if (pwnedPassword.IsInvalid())
+            {
+                return pwnedPassword;
+            }
+
+            try
+            {
+                var passwordHash = plainTextPassword.ToSha1Hash()!;
+                var firstFiveChars = passwordHash.Substring(0, 5);
+
+                var client = _httpClientFactory.CreateClient(PasswordsClient);
+                var passwordHashesInRange =
+                    await client.GetStringAsync($"range/{firstFiveChars}");
+
+                pwnedPassword =
+                    ParsePasswordRangeResponseText(pwnedPassword, passwordHashesInRange, passwordHash);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+            }
+
+            return pwnedPassword;
+        }
+
+        internal PwnedPassword ParsePasswordRangeResponseText(
+            PwnedPassword pwnedPassword, string passwordHashesInRange, string passwordHash)
+        {
+            pwnedPassword = pwnedPassword with
+            {
+                HashedPassword = passwordHash
+            };
+
+            if (passwordHashesInRange is not null)
+            {
+                var hashCountMap =
+                    passwordHashesInRange
+                        .Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(hashCountPair =>
+                        {
+                            var pair = hashCountPair
+                                .Replace("\r", "")
+                                .Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+
+                            return pair?.Length != 2 || !int.TryParse(pair[1], out var count)
+                                ? (Hash: "", Count: 0, IsValid: false)
+                                : (Hash: pair[0], Count: count, IsValid: true);
+                        })
+                        .Where(t => t.IsValid)
+                        .ToDictionary(t => t.Hash, t => t.Count, StringComparer.OrdinalIgnoreCase);
+
+                var hashSuffix = passwordHash.Substring(5);
+                if (hashCountMap.TryGetValue(hashSuffix, out var count))
+                {
+                    pwnedPassword = pwnedPassword with
+                    {
+                        PwnedCount = count,
+                        IsPwned = count > 0,
+                    };
+                }
+            }
+
+            return pwnedPassword;
+        }
+    }
+}
