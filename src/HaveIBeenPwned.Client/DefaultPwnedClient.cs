@@ -207,22 +207,32 @@ namespace HaveIBeenPwned.Client
         }
 
         internal PwnedPassword ParsePasswordRangeResponseText(
-            PwnedPassword pwnedPassword, string passwordHashesInRange, string passwordHash)
+            PwnedPassword pwnedPassword, string passwordRangeResponseText, string passwordHash)
         {
             pwnedPassword = pwnedPassword with
             {
                 HashedPassword = passwordHash
             };
 
-            if (passwordHashesInRange is not null)
+            if (passwordRangeResponseText is not null)
             {
+                // Example passwordRangeResponseText
+                // The remaining hash characters, less the first five separated by a : with the corresponding count.
+                // <Remaining Hash>:<Count>
+
+                // 0018A45C4D1DEF81644B54AB7F969B88D65:10
+                // 00D4F6E8FA6EECAD2A3AA415EEC418D38EC:2
+                // 011053FD0102E94D6AE2F8B83D76FAF94F6:701
+                // 012A7CA357541F0AC487871FEEC1891C49C:2
+                // 0136E006E24E7D152139815FB0FC6A50B15:2
+
                 var hashCountMap =
-                    passwordHashesInRange
+                    passwordRangeResponseText
                         .Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries)
                         .Select(hashCountPair =>
                         {
                             var pair = hashCountPair
-                                .Replace("\r", "")
+                                .Replace('\r', '\0')
                                 .Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
 
                             return pair?.Length != 2 || !int.TryParse(pair[1], out var count)

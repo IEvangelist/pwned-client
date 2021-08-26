@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2BFDB771-C03D-4BC1-8FDC-FD3E4E466965}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.gitignore = .gitignore
 		LICENSE = LICENSE
 	EndProjectSection
 EndProject
@@ -15,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{033A7DA8-9E5
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6B93FD23-7EC5-4866-82BC-5C091FA6589B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaveIBeenPwned.ClientTests", "tests\HaveIBeenPwned.ClientTests\HaveIBeenPwned.ClientTests.csproj", "{07F2B8D6-CEE9-4A2D-8CC8-61D53C7BBBE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HaveIBeenPwned.ClientTests", "tests\HaveIBeenPwned.ClientTests\HaveIBeenPwned.ClientTests.csproj", "{07F2B8D6-CEE9-4A2D-8CC8-61D53C7BBBE8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{3044EDD9-13CF-47A3-8589-A7B84AEFE0C1}"
 EndProject
