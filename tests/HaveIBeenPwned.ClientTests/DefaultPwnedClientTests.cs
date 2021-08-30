@@ -172,14 +172,11 @@ b792c6b438c71a97e05e6197ceba54f8e96:4001
         public void ParsePasswordRangeResponseText_CorrectlyHandlesText(
             PwnedPassword expected, string plainTextPassword, string passwordRangeResponseText)
         {
-            DefaultPwnedClient sut = new(
-                NullHttpClientFactory.Instance,
-                NullLoggerFactory.Instance.CreateLogger<DefaultPwnedClient>());
-
             PwnedPassword actual = new(plainTextPassword);
             var passwordHash = plainTextPassword.ToSha1Hash();
 
-            actual = sut.ParsePasswordRangeResponseText(actual, passwordRangeResponseText, passwordHash);
+            actual = DefaultPwnedClient.ParsePasswordRangeResponseText(
+                actual, passwordRangeResponseText, passwordHash);
             Assert.Equal(expected, actual);
         }
     }

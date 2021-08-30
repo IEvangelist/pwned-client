@@ -30,7 +30,7 @@ namespace HaveIBeenPwned.Client
             if (string.IsNullOrWhiteSpace(breachName))
             {
                 throw new ArgumentException(
-                    nameof(breachName), "The breachName cannot be either null, empty or whitespace.");
+                    "The breachName cannot be either null, empty or whitespace.", nameof(breachName));
             }
 
             try
@@ -80,7 +80,7 @@ namespace HaveIBeenPwned.Client
             if (string.IsNullOrWhiteSpace(account))
             {
                 throw new ArgumentException(
-                    nameof(account), "The account cannot be either null, empty or whitespace.");
+                    "The account cannot be either null, empty or whitespace.", nameof(account));
             }
 
             try
@@ -106,7 +106,7 @@ namespace HaveIBeenPwned.Client
             if (string.IsNullOrWhiteSpace(account))
             {
                 throw new ArgumentException(
-                    nameof(account), "The account cannot be either null, empty or whitespace.");
+                    "The account cannot be either null, empty or whitespace.", nameof(account));
             }
 
             try
@@ -151,7 +151,7 @@ namespace HaveIBeenPwned.Client
             if (string.IsNullOrWhiteSpace(account))
             {
                 throw new ArgumentException(
-                    nameof(account), "The account cannot be either null, empty or whitespace.");
+                    "The account cannot be either null, empty or whitespace.", nameof(account));
             }
 
             try
@@ -177,7 +177,7 @@ namespace HaveIBeenPwned.Client
             if (plainTextPassword is null or { Length: 0 })
             {
                 throw new ArgumentException(
-                    nameof(plainTextPassword), "The plainTextPassword cannot be either null, or empty.");
+                    "The plainTextPassword cannot be either null, or empty.", nameof(plainTextPassword));
             }
 
             var pwnedPassword = new PwnedPassword(plainTextPassword);
@@ -206,7 +206,7 @@ namespace HaveIBeenPwned.Client
             return pwnedPassword;
         }
 
-        internal PwnedPassword ParsePasswordRangeResponseText(
+        internal static PwnedPassword ParsePasswordRangeResponseText(
             PwnedPassword pwnedPassword, string passwordRangeResponseText, string passwordHash)
         {
             pwnedPassword = pwnedPassword with
@@ -242,7 +242,12 @@ namespace HaveIBeenPwned.Client
                         .Where(t => t.IsValid)
                         .ToDictionary(t => t.Hash, t => t.Count, StringComparer.OrdinalIgnoreCase);
 
+#if NET5_0
+                var hashSuffix = passwordHash[5..];
+#else
                 var hashSuffix = passwordHash.Substring(5);
+#endif
+
                 if (hashCountMap.TryGetValue(hashSuffix, out var count))
                 {
                     pwnedPassword = pwnedPassword with

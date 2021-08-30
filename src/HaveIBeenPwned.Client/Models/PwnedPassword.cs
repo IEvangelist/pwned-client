@@ -4,7 +4,11 @@
 namespace HaveIBeenPwned.Client.Models
 {
     public record PwnedPassword(
+        /// <summary>
+        /// Does this work?
+        /// </summary>
         string? PlainTextPassword,
+
         bool IsPwned = false,
         int PwnedCount = -1,
         string? HashedPassword = default)

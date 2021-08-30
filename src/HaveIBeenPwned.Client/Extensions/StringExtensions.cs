@@ -8,6 +8,10 @@ namespace HaveIBeenPwned.Client.Extensions
 {
     static class StringExtensions
     {
+        /// <summary>
+        /// Converts the string <paramref name="value"/> into a
+        /// computed <see cref="SHA1"/> equivalent.
+        /// </summary>
         internal static string? ToSha1Hash(this string? value)
         {
             if (value is null or { Length: 0 })

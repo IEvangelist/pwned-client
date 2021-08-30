@@ -6,6 +6,8 @@ using System.Net.Mime;
 using HaveIBeenPwned.Client;
 using HaveIBeenPwned.Client.Http;
 using HaveIBeenPwned.Client.Options;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -16,9 +18,57 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Adds all of the necessary Pwned service functionality to
         /// the <paramref name="services"/> collection for dependency injection.
         /// </summary>
-        /// <param name="services"></param>
-        /// <param name="configureOptions"></param>
-        /// <returns></returns>
+        /// <param name="services">The service collection to add services to.</param>
+        /// <param name="namedConfigurationSection">The name configuration section to bind options from.</param>
+        /// <returns>The same <paramref name="services"/> instance with other services added.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// If either the <paramref name="services"/> or <paramref name="namedConfigurationSection"/> are <c>null</c>.
+        /// </exception>
+        public static IServiceCollection AddPwnedServices(
+            this IServiceCollection services, IConfiguration namedConfigurationSection)
+        {
+            if (services is null)
+            {
+                throw new ArgumentNullException(
+                    nameof(services), "The IServiceCollection cannot be null.");
+            }
+
+            if (namedConfigurationSection is null)
+            {
+                throw new ArgumentNullException(
+                    nameof(namedConfigurationSection), "The IConfiguration cannot be null.");
+            }
+
+            services.AddLogging();
+            services.AddOptions<HibpOptions>();
+            services.Configure<HibpOptions>(namedConfigurationSection);
+
+            AddPwnedHttpClient(
+                services,
+                HttpClientNames.HibpClient,
+                HttpClientUrls.HibpApiUrl);
+
+            AddPwnedHttpClient(
+                services,
+                HttpClientNames.PasswordsClient,
+                HttpClientUrls.PasswordsApiUrl,
+                isPlainText: true);
+
+            services.AddSingleton<IPwnedBreachesClient, DefaultPwnedClient>();
+            services.AddSingleton<IPwnedPasswordsClient, DefaultPwnedClient>();
+            services.AddSingleton<IPwnedPastesClient, DefaultPwnedClient>();
+            services.AddSingleton<IPwnedClient, DefaultPwnedClient>();
+
+            return services;
+        }
+
+        /// <summary>
+        /// Adds all of the necessary Pwned service functionality to
+        /// the <paramref name="services"/> collection for dependency injection.
+        /// </summary>
+        /// <param name="services">The service collection to add services to.</param>
+        /// <param name="configureOptions">The action used to configure options.</param>
+        /// <returns>The same <paramref name="services"/> instance with other services added.</returns>
         /// <exception cref="ArgumentNullException">
         /// If either the <paramref name="services"/> or <paramref name="configureOptions"/> are <c>null</c>.
         /// </exception>
@@ -70,8 +120,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 (serviceProvider, client) =>
                 {
                     var options = serviceProvider.GetRequiredService<IOptions<HibpOptions>>();
-                    var (apiKey, userAgent) = options.Value
-                        ?? throw new ArgumentException(nameof(options));
+                    var (apiKey, userAgent) = options?.Value
+                        ?? throw new InvalidOperationException(
+                            "The 'Have I Been Pwned' options object cannot be null.");
 
                     client.BaseAddress = new(baseAddress);
                     client.DefaultRequestHeaders.Add("hibp-api-key", apiKey);

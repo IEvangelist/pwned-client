@@ -5,6 +5,7 @@ using System;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using HaveIBeenPwned.Client.Extensions;
+using HaveIBeenPwned.Client.Options;
 
 namespace HaveIBeenPwned.ClientTests.Extensions
 {
@@ -20,6 +21,6 @@ namespace HaveIBeenPwned.ClientTests.Extensions
         public void AddPwnedServices_Throws_When_ConfigureOptionsIsNull() =>
             Assert.Throws<ArgumentNullException>(
                 "configureOptions",
-                () => new ServiceCollection().AddPwnedServices(null));
+                () => new ServiceCollection().AddPwnedServices(null as Action<HibpOptions>));
     }
 }
