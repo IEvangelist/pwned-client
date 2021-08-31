@@ -22,6 +22,9 @@ on:
   schedule:
     - cron: '0 7 * * 1'
 
+env:
+  DOTNET_VERSION: '5.0.x' # set this to the dot net version to use
+
 jobs:
   analyze:
     name: analyze
@@ -71,9 +74,20 @@ jobs:
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
 
-    #- run: |
-    #   make bootstrap
-    #   make release
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        cd ./src/HaveIBeenPwned.Client
+        dotnet restore
+      
+    - name: Build
+      run: |
+        cd ./src/HaveIBeenPwned.Client
+        dotnet build --configuration Release --no-restore
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1

@@ -27,14 +27,14 @@ jobs:
 
     - name: Install dependencies
       run: |
-        cd ./src
+        cd ./src/HaveIBeenPwned.Client
         dotnet restore
       
     - name: Build
       run: |
-        cd ./src
+        cd ./src/HaveIBeenPwned.Client
         dotnet build --configuration Release --no-restore
     - name: Test
       run: |
-        cd ./tests
+        cd ./tests/HaveIBeenPwned.ClientTests
         dotnet test --no-restore --verbosity normal
