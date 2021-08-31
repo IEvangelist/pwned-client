@@ -53,5 +53,5 @@ jobs:
     - name: Upload package
       uses: actions/upload-artifact@v2
       with:
-        name: ./src/HaveIBeenPwned.Client.${{ steps.regex-match.outputs.match }}.nupkg
+        name: HaveIBeenPwned.Client.${{ steps.regex-match.outputs.match }}.nupkg
         path: packages/
