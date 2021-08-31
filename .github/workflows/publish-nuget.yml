@@ -2,14 +2,13 @@ name: publish nuget
 on:
   push:
     tags:
-      - '**'
       - 0.*
 
 jobs: 
   build:
     if: github.event.base_ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    steps:    
+    steps:
     
     - name: Print tag ref
       run: echo $GITHUB_REF
