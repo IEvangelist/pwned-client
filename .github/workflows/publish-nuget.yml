@@ -1,0 +1,58 @@
+name: publish nuget
+on:
+  push:
+    tags:
+      '*'
+
+jobs: 
+  build:
+    if: github.event.base_ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:    
+    
+    - name: Print tag ref
+      run: echo $GITHUB_REF
+      
+    - name: Extract version number
+      uses: actions-ecosystem/action-regex-match@v2
+      id: regex-match
+      with:
+        text: ${{ github.ref }}
+        regex: '[0-9.]+'
+       
+    - name: Print version number
+      run: echo '${{ steps.regex-match.outputs.match }}'
+      
+    - uses: actions/checkout@v2
+    - name: Setup .NET  
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+        
+    - name: Restore dependencies
+      run: |
+        cd ./src/HaveIBeenPwned.Client
+        dotnet restore
+      
+    - name: Build
+      run: |
+        cd ./src/HaveIBeenPwned.Client
+        dotnet build --configuration Release --no-restore
+    - name: Test
+      run: |
+        cd ./tests/HaveIBeenPwned.ClientTests
+        dotnet test --no-restore --verbosity normal
+      
+    - name: Pack
+      run: |
+        dotnet pack ./src/HaveIBeenPwned.Client/HaveIBeenPwned.Client.csproj --output packages
+      
+    - name: Publish package
+      run: |
+        nuget push **\*.nupkg -NoSymbols -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{secrets.NUGET_API_KEY}}
+      
+    - name: Upload package
+      uses: actions/upload-artifact@v2
+      with:
+        name: ./src/HaveIBeenPwned.Client.V${{ steps.regex-match.outputs.match }}
+        path: packages/
