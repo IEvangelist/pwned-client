@@ -3,6 +3,7 @@
 
 namespace HaveIBeenPwned.Client
 {
+    /// <summary></summary>
     public interface IPwnedClient : IPwnedBreachesClient, IPwnedPastesClient, IPwnedPasswordsClient
     {
     }

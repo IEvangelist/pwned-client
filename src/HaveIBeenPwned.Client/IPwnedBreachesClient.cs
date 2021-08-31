@@ -7,6 +7,7 @@ using HaveIBeenPwned.Client.Models;
 
 namespace HaveIBeenPwned.Client
 {
+    /// <summary></summary>
     public interface IPwnedBreachesClient
     {
         /// <summary>
