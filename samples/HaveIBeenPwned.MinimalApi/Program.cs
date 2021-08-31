@@ -27,28 +27,28 @@ app.UseHttpsRedirection();
 // "Have I Been Pwned" Breaches API
 app.MapGet("api/breaches/{breachName}",
     async (string breachName, IPwnedBreachesClient client) =>
-    await client.GetBreachAsync(breachName));
+        await client.GetBreachAsync(breachName));
 app.MapGet("api/breaches/headers/{domain}",
     async (string? domain, IPwnedBreachesClient client) =>
-    await client.GetBreachAsync(domain!));
+        await client.GetBreachAsync(domain!));
 app.MapGet("api/breaches/{account}/breaches",
     async (string account, IPwnedBreachesClient client) =>
-    await client.GetBreachesForAccountAsync(account));
+        await client.GetBreachesForAccountAsync(account));
 app.MapGet("api/breaches/{account}/headers",
     async (string account, IPwnedBreachesClient client) =>
-    await client.GetBreachHeadersForAccountAsync(account));
+        await client.GetBreachHeadersForAccountAsync(account));
 app.MapGet("api/breaches/dataclasses",
     async (IPwnedBreachesClient client) =>
-    await client.GetDataClassesAsync());
+        await client.GetDataClassesAsync());
 
 // "Have I Been Pwned" Pwned Passwords API
 app.MapGet("api/passwords/{plainTextPassword}",
     async (string plainTextPassword, IPwnedPasswordsClient client) =>
         await client.GetPwnedPasswordAsync(plainTextPassword));
 
-// "Have I Been Pwned" Pwned Pastes API
+// "Have I Been Pwned" Pastes API
 app.MapGet("api/pastes/{account}",
     async (string account, IPwnedPastesClient client) =>
-    await client.GetPastesAsync(account));
+        await client.GetPastesAsync(account));
 
 await app.RunAsync();
