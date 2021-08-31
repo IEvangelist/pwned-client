@@ -9,7 +9,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
+		.github\workflows\build-validation.yml = .github\workflows\build-validation.yml
+		.github\workflows\codeql-analysis.yml = .github\workflows\codeql-analysis.yml
 		LICENSE = LICENSE
+		.github\workflows\pr-validation.yml = .github\workflows\pr-validation.yml
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{033A7DA8-9E54-4C45-9674-1FA069A1D587}"

@@ -24,7 +24,7 @@ namespace HaveIBeenPwned.Client
             ILogger<DefaultPwnedClient> logger) =>
             (_httpClientFactory, _logger) = (httpClientFactory, logger);
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IPwnedBreachesClient.GetBreachAsync(string)" />
         async Task<BreachDetails?> IPwnedBreachesClient.GetBreachAsync(string breachName)
         {
             if (string.IsNullOrWhiteSpace(breachName))
@@ -50,7 +50,7 @@ namespace HaveIBeenPwned.Client
             }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IPwnedBreachesClient.GetBreachesAsync(string?)" />
         async Task<BreachHeader[]> IPwnedBreachesClient.GetBreachesAsync(string? domain)
         {
             try
@@ -74,7 +74,7 @@ namespace HaveIBeenPwned.Client
             }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IPwnedBreachesClient.GetBreachesForAccountAsync(string)" />
         async Task<BreachDetails[]> IPwnedBreachesClient.GetBreachesForAccountAsync(string account)
         {
             if (string.IsNullOrWhiteSpace(account))
@@ -100,7 +100,7 @@ namespace HaveIBeenPwned.Client
             }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IPwnedBreachesClient.GetBreachHeadersForAccountAsync(string)" />
         async Task<BreachHeader[]> IPwnedBreachesClient.GetBreachHeadersForAccountAsync(string account)
         {
             if (string.IsNullOrWhiteSpace(account))
@@ -126,7 +126,7 @@ namespace HaveIBeenPwned.Client
             }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IPwnedBreachesClient.GetDataClassesAsync" />
         async Task<string[]> IPwnedBreachesClient.GetDataClassesAsync()
         {
             try
@@ -145,7 +145,7 @@ namespace HaveIBeenPwned.Client
             }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IPwnedPastesClient.GetPastesAsync(string)" />
         async Task<Pastes[]> IPwnedPastesClient.GetPastesAsync(string account)
         {
             if (string.IsNullOrWhiteSpace(account))
@@ -171,7 +171,7 @@ namespace HaveIBeenPwned.Client
             }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IPwnedPasswordsClient.GetPwnedPasswordAsync(string)" />
         async Task<PwnedPassword> IPwnedPasswordsClient.GetPwnedPasswordAsync(string plainTextPassword)
         {
             if (plainTextPassword is null or { Length: 0 })
