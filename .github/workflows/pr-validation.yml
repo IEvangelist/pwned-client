@@ -32,7 +32,7 @@ jobs:
       
     - name: Build
       run: |
-        cd ./src 
+        cd ./src
         dotnet build --configuration Release --no-restore
     - name: Test
       run: |
