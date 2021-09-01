@@ -5,10 +5,10 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace HaveIBeenPwned.Client.Extensions
+namespace HaveIBeenPwned.Client
 {
     /// <summary></summary>
-    public static class PwnedPasswordsClientExtensions
+    public static class PwnedClientExtensions
     {
         /// <summary>
         /// An extension method that evaluates whether the <paramref name="plainTextPassword"/> is "pwned".
@@ -29,7 +29,7 @@ namespace HaveIBeenPwned.Client.Extensions
         /// </item>
         /// </list>
         /// </returns>
-        public static async ValueTask<(bool? IsPwned, long? Count)> IsPasswordPwnedAsync(
+        public static async Task<(bool? IsPwned, long? Count)> IsPasswordPwnedAsync(
             this IPwnedPasswordsClient pwnedPasswordsClient, string plainTextPassword)
         {
             var pwnedPassword = await pwnedPasswordsClient.GetPwnedPasswordAsync(plainTextPassword);
@@ -61,7 +61,7 @@ namespace HaveIBeenPwned.Client.Extensions
         /// </item>
         /// </list>
         /// </returns>
-        public static async ValueTask<(bool? IsBreached, string[]? Breaches)> IsBreachedAccountAsync(
+        public static async Task<(bool? IsBreached, string[]? Breaches)> IsBreachedAccountAsync(
             this IPwnedBreachesClient pwnedBreachesClient, string account)
         {
             if (string.IsNullOrWhiteSpace(account))

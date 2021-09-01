@@ -14,8 +14,10 @@ using Polly;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    /// <summary></summary>
-    public static class ServiceCollectionExtensions
+    /// <summary>
+    /// Extension methods for setting up pwned client related services in an <see cref="IServiceCollection" />.
+    /// </summary>
+    public static class PwnedClientServiceCollectionExtensions
     {
         /// <summary>
         /// Adds all of the necessary Pwned service functionality to
