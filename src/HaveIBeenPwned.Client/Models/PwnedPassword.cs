@@ -6,8 +6,8 @@ namespace HaveIBeenPwned.Client.Models
     /// <summary></summary>
     public record PwnedPassword(
         string? PlainTextPassword,
-        bool IsPwned = false,
-        int PwnedCount = -1,
+        bool? IsPwned = default,
+        long PwnedCount = -1,
         string? HashedPassword = default)
     {
         internal bool IsInvalid() =>

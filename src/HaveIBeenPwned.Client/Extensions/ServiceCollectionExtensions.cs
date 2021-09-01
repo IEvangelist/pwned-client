@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Net.Http;
 using System.Net.Mime;
 using HaveIBeenPwned.Client;
 using HaveIBeenPwned.Client.Http;
@@ -9,6 +10,7 @@ using HaveIBeenPwned.Client.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Polly;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -21,12 +23,15 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services">The service collection to add services to.</param>
         /// <param name="namedConfigurationSection">The name configuration section to bind options from.</param>
+        /// <param name="configureRetryPolicy">The (optional) rety policy configuration function, when provided adds transient HTTP error policy.</param>
         /// <returns>The same <paramref name="services"/> instance with other services added.</returns>
         /// <exception cref="ArgumentNullException">
         /// If either the <paramref name="services"/> or <paramref name="namedConfigurationSection"/> are <c>null</c>.
         /// </exception>
         public static IServiceCollection AddPwnedServices(
-            this IServiceCollection services, IConfiguration namedConfigurationSection)
+            this IServiceCollection services,
+            IConfiguration namedConfigurationSection,
+            Func<PolicyBuilder<HttpResponseMessage>, IAsyncPolicy<HttpResponseMessage>>? configureRetryPolicy = default)
         {
             if (services is null)
             {
@@ -40,27 +45,9 @@ namespace Microsoft.Extensions.DependencyInjection
                     nameof(namedConfigurationSection), "The IConfiguration cannot be null.");
             }
 
-            services.AddLogging();
-            services.AddOptions<HibpOptions>();
             services.Configure<HibpOptions>(namedConfigurationSection);
 
-            AddPwnedHttpClient(
-                services,
-                HttpClientNames.HibpClient,
-                HttpClientUrls.HibpApiUrl);
-
-            AddPwnedHttpClient(
-                services,
-                HttpClientNames.PasswordsClient,
-                HttpClientUrls.PasswordsApiUrl,
-                isPlainText: true);
-
-            services.AddSingleton<IPwnedBreachesClient, DefaultPwnedClient>();
-            services.AddSingleton<IPwnedPasswordsClient, DefaultPwnedClient>();
-            services.AddSingleton<IPwnedPastesClient, DefaultPwnedClient>();
-            services.AddSingleton<IPwnedClient, DefaultPwnedClient>();
-
-            return services;
+            return AddPwnedServices(services, configureRetryPolicy);
         }
 
         /// <summary>
@@ -69,12 +56,15 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services">The service collection to add services to.</param>
         /// <param name="configureOptions">The action used to configure options.</param>
+        /// <param name="configureRetryPolicy">The (optional) retry policy configuration function, when provided adds transient HTTP error policy.</param>
         /// <returns>The same <paramref name="services"/> instance with other services added.</returns>
         /// <exception cref="ArgumentNullException">
         /// If either the <paramref name="services"/> or <paramref name="configureOptions"/> are <c>null</c>.
         /// </exception>
         public static IServiceCollection AddPwnedServices(
-            this IServiceCollection services, Action<HibpOptions> configureOptions)
+            this IServiceCollection services,
+            Action<HibpOptions> configureOptions,
+            Func<PolicyBuilder<HttpResponseMessage>, IAsyncPolicy<HttpResponseMessage>>? configureRetryPolicy = default)
         {
             if (services is null)
             {
@@ -88,20 +78,28 @@ namespace Microsoft.Extensions.DependencyInjection
                     nameof(configureOptions), "The Action<HibpOptions> cannot be null.");
             }
 
-            services.AddLogging();
-            services.AddOptions<HibpOptions>();
             services.Configure(configureOptions);
 
-            AddPwnedHttpClient(
+            return AddPwnedServices(services, configureRetryPolicy);
+        }
+
+        static IServiceCollection AddPwnedServices(
+            IServiceCollection services,
+            Func<PolicyBuilder<HttpResponseMessage>, IAsyncPolicy<HttpResponseMessage>>? configureRetryPolicy)
+        {
+            services.AddLogging();
+            services.AddOptions<HibpOptions>();
+
+            _ = AddPwnedHttpClient(
                 services,
                 HttpClientNames.HibpClient,
-                HttpClientUrls.HibpApiUrl);
+                HttpClientUrls.HibpApiUrl).TryAddTransientHttpErrorPolicy(configureRetryPolicy);
 
-            AddPwnedHttpClient(
+            _ = AddPwnedHttpClient(
                 services,
                 HttpClientNames.PasswordsClient,
                 HttpClientUrls.PasswordsApiUrl,
-                isPlainText: true);
+                isPlainText: true).TryAddTransientHttpErrorPolicy(configureRetryPolicy);
 
             services.AddSingleton<IPwnedBreachesClient, DefaultPwnedClient>();
             services.AddSingleton<IPwnedPasswordsClient, DefaultPwnedClient>();
@@ -135,5 +133,12 @@ namespace Microsoft.Extensions.DependencyInjection
                             new(MediaTypeNames.Text.Plain));
                     }
                 });
+
+        static IHttpClientBuilder TryAddTransientHttpErrorPolicy(
+            this IHttpClientBuilder httpClientBuilder,
+            Func<PolicyBuilder<HttpResponseMessage>, IAsyncPolicy<HttpResponseMessage>>? configureRetryPolicy = default) =>
+            configureRetryPolicy is not null
+                ? httpClientBuilder.AddTransientHttpErrorPolicy(configureRetryPolicy)
+                : httpClientBuilder;
     }
 }

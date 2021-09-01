@@ -235,8 +235,8 @@ namespace HaveIBeenPwned.Client
                                 .Replace('\r', '\0')
                                 .Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
 
-                            return pair?.Length != 2 || !int.TryParse(pair[1], out var count)
-                                ? (Hash: "", Count: 0, IsValid: false)
+                            return pair?.Length != 2 || !long.TryParse(pair[1], out var count)
+                                ? (Hash: "", Count: 0L, IsValid: false)
                                 : (Hash: pair[0], Count: count, IsValid: true);
                         })
                         .Where(t => t.IsValid)

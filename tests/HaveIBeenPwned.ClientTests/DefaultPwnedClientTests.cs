@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using HaveIBeenPwned.Client;
 using HaveIBeenPwned.Client.Extensions;
+using HaveIBeenPwned.Client.Http;
 using HaveIBeenPwned.Client.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -175,20 +176,39 @@ b792c6b438c71a97e05e6197ceba54f8e96:4001
             PwnedPassword actual = new(plainTextPassword);
             var passwordHash = plainTextPassword.ToSha1Hash();
 
-            actual = DefaultPwnedClient.ParsePasswordRangeResponseText(
+            var mutatedActual = DefaultPwnedClient.ParsePasswordRangeResponseText(
                 actual, passwordRangeResponseText, passwordHash);
-            Assert.Equal(expected, actual);
+            Assert.Equal(expected, mutatedActual);
         }
     }
 
-    public class NullHttpClientFactory : IHttpClientFactory
+    class IntegrationHttpClientFactory : IHttpClientFactory
+    {
+        public static readonly IHttpClientFactory Instance = new IntegrationHttpClientFactory();
+
+        HttpClient _hibpHttpClient;
+        HttpClient _pwnedPasswordsClient;
+
+        HttpClient IHttpClientFactory.CreateClient(string name) => name switch
+        {
+            HttpClientNames.HibpClient =>
+                _hibpHttpClient ??= new HttpClient { BaseAddress = new(HttpClientUrls.HibpApiUrl) },
+
+            HttpClientNames.PasswordsClient =>
+                _pwnedPasswordsClient ??= new HttpClient { BaseAddress = new(HttpClientUrls.PasswordsApiUrl) },
+
+            _ => throw null!
+        };
+    }
+
+    class NullHttpClientFactory : IHttpClientFactory
     {
         public static readonly IHttpClientFactory Instance = new NullHttpClientFactory();
 
         HttpClient IHttpClientFactory.CreateClient(string name) => default;
     }
 
-    public class ThrowingHttpClientFactory : IHttpClientFactory
+    class ThrowingHttpClientFactory : IHttpClientFactory
     {
         public static readonly IHttpClientFactory Instance = new NullHttpClientFactory();
 
