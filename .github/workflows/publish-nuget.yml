@@ -48,7 +48,7 @@ jobs:
       
     - name: Publish package
       run: |
-        nuget push **\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -NonInteractive -ApiKey ${{secrets.NUGET_API_KEY}}
+        nuget push **\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -NoSymbols -NonInteractive -ApiKey ${{secrets.NUGET_API_KEY}}
       
     - name: Upload package
       uses: actions/upload-artifact@v2
