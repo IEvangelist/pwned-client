@@ -1,9 +1,8 @@
-using HaveIBeenPwned.Client;
-using HaveIBeenPwned.Client.Options;
+﻿// GitHub:  👨🏽‍💻 @IEvangelist
+// Twitter: 🤓 @davidpine7
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddPwnedServices(
     builder.Configuration.GetSection(nameof(HibpOptions)));
 
@@ -13,7 +12,6 @@ builder.Services.AddSwaggerGen(options =>
 
 using var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (builder.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
@@ -24,31 +22,24 @@ if (builder.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// "Have I Been Pwned" Breaches API
+// Map "have i been pwned" breaches.
 app.MapGet("api/breaches/{breachName}",
-    async (string breachName, IPwnedBreachesClient client) =>
-        await client.GetBreachAsync(breachName));
+    (string breachName, IPwnedBreachesClient client) => client.GetBreachAsync(breachName));
 app.MapGet("api/breaches/headers/{domain}",
-    async (string? domain, IPwnedBreachesClient client) =>
-        await client.GetBreachAsync(domain!));
+    (string? domain, IPwnedBreachesClient client) => client.GetBreachAsync(domain!));
 app.MapGet("api/breaches/{account}/breaches",
-    async (string account, IPwnedBreachesClient client) =>
-        await client.GetBreachesForAccountAsync(account));
+    (string account, IPwnedBreachesClient client) => client.GetBreachesForAccountAsync(account));
 app.MapGet("api/breaches/{account}/headers",
-    async (string account, IPwnedBreachesClient client) =>
-        await client.GetBreachHeadersForAccountAsync(account));
+    (string account, IPwnedBreachesClient client) => client.GetBreachHeadersForAccountAsync(account));
 app.MapGet("api/breaches/dataclasses",
-    async (IPwnedBreachesClient client) =>
-        await client.GetDataClassesAsync());
+    (IPwnedBreachesClient client) => client.GetDataClassesAsync());
 
-// "Have I Been Pwned" Pwned Passwords API
+// Map "have i been pwned" passwords.
 app.MapGet("api/passwords/{plainTextPassword}",
-    async (string plainTextPassword, IPwnedPasswordsClient client) =>
-        await client.GetPwnedPasswordAsync(plainTextPassword));
+    (string plainTextPassword, IPwnedPasswordsClient client) => client.GetPwnedPasswordAsync(plainTextPassword));
 
-// "Have I Been Pwned" Pastes API
+// Map "have i been pwned" pastes.
 app.MapGet("api/pastes/{account}",
-    async (string account, IPwnedPastesClient client) =>
-        await client.GetPastesAsync(account));
+    (string account, IPwnedPastesClient client) => client.GetPastesAsync(account));
 
 await app.RunAsync();
