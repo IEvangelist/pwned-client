@@ -1,4 +1,6 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using Microsoft.AspNetCore.Authorization;
+
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -25,23 +27,23 @@ app.UseRouting();
 
 // Map "have i been pwned" breaches.
 app.MapGet("api/breaches/{breachName}",
-    (string breachName, IPwnedBreachesClient client) => client.GetBreachAsync(breachName));
+    [Authorize] (string breachName, IPwnedBreachesClient client) => client.GetBreachAsync(breachName));
 app.MapGet("api/breaches/headers/{domain}",
-    (string? domain, IPwnedBreachesClient client) => client.GetBreachAsync(domain!));
+    [Authorize] (string? domain, IPwnedBreachesClient client) => client.GetBreachAsync(domain!));
 app.MapGet("api/breaches/{account}/breaches",
-    (string account, IPwnedBreachesClient client) => client.GetBreachesForAccountAsync(account));
+    [Authorize] (string account, IPwnedBreachesClient client) => client.GetBreachesForAccountAsync(account));
 app.MapGet("api/breaches/{account}/headers",
-    (string account, IPwnedBreachesClient client) => client.GetBreachHeadersForAccountAsync(account));
+    [Authorize] (string account, IPwnedBreachesClient client) => client.GetBreachHeadersForAccountAsync(account));
 app.MapGet("api/breaches/dataclasses",
-    (IPwnedBreachesClient client) => client.GetDataClassesAsync());
+    [Authorize] (IPwnedBreachesClient client) => client.GetDataClassesAsync());
 
 // Map "have i been pwned" passwords.
 app.MapGet("api/passwords/{plainTextPassword}",
-    (string plainTextPassword, IPwnedPasswordsClient client) => client.GetPwnedPasswordAsync(plainTextPassword));
+    [Authorize] (string plainTextPassword, IPwnedPasswordsClient client) => client.GetPwnedPasswordAsync(plainTextPassword));
 
 // Map "have i been pwned" pastes.
 app.MapGet("api/pastes/{account}",
-    (string account, IPwnedPastesClient client) => client.GetPastesAsync(account));
+    [Authorize] (string account, IPwnedPastesClient client) => client.GetPastesAsync(account));
 
 app.MapRazorPages();
 app.MapControllers();
