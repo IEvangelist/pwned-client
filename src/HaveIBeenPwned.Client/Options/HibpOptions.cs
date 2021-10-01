@@ -1,6 +1,7 @@
 ﻿// Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Reflection;
 using Microsoft.Extensions.Options;
 
 namespace HaveIBeenPwned.Client.Options
@@ -11,7 +12,13 @@ namespace HaveIBeenPwned.Client.Options
     /// </summary>
     public class HibpOptions : IOptions<HibpOptions>
     {
-        const string DefaultUserAgent = ".NET HIBP Client/1.0";
+        static readonly string LibraryVersion =
+            typeof(HibpOptions).Assembly
+                .GetCustomAttribute<AssemblyFileVersionAttribute>()
+                ?.Version ?? "1.0";
+
+        static readonly string DefaultUserAgent =
+            $".NET HIBP Client/{LibraryVersion}";
 
         private string? _userAgent = DefaultUserAgent;
 

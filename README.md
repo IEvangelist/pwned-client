@@ -67,10 +67,10 @@ To configure the `HaveIBeenPwned.Client`, the following table identifies the wel
 
 Depending on the [.NET configuration provider](https://docs.microsoft.com/dotnet/core/extensions/configuration-providers?WC.m_id=dapine) your app is using, there are several well-known keys that map to the `HibpOptions` that configure your usage of the HTTP client. When using environment variables, such as those in Azure App Service configuration or Azure Key Vault secrets, the following keys map to the `HibpOption` instance:
 
-| Key                      | Data type | Default value            |
-|--------------------------|-----------|--------------------------|
-| `HibpOptions__ApiKey`    | `string`  | `null`                   |
-| `HibpOptions__UserAgent` | `string`  | `".NET HIBP Client/1.0"` |
+| Key                      | Data type | Default value                              |
+|--------------------------|-----------|--------------------------------------------|
+| `HibpOptions__ApiKey`    | `string`  | `null`                                     |
+| `HibpOptions__UserAgent` | `string`  | `".NET HIBP Client/{AssemblyFileVersion}"` |
 
 The `ApiKey` is required, to get one &mdash; sign up here: <https://haveibeenpwned.com/api/key>
 
