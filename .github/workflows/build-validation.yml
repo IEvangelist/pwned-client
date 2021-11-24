@@ -44,8 +44,10 @@ jobs:
       
     - name: Build
       run: |
-        cd ./src/HaveIBeenPwned.Client
-        dotnet build --configuration Release --no-restore
+        dotnet build ./src/HaveIBeenPwned.Client.Abstractions/HaveIBeenPwned.Client.Abstractions.csproj --configuration Release --no-restore
+        dotnet build ./src/HaveIBeenPwned.Client/HaveIBeenPwned.Client.csproj --configuration Release --no-restore
+        dotnet build ./src/HaveIBeenPwned.Client.PollyExtensions/HaveIBeenPwned.Client.PollyExtensions.csproj --configuration Release --no-restore
+    
     - name: Test
       run: |
         cd ./tests/HaveIBeenPwned.ClientTests

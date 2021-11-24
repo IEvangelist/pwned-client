@@ -4,3 +4,4 @@
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("HaveIBeenPwned.ClientTests")]
+[assembly: InternalsVisibleTo("HaveIBeenPwned.Client.PollyExtensions")]

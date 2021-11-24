@@ -35,8 +35,10 @@ jobs:
       
     - name: Build
       run: |
-        cd ./src/HaveIBeenPwned.Client
-        dotnet build --configuration Release --no-restore
+        dotnet build ./src/HaveIBeenPwned.Client.Abstractions/HaveIBeenPwned.Client.Abstractions.csproj --configuration Release --no-restore
+        dotnet build ./src/HaveIBeenPwned.Client/HaveIBeenPwned.Client.csproj --configuration Release --no-restore
+        dotnet build ./src/HaveIBeenPwned.Client.PollyExtensions/HaveIBeenPwned.Client.PollyExtensions.csproj --configuration Release --no-restore
+    
     - name: Test
       run: |
         cd ./tests/HaveIBeenPwned.ClientTests
@@ -44,21 +46,28 @@ jobs:
       
     - name: Pack
       run: |
-        dotnet pack ./src/HaveIBeenPwned.Client/HaveIBeenPwned.Client.csproj --output packages
         dotnet pack ./src/HaveIBeenPwned.Client.Abstractions/HaveIBeenPwned.Client.Abstractions.csproj --output packages
+        dotnet pack ./src/HaveIBeenPwned.Client/HaveIBeenPwned.Client.csproj --output packages
+        dotnet pack ./src/HaveIBeenPwned.Client.PollyExtensions/HaveIBeenPwned.Client.PollyExtensions.csproj --output packages
       
     - name: Publish package
       run: |
         nuget push **\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -NoSymbols -NonInteractive -ApiKey ${{secrets.NUGET_API_KEY}}
-      
+
+    - name: Upload abstractions package
+      uses: actions/upload-artifact@v2
+      with:
+        name: HaveIBeenPwned.Client.Abstractions.${{ steps.regex-match.outputs.match }}.nupkg
+        path: packages/
+
     - name: Upload client package
       uses: actions/upload-artifact@v2
       with:
         name: HaveIBeenPwned.Client.${{ steps.regex-match.outputs.match }}.nupkg
         path: packages/
 
-    - name: Upload abstractions package
+    - name: Upload polly extensions package
       uses: actions/upload-artifact@v2
       with:
-        name: HaveIBeenPwned.Client.Abstractions.${{ steps.regex-match.outputs.match }}.nupkg
+        name: HaveIBeenPwned.Client.PollyExtensions.${{ steps.regex-match.outputs.match }}.nupkg
         path: packages/

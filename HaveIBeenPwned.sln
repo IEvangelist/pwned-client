@@ -31,9 +31,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HaveIBeenPwned.MinimalApi",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HaveIBeenPwned.Client.Abstractions", "src\HaveIBeenPwned.Client.Abstractions\HaveIBeenPwned.Client.Abstractions.csproj", "{9C452881-7278-455B-A47F-105FA05DEACE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaveIBeenPwned.BlazorApp.Client", "samples\HaveIBeenPwned.BlazorApp\Client\HaveIBeenPwned.BlazorApp.Client.csproj", "{545FF986-D9A1-4EAD-8022-F4A7D4AF9938}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HaveIBeenPwned.BlazorApp.Client", "samples\HaveIBeenPwned.BlazorApp\Client\HaveIBeenPwned.BlazorApp.Client.csproj", "{545FF986-D9A1-4EAD-8022-F4A7D4AF9938}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaveIBeenPwned.BlazorApp.Server", "samples\HaveIBeenPwned.BlazorApp\Server\HaveIBeenPwned.BlazorApp.Server.csproj", "{74857A8E-6DA4-43CC-BB55-F019E1AAE397}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HaveIBeenPwned.BlazorApp.Server", "samples\HaveIBeenPwned.BlazorApp\Server\HaveIBeenPwned.BlazorApp.Server.csproj", "{74857A8E-6DA4-43CC-BB55-F019E1AAE397}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaveIBeenPwned.Client.PollyExtensions", "src\HaveIBeenPwned.Client.PollyExtensions\HaveIBeenPwned.Client.PollyExtensions.csproj", "{13901B13-2A98-4115-AB0A-5C206711EFBC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,10 @@ Global
 		{74857A8E-6DA4-43CC-BB55-F019E1AAE397}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74857A8E-6DA4-43CC-BB55-F019E1AAE397}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74857A8E-6DA4-43CC-BB55-F019E1AAE397}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13901B13-2A98-4115-AB0A-5C206711EFBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13901B13-2A98-4115-AB0A-5C206711EFBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13901B13-2A98-4115-AB0A-5C206711EFBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13901B13-2A98-4115-AB0A-5C206711EFBC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,6 +87,7 @@ Global
 		{9C452881-7278-455B-A47F-105FA05DEACE} = {033A7DA8-9E54-4C45-9674-1FA069A1D587}
 		{545FF986-D9A1-4EAD-8022-F4A7D4AF9938} = {3044EDD9-13CF-47A3-8589-A7B84AEFE0C1}
 		{74857A8E-6DA4-43CC-BB55-F019E1AAE397} = {3044EDD9-13CF-47A3-8589-A7B84AEFE0C1}
+		{13901B13-2A98-4115-AB0A-5C206711EFBC} = {033A7DA8-9E54-4C45-9674-1FA069A1D587}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C6B82103-25E2-4AE9-AAD0-50B61A815882}

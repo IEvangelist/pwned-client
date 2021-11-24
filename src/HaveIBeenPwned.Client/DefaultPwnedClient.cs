@@ -189,8 +189,11 @@ namespace HaveIBeenPwned.Client
             try
             {
                 var passwordHash = plainTextPassword.ToSha1Hash()!;
+#if NET5_0
+                var firstFiveChars = passwordHash[..5];
+#else
                 var firstFiveChars = passwordHash.Substring(0, 5);
-
+#endif
                 var client = _httpClientFactory.CreateClient(PasswordsClient);
                 var passwordHashesInRange =
                     await client.GetStringAsync($"range/{firstFiveChars}");
