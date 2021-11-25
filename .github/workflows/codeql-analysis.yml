@@ -1,4 +1,3 @@
-  
 # CodeQL Code Scanning
 # Analyses your code for security vulnerabilities and coding errors.
 # For most projects, this workflow file will not need changing; you simply need
@@ -35,6 +34,9 @@ jobs:
   analyze:
     name: analyze
     runs-on: ubuntu-latest
+
+    permissions:
+      security-events: write
 
     strategy:
       fail-fast: false
@@ -79,19 +81,21 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
-
-    - name: Install dependencies
-      run: |
-        dotnet restore ./src/HaveIBeenPwned.Client.Abstractions/HaveIBeenPwned.Client.Abstractions.csproj
-        dotnet restore ./src/HaveIBeenPwned.Client/HaveIBeenPwned.Client.csproj
-        dotnet restore ./src/HaveIBeenPwned.Client.PollyExtensions/HaveIBeenPwned.Client.PollyExtensions.csproj
-      
-    - name: Build
-      run: |
-        dotnet build ./src/HaveIBeenPwned.Client.Abstractions/HaveIBeenPwned.Client.Abstractions.csproj --configuration Release --no-restore
-        dotnet build ./src/HaveIBeenPwned.Client/HaveIBeenPwned.Client.csproj --configuration Release --no-restore
-        dotnet build ./src/HaveIBeenPwned.Client.PollyExtensions/HaveIBeenPwned.Client.PollyExtensions.csproj --configuration Release --no-restore
     
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v1
+
+    #- name: Install dependencies
+    #  run: |
+    #    dotnet restore ./src/HaveIBeenPwned.Client.Abstractions/HaveIBeenPwned.Client.Abstractions.csproj
+    #    dotnet restore ./src/HaveIBeenPwned.Client/HaveIBeenPwned.Client.csproj
+    #    dotnet restore ./src/HaveIBeenPwned.Client.PollyExtensions/HaveIBeenPwned.Client.PollyExtensions.csproj
+      
+    #- name: Build
+    #  run: |
+    #    dotnet build ./src/HaveIBeenPwned.Client.Abstractions/HaveIBeenPwned.Client.Abstractions.csproj --configuration Release --no-restore
+    #    dotnet build ./src/HaveIBeenPwned.Client/HaveIBeenPwned.Client.csproj --configuration Release --no-restore
+    #    dotnet build ./src/HaveIBeenPwned.Client.PollyExtensions/HaveIBeenPwned.Client.PollyExtensions.csproj --configuration Release --no-restore
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
