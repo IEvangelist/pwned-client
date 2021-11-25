@@ -87,13 +87,16 @@ jobs:
 
     - name: Install dependencies
       run: |
-        cd ./src/HaveIBeenPwned.Client
-        dotnet restore
+        dotnet restore ./src/HaveIBeenPwned.Client.Abstractions/HaveIBeenPwned.Client.Abstractions.csproj
+        dotnet restore ./src/HaveIBeenPwned.Client/HaveIBeenPwned.Client.csproj
+        dotnet restore ./src/HaveIBeenPwned.Client.PollyExtensions/HaveIBeenPwned.Client.PollyExtensions.csproj
       
     - name: Build
       run: |
-        cd ./src/HaveIBeenPwned.Client
-        dotnet build --configuration Release --no-restore
+        dotnet build ./src/HaveIBeenPwned.Client.Abstractions/HaveIBeenPwned.Client.Abstractions.csproj --configuration Release --no-restore
+        dotnet build ./src/HaveIBeenPwned.Client/HaveIBeenPwned.Client.csproj --configuration Release --no-restore
+        dotnet build ./src/HaveIBeenPwned.Client.PollyExtensions/HaveIBeenPwned.Client.PollyExtensions.csproj --configuration Release --no-restore
+    
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
