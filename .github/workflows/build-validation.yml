@@ -14,7 +14,7 @@ on:
         default: 'Manual build'
 
 env:
-  DOTNET_VERSION: '5.0.x' # set this to the dot net version to use
+  DOTNET_VERSION: '6.0.x' # set this to the dot net version to use
 
 jobs:
   build:
@@ -32,15 +32,16 @@ jobs:
       run: |
         echo 'Reason: ${{ github.event.inputs.reason }}'
 
-    - name: Setup .NET Core
+    - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Install dependencies
       run: |
-        cd ./src/HaveIBeenPwned.Client
-        dotnet restore
+        dotnet restore ./src/HaveIBeenPwned.Client.Abstractions/HaveIBeenPwned.Client.Abstractions.csproj
+        dotnet restore ./src/HaveIBeenPwned.Client/HaveIBeenPwned.Client.csproj
+        dotnet restore ./src/HaveIBeenPwned.Client.PollyExtensions/HaveIBeenPwned.Client.PollyExtensions.csproj
       
     - name: Build
       run: |

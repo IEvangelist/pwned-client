@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using HaveIBeenPwned.Client;
-using HaveIBeenPwned.Client.Models;
+using HaveIBeenPwned.Client.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 

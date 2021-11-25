@@ -3,4 +3,3 @@
 
 global using HaveIBeenPwned.Client;
 global using HaveIBeenPwned.Client.Options;
-global using Microsoft.AspNetCore.Authorization;

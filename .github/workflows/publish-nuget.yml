@@ -26,12 +26,13 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 6.0.x
         
     - name: Restore dependencies
       run: |
-        cd ./src/HaveIBeenPwned.Client
-        dotnet restore
+        dotnet restore ./src/HaveIBeenPwned.Client.Abstractions/HaveIBeenPwned.Client.Abstractions.csproj
+        dotnet restore ./src/HaveIBeenPwned.Client/HaveIBeenPwned.Client.csproj
+        dotnet restore ./src/HaveIBeenPwned.Client.PollyExtensions/HaveIBeenPwned.Client.PollyExtensions.csproj
       
     - name: Build
       run: |

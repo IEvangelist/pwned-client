@@ -29,7 +29,7 @@ on:
         default: 'Manual build'
 
 env:
-  DOTNET_VERSION: '5.0.x' # set this to the dot net version to use
+  DOTNET_VERSION: '6.0.x' # set this to the dot net version to use
 
 jobs:
   analyze:
@@ -80,7 +80,7 @@ jobs:
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
 
-    - name: Setup .NET Core
+    - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}

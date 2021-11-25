@@ -1,14 +1,10 @@
 ﻿// Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
 using HaveIBeenPwned.Client;
 using HaveIBeenPwned.Client.Extensions;
 using HaveIBeenPwned.Client.Http;
-using HaveIBeenPwned.Client.Models;
+using HaveIBeenPwned.Client.Abstractions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
@@ -25,7 +21,7 @@ namespace HaveIBeenPwned.ClientTests
                 NullLoggerFactory.Instance.CreateLogger<DefaultPwnedClient>());
 
             await Assert.ThrowsAsync<ArgumentException>(
-                () => sut.GetBreachAsync(breachName: null));
+                () => sut.GetBreachAsync(breachName: null!));
         }
 
         [Fact]
@@ -36,7 +32,7 @@ namespace HaveIBeenPwned.ClientTests
                 NullLoggerFactory.Instance.CreateLogger<DefaultPwnedClient>());
 
             await Assert.ThrowsAsync<ArgumentException>(
-                () => sut.GetBreachesForAccountAsync(account: null));
+                () => sut.GetBreachesForAccountAsync(account: null!));
         }
 
         [Fact]
@@ -59,7 +55,7 @@ namespace HaveIBeenPwned.ClientTests
                 NullLoggerFactory.Instance.CreateLogger<DefaultPwnedClient>());
 
             await Assert.ThrowsAsync<ArgumentException>(
-                async () => await sut.GetBreachHeadersForAccountAsync(account: null));
+                async () => await sut.GetBreachHeadersForAccountAsync(account: null!));
         }
 
         [Fact]
@@ -82,7 +78,7 @@ namespace HaveIBeenPwned.ClientTests
                 NullLoggerFactory.Instance.CreateLogger<DefaultPwnedClient>());
 
             await Assert.ThrowsAsync<ArgumentException>(
-                async () => await sut.GetPastesAsync(account: null));
+                async () => await sut.GetPastesAsync(account: null!));
         }
 
         [Fact]
@@ -93,7 +89,7 @@ namespace HaveIBeenPwned.ClientTests
                 NullLoggerFactory.Instance.CreateLogger<DefaultPwnedClient>());
 
             await Assert.ThrowsAsync<ArgumentException>(
-                async () => await sut.GetPastesAsync(account: null));
+                async () => await sut.GetPastesAsync(account: null!));
         }
 
         public static IEnumerable<object[]> ParsePasswordRangeResponseTextInput
@@ -161,7 +157,7 @@ b792c6b438c71a97e05e6197ceba54f8e96:4001
                         HashedPassword = "a841ab792c6b438c71a97e05e6197ceba54f8e96"
                     },
                     "f@k3PA55w0d!",
-                    null
+                    null!
                 };
             }
         }
@@ -177,7 +173,7 @@ b792c6b438c71a97e05e6197ceba54f8e96:4001
             var passwordHash = plainTextPassword.ToSha1Hash();
 
             var mutatedActual = DefaultPwnedClient.ParsePasswordRangeResponseText(
-                actual, passwordRangeResponseText, passwordHash);
+                actual, passwordRangeResponseText, passwordHash!);
             Assert.Equal(expected, mutatedActual);
         }
     }
@@ -186,8 +182,8 @@ b792c6b438c71a97e05e6197ceba54f8e96:4001
     {
         public static readonly IHttpClientFactory Instance = new IntegrationHttpClientFactory();
 
-        HttpClient _hibpHttpClient;
-        HttpClient _pwnedPasswordsClient;
+        HttpClient? _hibpHttpClient;
+        HttpClient? _pwnedPasswordsClient;
 
         HttpClient IHttpClientFactory.CreateClient(string name) => name switch
         {
@@ -205,7 +201,7 @@ b792c6b438c71a97e05e6197ceba54f8e96:4001
     {
         public static readonly IHttpClientFactory Instance = new NullHttpClientFactory();
 
-        HttpClient IHttpClientFactory.CreateClient(string name) => default;
+        HttpClient IHttpClientFactory.CreateClient(string name) => default!;
     }
 
     class ThrowingHttpClientFactory : IHttpClientFactory

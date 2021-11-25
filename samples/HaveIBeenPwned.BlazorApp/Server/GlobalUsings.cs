@@ -2,4 +2,3 @@
 // Licensed under the MIT License.
 
 global using HaveIBeenPwned.Client;
-global using HaveIBeenPwned.Client.Options;
