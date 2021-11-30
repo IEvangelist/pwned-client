@@ -4,6 +4,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using HaveIBeenPwned.Client.Options;
+using HaveIBeenPwned.Client;
 
 namespace HaveIBeenPwned.ClientTests.Extensions;
 
@@ -21,4 +22,17 @@ public class ServiceCollectionExtensionsTests
             "configureOptions",
             () => new ServiceCollection().AddPwnedServices(
                 (null as Action<HibpOptions>)!));
+
+    [Fact]
+    public void AddPwnedServices_AddsDefaultImplementations_When_Valid()
+    {
+        var services = new ServiceCollection()
+            .AddPwnedServices(options => { })
+            .BuildServiceProvider();
+
+        Assert.Equal(typeof(DefaultPwnedClient), services.GetRequiredService<IPwnedBreachesClient>().GetType());
+        Assert.Equal(typeof(DefaultPwnedClient), services.GetRequiredService<IPwnedClient>().GetType());
+        Assert.Equal(typeof(DefaultPwnedClient), services.GetRequiredService<IPwnedPasswordsClient>().GetType());
+        Assert.Equal(typeof(DefaultPwnedClient), services.GetRequiredService<IPwnedPastesClient>().GetType());
+    }
 }

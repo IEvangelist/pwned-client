@@ -5,3 +5,4 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("HaveIBeenPwned.ClientTests")]
 [assembly: InternalsVisibleTo("HaveIBeenPwned.Client.PollyExtensions")]
+[assembly: InternalsVisibleTo("HaveIBeenPwned.Client.PollyExtensionsTests")]

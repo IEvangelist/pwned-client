@@ -1,5 +1,5 @@
-﻿// GitHub:  👨🏽‍💻 @IEvangelist
-// Twitter: 🤓 @davidpine7
+﻿// Copyright (c) David Pine. All rights reserved.
+// Licensed under the MIT License.
 
 var builder = WebApplication.CreateBuilder(args);
 

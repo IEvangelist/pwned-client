@@ -1,3 +1,6 @@
+// Copyright (c) David Pine. All rights reserved.
+// Licensed under the MIT License.
+
 using HaveIBeenPwned.BlazorApp.Client;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 

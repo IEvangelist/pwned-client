@@ -35,7 +35,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HaveIBeenPwned.BlazorApp.Cl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HaveIBeenPwned.BlazorApp.Server", "samples\HaveIBeenPwned.BlazorApp\Server\HaveIBeenPwned.BlazorApp.Server.csproj", "{74857A8E-6DA4-43CC-BB55-F019E1AAE397}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaveIBeenPwned.Client.PollyExtensions", "src\HaveIBeenPwned.Client.PollyExtensions\HaveIBeenPwned.Client.PollyExtensions.csproj", "{13901B13-2A98-4115-AB0A-5C206711EFBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HaveIBeenPwned.Client.PollyExtensions", "src\HaveIBeenPwned.Client.PollyExtensions\HaveIBeenPwned.Client.PollyExtensions.csproj", "{13901B13-2A98-4115-AB0A-5C206711EFBC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaveIBeenPwned.Client.AbstractionsTests", "tests\HaveIBeenPwned.Client.AbstractionsTests\HaveIBeenPwned.Client.AbstractionsTests.csproj", "{7A84DA2F-60D0-4297-9566-E0E08E3F9A93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaveIBeenPwned.Client.PollyExtensionsTests", "tests\HaveIBeenPwned.Client.PollyExtensionsTests\HaveIBeenPwned.Client.PollyExtensionsTests.csproj", "{6BFF5F8C-B5C6-4724-BEC8-5CFD16492BE4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +79,14 @@ Global
 		{13901B13-2A98-4115-AB0A-5C206711EFBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13901B13-2A98-4115-AB0A-5C206711EFBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13901B13-2A98-4115-AB0A-5C206711EFBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A84DA2F-60D0-4297-9566-E0E08E3F9A93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A84DA2F-60D0-4297-9566-E0E08E3F9A93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A84DA2F-60D0-4297-9566-E0E08E3F9A93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A84DA2F-60D0-4297-9566-E0E08E3F9A93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BFF5F8C-B5C6-4724-BEC8-5CFD16492BE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BFF5F8C-B5C6-4724-BEC8-5CFD16492BE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BFF5F8C-B5C6-4724-BEC8-5CFD16492BE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BFF5F8C-B5C6-4724-BEC8-5CFD16492BE4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,6 +100,8 @@ Global
 		{545FF986-D9A1-4EAD-8022-F4A7D4AF9938} = {3044EDD9-13CF-47A3-8589-A7B84AEFE0C1}
 		{74857A8E-6DA4-43CC-BB55-F019E1AAE397} = {3044EDD9-13CF-47A3-8589-A7B84AEFE0C1}
 		{13901B13-2A98-4115-AB0A-5C206711EFBC} = {033A7DA8-9E54-4C45-9674-1FA069A1D587}
+		{7A84DA2F-60D0-4297-9566-E0E08E3F9A93} = {6B93FD23-7EC5-4866-82BC-5C091FA6589B}
+		{6BFF5F8C-B5C6-4724-BEC8-5CFD16492BE4} = {6B93FD23-7EC5-4866-82BC-5C091FA6589B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C6B82103-25E2-4AE9-AAD0-50B61A815882}

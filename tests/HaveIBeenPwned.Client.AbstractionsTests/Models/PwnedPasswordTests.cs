@@ -4,7 +4,7 @@
 using HaveIBeenPwned.Client.Abstractions;
 using Xunit;
 
-namespace HaveIBeenPwned.ClientTests.Models;
+namespace HaveIBeenPwned.Client.AbstractionsTests.Models;
 
 public class PwnedPasswordTests
 {
