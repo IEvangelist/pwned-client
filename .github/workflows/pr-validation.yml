@@ -39,6 +39,6 @@ jobs:
 
     - name: Test
       run: |
-        dotnet test ./src/HaveIBeenPwned.Client.AbstractionsTests/HaveIBeenPwned.Client.AbstractionsTests.csproj --verbosity normal
-        dotnet test ./src/HaveIBeenPwned.ClientTests/HaveIBeenPwned.ClientTests.csproj --configuration Release --verbosity normal
-        dotnet test ./src/HaveIBeenPwned.Client.PollyExtensionsTests/HaveIBeenPwned.Client.PollyExtensionsTests.csproj --verbosity normal
+        dotnet test ./tests/HaveIBeenPwned.Client.AbstractionsTests/HaveIBeenPwned.Client.AbstractionsTests.csproj --verbosity normal
+        dotnet test ./tests/HaveIBeenPwned.ClientTests/HaveIBeenPwned.ClientTests.csproj --configuration Release --verbosity normal
+        dotnet test ./tests/HaveIBeenPwned.Client.PollyExtensionsTests/HaveIBeenPwned.Client.PollyExtensionsTests.csproj --verbosity normal
