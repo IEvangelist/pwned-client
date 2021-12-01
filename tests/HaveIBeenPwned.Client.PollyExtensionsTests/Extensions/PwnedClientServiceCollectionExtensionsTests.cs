@@ -55,15 +55,9 @@ public class PwnedClientServiceCollectionExtensionsTests
         var policy =
             http.ReflectNestedPrivateField<IAsyncPolicy<HttpResponseMessage>>(
                 "_handler", "_innerHandler", "_innerHandler", "_policy");
-        if (policy is not null)
-        {
-            Assert.Equal("Testing policy configuration", policy.PolicyKey);
-        }
-        else
-        {
-            Assert.False(
-                true, "The PolicyHttpMessageHandler was not correctly configured.");
-        }
+
+        Assert.NotNull(policy);
+        Assert.Equal("Testing policy configuration", policy!.PolicyKey);
     }
 
     class TestPolicy : IAsyncPolicy<HttpResponseMessage>
