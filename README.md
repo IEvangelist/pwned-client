@@ -10,7 +10,7 @@ A .NET HTTP client for the "have i been pwned" API service from Troy Hunt. This 
 
 > Consumers of the API can use the abstractions for the models returned from the API, while server APIs can consume and wrap the client.
 
-## Get started
+## Getting started
 
 Install from the .NET CLI:
 
