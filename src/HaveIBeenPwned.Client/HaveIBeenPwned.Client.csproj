@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>true</ImplicitUsings>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Description>This is an unofficial .NET HTTP client library exposing various "Have I Been Pwned" APIs, including Breaches, Pastes, and of course Pwned Passwords.</Description>
     <Copyright>Copyright © David Pine. All rights reserved. Licensed under the MIT License.</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>

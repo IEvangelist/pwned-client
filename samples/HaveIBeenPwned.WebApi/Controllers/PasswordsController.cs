@@ -4,21 +4,19 @@
 using HaveIBeenPwned.Client;
 using HaveIBeenPwned.Client.Abstractions;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
-namespace HaveIBeenPwned.WebApi.Controllers
+namespace HaveIBeenPwned.WebApi.Controllers;
+
+[ApiController]
+[Route("api/passwords")]
+public class PasswordsController : ControllerBase
 {
-    [ApiController]
-    [Route("api/passwords")]
-    public class PasswordsController : ControllerBase
-    {
-        private readonly IPwnedPasswordsClient _pwnedPasswordsClient;
+    private readonly IPwnedPasswordsClient _pwnedPasswordsClient;
 
-        public PasswordsController(IPwnedPasswordsClient pwnedPasswordsClient) =>
-            _pwnedPasswordsClient = pwnedPasswordsClient;
+    public PasswordsController(IPwnedPasswordsClient pwnedPasswordsClient) =>
+        _pwnedPasswordsClient = pwnedPasswordsClient;
 
-        [HttpGet, Route("{plainTextPassword}")]
-        public Task<PwnedPassword> GetPwnedPassword([FromRoute] string plainTextPassword) =>
-            _pwnedPasswordsClient.GetPwnedPasswordAsync(plainTextPassword);
-    }
+    [HttpGet, Route("{plainTextPassword}")]
+    public Task<PwnedPassword> GetPwnedPassword([FromRoute] string plainTextPassword) =>
+        _pwnedPasswordsClient.GetPwnedPasswordAsync(plainTextPassword);
 }

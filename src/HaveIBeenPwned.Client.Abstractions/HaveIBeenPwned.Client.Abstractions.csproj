@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>true</ImplicitUsings>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Description>Abstractions for HaveIBeenPwned.Client library.</Description>
     <Copyright>Copyright © David Pine. All rights reserved. Licensed under the MIT License.</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>

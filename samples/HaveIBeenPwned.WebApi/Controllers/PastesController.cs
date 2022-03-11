@@ -4,21 +4,19 @@
 using HaveIBeenPwned.Client;
 using HaveIBeenPwned.Client.Abstractions;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
-namespace HaveIBeenPwned.WebApi.Controllers
+namespace HaveIBeenPwned.WebApi.Controllers;
+
+[ApiController]
+[Route("api/pastes")]
+public class PastesController : ControllerBase
 {
-    [ApiController]
-    [Route("api/pastes")]
-    public class PastesController : ControllerBase
-    {
-        private readonly IPwnedPastesClient _pwnedPastesClient;
+    private readonly IPwnedPastesClient _pwnedPastesClient;
 
-        public PastesController(IPwnedPastesClient pwnedPastesClient) =>
-            _pwnedPastesClient = pwnedPastesClient;
+    public PastesController(IPwnedPastesClient pwnedPastesClient) =>
+        _pwnedPastesClient = pwnedPastesClient;
 
-        [HttpGet, Route("{account}")]
-        public Task<Pastes[]> GetPaste([FromRoute] string account) =>
-            _pwnedPastesClient.GetPastesAsync(account);
-    }
+    [HttpGet, Route("{account}")]
+    public Task<Pastes[]> GetPaste([FromRoute] string account) =>
+        _pwnedPastesClient.GetPastesAsync(account);
 }
