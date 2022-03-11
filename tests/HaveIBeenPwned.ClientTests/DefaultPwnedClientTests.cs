@@ -98,8 +98,9 @@ public class DefaultPwnedClientTests
         {
             yield return new object[]
             {
-                new PwnedPassword("f@k3PA55w0d!")
+                new PwnedPassword()
                 {
+                    PlainTextPassword = "f@k3PA55w0d!",
                     HashedPassword = "a841ab792c6b438c71a97e05e6197ceba54f8e96",
                     PwnedCount = 77,
                     IsPwned = true
@@ -115,8 +116,9 @@ b792c6b438c71a97e05e6197ceba54f8e96:77
 
             yield return new object[]
             {
-                new PwnedPassword("Does this even work?")
+                new PwnedPassword()
                 {
+                    PlainTextPassword = "Does this even work?",
                     HashedPassword = "5ec3e89686893f2ba76bdf1bcf1070568823e400"
                 },
                 "Does this even work?",
@@ -134,8 +136,9 @@ PICKLES:999999999999999999999999999999
 
             yield return new object[]
             {
-                new PwnedPassword("f@k3PA55w0d!")
+                new PwnedPassword()
                 {
+                    PlainTextPassword = "f@k3PA55w0d!",
                     HashedPassword = "a841ab792c6b438c71a97e05e6197ceba54f8e96",
                     PwnedCount = 4001,
                     IsPwned = true
@@ -152,8 +155,9 @@ b792c6b438c71a97e05e6197ceba54f8e96:4001
 
             yield return new object[]
             {
-                new PwnedPassword("f@k3PA55w0d!")
+                new PwnedPassword()
                 {
+                    PlainTextPassword  ="f@k3PA55w0d!",
                     HashedPassword = "a841ab792c6b438c71a97e05e6197ceba54f8e96"
                 },
                 "f@k3PA55w0d!",
@@ -169,7 +173,11 @@ b792c6b438c71a97e05e6197ceba54f8e96:4001
     public void ParsePasswordRangeResponseText_CorrectlyHandlesText(
         PwnedPassword expected, string plainTextPassword, string passwordRangeResponseText)
     {
-        PwnedPassword actual = new(plainTextPassword);
+        PwnedPassword actual = new()
+        {
+            PlainTextPassword = plainTextPassword
+        };
+
         var passwordHash = plainTextPassword.ToSha1Hash();
 
         var mutatedActual = DefaultPwnedClient.ParsePasswordRangeResponseText(

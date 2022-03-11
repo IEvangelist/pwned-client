@@ -14,7 +14,11 @@ internal sealed partial class DefaultPwnedClient : IPwnedClient
                 "The plainTextPassword cannot be either null, or empty.", nameof(plainTextPassword));
         }
 
-        var pwnedPassword = new PwnedPassword(plainTextPassword);
+        var pwnedPassword = new PwnedPassword()
+        {
+            PlainTextPassword = plainTextPassword
+        };
+
         if (pwnedPassword.IsInvalid())
         {
             return pwnedPassword;
