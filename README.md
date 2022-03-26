@@ -2,7 +2,7 @@
 
 [![build](https://github.com/IEvangelist/pwned-client/actions/workflows/build-validation.yml/badge.svg)](https://github.com/IEvangelist/pwned-client/actions/workflows/build-validation.yml) [![code analysis](https://github.com/IEvangelist/pwned-client/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/IEvangelist/pwned-client/actions/workflows/codeql-analysis.yml) [![NuGet](https://img.shields.io/nuget/v/HaveIBeenPwned.Client.svg?style=flat)](https://www.nuget.org/packages/HaveIBeenPwned.Client)
 
-A .NET HTTP client for the "have i been pwned" API service from Troy Hunt. This library is comprised of three NuGet packages:
+`HaveIBeenPwned.Client` is a .NET HTTP client for the "have i been pwned" API service from Troy Hunt. This library is comprised of three NuGet packages:
 
 - [`HaveIBeenPwned.Client`](https://www.nuget.org/packages/HaveIBeenPwned.Client)
 - [`HaveIBeenPwned.Client.Abstractions`](https://www.nuget.org/packages/HaveIBeenPwned.Client.Abstractions)
