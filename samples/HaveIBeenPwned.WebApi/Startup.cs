@@ -16,8 +16,9 @@ public class Startup
     {
         services.AddPwnedServices(options =>
         {
-            options.ApiKey = _configuration["HibpOptions:ApiKey"];
-            options.UserAgent = _configuration["HibpOptions:UserAgent"];
+            options.ApiKey = _configuration["HibpOptions:ApiKey"]
+                ?? throw new Exception("Missing required HibpOptions:ApiKey configuration value.");
+            options.UserAgent = _configuration["HibpOptions:UserAgent"]!;
         });
 
         services.AddControllers();
