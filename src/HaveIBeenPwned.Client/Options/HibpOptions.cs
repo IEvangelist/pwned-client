@@ -7,7 +7,7 @@ namespace HaveIBeenPwned.Client.Options;
 /// The "Have I Been Pwned" API options object.
 /// See <a href="https://haveibeenpwned.com/api"></a>
 /// </summary>
-public class HibpOptions : IOptions<HibpOptions>
+public sealed class HibpOptions : IOptions<HibpOptions>
 {
     static readonly string LibraryVersion =
         typeof(HibpOptions).Assembly

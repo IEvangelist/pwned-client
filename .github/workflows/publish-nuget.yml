@@ -2,7 +2,7 @@ name: publish nuget
 on:
   push:
     tags:
-      - 2.*
+      - '**'
 
 jobs: 
   publish:
@@ -26,7 +26,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
         
     - name: Restore dependencies
       run: |
@@ -54,19 +54,19 @@ jobs:
         nuget push **\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -NoSymbols -NonInteractive -ApiKey ${{secrets.NUGET_API_KEY}}
 
     - name: Upload abstractions package
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@main
       with:
         name: HaveIBeenPwned.Client.Abstractions.${{ steps.regex-match.outputs.match }}.nupkg
         path: packages/
 
     - name: Upload client package
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@main
       with:
         name: HaveIBeenPwned.Client.${{ steps.regex-match.outputs.match }}.nupkg
         path: packages/
 
     - name: Upload polly extensions package
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@main
       with:
         name: HaveIBeenPwned.Client.PollyExtensions.${{ steps.regex-match.outputs.match }}.nupkg
         path: packages/

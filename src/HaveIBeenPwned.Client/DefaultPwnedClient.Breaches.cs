@@ -25,7 +25,7 @@ internal sealed partial class DefaultPwnedClient
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            _logger.LogError(ex, "{ExceptionMessage}", ex.Message);
 
             return null!;
         }
@@ -75,7 +75,7 @@ internal sealed partial class DefaultPwnedClient
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            _logger.LogError(ex, "{ExceptionMessage}", ex.Message);
 
             return Array.Empty<BreachDetails>();
         }
@@ -101,7 +101,7 @@ internal sealed partial class DefaultPwnedClient
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            _logger.LogError(ex, "{ExceptionMessage}", ex.Message);
 
             return Array.Empty<BreachDetails>();
         }
@@ -120,7 +120,7 @@ internal sealed partial class DefaultPwnedClient
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            _logger.LogError(ex, "{ExceptionMessage}", ex.Message);
 
             return Array.Empty<string>();
         }

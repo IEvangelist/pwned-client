@@ -3,7 +3,9 @@
 
 namespace HaveIBeenPwned.Client;
 
-/// <summary></summary>
+/// <summary>
+/// The "pwned" pastes client.
+/// </summary>
 public interface IPwnedPastesClient
 {
     /// <summary>

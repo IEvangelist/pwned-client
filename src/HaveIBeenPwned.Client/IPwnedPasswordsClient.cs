@@ -3,7 +3,9 @@
 
 namespace HaveIBeenPwned.Client;
 
-/// <summary></summary>
+/// <summary>
+/// The "pwned" passwords client.
+/// </summary>
 public interface IPwnedPasswordsClient
 {
     /// <summary>

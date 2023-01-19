@@ -25,7 +25,7 @@ internal sealed partial class DefaultPwnedClient : IPwnedClient
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            _logger.LogError(ex, "{ExceptionMessage}", ex.Message);
 
             return Array.Empty<Pastes>();
         }

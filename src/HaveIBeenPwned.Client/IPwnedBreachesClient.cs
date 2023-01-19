@@ -3,7 +3,9 @@
 
 namespace HaveIBeenPwned.Client;
 
-/// <summary></summary>
+/// <summary>
+/// The "pwned" breaches client.
+/// </summary>
 public interface IPwnedBreachesClient
 {
     /// <summary>
