@@ -28,17 +28,20 @@ app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 app.UseRouting();
 
+var group = app.MapGroup("api/breaches")
+    .RequireAuthorization();
+
 // Map "have i been pwned" breaches.
-app.MapGet("api/breaches/{breachName}",
-    [Authorize] (string breachName, IPwnedBreachesClient client) => client.GetBreachAsync(breachName));
-app.MapGet("api/breaches/headers/{domain}",
-    [Authorize] (string? domain, IPwnedBreachesClient client) => client.GetBreachAsync(domain!));
-app.MapGet("api/breaches/{account}/breaches",
-    [Authorize] (string account, IPwnedBreachesClient client) => client.GetBreachesForAccountAsync(account));
-app.MapGet("api/breaches/{account}/headers",
-    [Authorize] (string account, IPwnedBreachesClient client) => client.GetBreachHeadersForAccountAsync(account));
-app.MapGet("api/breaches/dataclasses",
-    [Authorize] (IPwnedBreachesClient client) => client.GetDataClassesAsync());
+app.MapGet("{breachName}",
+    (string breachName, IPwnedBreachesClient client) => client.GetBreachAsync(breachName));
+app.MapGet("headers/{domain}",
+    (string? domain, IPwnedBreachesClient client) => client.GetBreachAsync(domain!));
+app.MapGet("{account}/breaches",
+    (string account, IPwnedBreachesClient client) => client.GetBreachesForAccountAsync(account));
+app.MapGet("{account}/headers",
+    (string account, IPwnedBreachesClient client) => client.GetBreachHeadersForAccountAsync(account));
+app.MapGet("dataclasses",
+    (IPwnedBreachesClient client) => client.GetDataClassesAsync());
 
 // Map "have i been pwned" passwords.
 app.MapGet("api/passwords/{plainTextPassword}",
