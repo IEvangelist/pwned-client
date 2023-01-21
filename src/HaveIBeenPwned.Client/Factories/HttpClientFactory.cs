@@ -19,7 +19,7 @@ internal sealed class HttpClientFactory : IHttpClientFactory
         return client;
     });
 
-    private static readonly Lazy<HttpClient> _passwordsClient = new (() =>
+    private static readonly Lazy<HttpClient> _passwordsClient = new(() =>
     {
         var client = new HttpClient
         {

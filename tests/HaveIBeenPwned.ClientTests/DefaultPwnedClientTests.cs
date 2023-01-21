@@ -2,9 +2,9 @@
 // Licensed under the MIT License.
 
 using HaveIBeenPwned.Client;
+using HaveIBeenPwned.Client.Abstractions;
 using HaveIBeenPwned.Client.Extensions;
 using HaveIBeenPwned.Client.Http;
-using HaveIBeenPwned.Client.Abstractions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;

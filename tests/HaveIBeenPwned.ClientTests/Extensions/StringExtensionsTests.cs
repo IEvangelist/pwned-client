@@ -1,8 +1,8 @@
 // Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
-using Xunit;
 using HaveIBeenPwned.Client.Extensions;
+using Xunit;
 
 namespace HaveIBeenPwned.ClientTests.Extensions;
 

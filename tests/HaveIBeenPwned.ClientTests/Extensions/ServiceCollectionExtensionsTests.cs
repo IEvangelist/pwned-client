@@ -1,10 +1,10 @@
 ﻿// Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
+using HaveIBeenPwned.Client;
+using HaveIBeenPwned.Client.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-using HaveIBeenPwned.Client.Options;
-using HaveIBeenPwned.Client;
 
 namespace HaveIBeenPwned.ClientTests.Extensions;
 
