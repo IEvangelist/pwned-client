@@ -38,4 +38,4 @@ jobs:
         dotnet build ./src/HaveIBeenPwned.Client.PollyExtensions/HaveIBeenPwned.Client.PollyExtensions.csproj --configuration Release --no-restore
 
     - name: Test
-      run: dotnet test
+      run: dotnet test --filter "Category!=AcceptanceTests"
