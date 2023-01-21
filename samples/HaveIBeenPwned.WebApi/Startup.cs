@@ -1,6 +1,7 @@
 // Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
+using HaveIBeenPwned.Client;
 using Microsoft.OpenApi.Models;
 
 namespace HaveIBeenPwned.WebApi;
@@ -14,12 +15,8 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddPwnedServices(options =>
-        {
-            options.ApiKey = _configuration["HibpOptions:ApiKey"]
-                ?? throw new Exception("Missing required HibpOptions:ApiKey configuration value.");
-            options.UserAgent = _configuration["HibpOptions:UserAgent"]!;
-        });
+        services.AddSingleton<IPwnedClient>(
+            services => new PwnedClient(_configuration["HibpOptions:ApiKey"]!));
 
         services.AddControllers();
         services.AddSwaggerGen(

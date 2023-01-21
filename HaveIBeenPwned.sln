@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.github\workflows\build-validation.yml = .github\workflows\build-validation.yml
 		.github\workflows\codeql-analysis.yml = .github\workflows\codeql-analysis.yml
 		LICENSE = LICENSE
+		assets\minimal-api.svg = assets\minimal-api.svg
 		.github\workflows\pr-validation.yml = .github\workflows\pr-validation.yml
 		.github\workflows\publish-nuget.yml = .github\workflows\publish-nuget.yml
 		README.md = README.md
@@ -37,9 +38,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HaveIBeenPwned.BlazorApp.Se
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HaveIBeenPwned.Client.PollyExtensions", "src\HaveIBeenPwned.Client.PollyExtensions\HaveIBeenPwned.Client.PollyExtensions.csproj", "{13901B13-2A98-4115-AB0A-5C206711EFBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaveIBeenPwned.Client.AbstractionsTests", "tests\HaveIBeenPwned.Client.AbstractionsTests\HaveIBeenPwned.Client.AbstractionsTests.csproj", "{7A84DA2F-60D0-4297-9566-E0E08E3F9A93}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HaveIBeenPwned.Client.AbstractionsTests", "tests\HaveIBeenPwned.Client.AbstractionsTests\HaveIBeenPwned.Client.AbstractionsTests.csproj", "{7A84DA2F-60D0-4297-9566-E0E08E3F9A93}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaveIBeenPwned.Client.PollyExtensionsTests", "tests\HaveIBeenPwned.Client.PollyExtensionsTests\HaveIBeenPwned.Client.PollyExtensionsTests.csproj", "{6BFF5F8C-B5C6-4724-BEC8-5CFD16492BE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HaveIBeenPwned.Client.PollyExtensionsTests", "tests\HaveIBeenPwned.Client.PollyExtensionsTests\HaveIBeenPwned.Client.PollyExtensionsTests.csproj", "{6BFF5F8C-B5C6-4724-BEC8-5CFD16492BE4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

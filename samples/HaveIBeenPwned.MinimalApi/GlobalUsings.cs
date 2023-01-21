@@ -3,3 +3,4 @@
 
 global using HaveIBeenPwned.Client;
 global using HaveIBeenPwned.Client.Options;
+global using HaveIBeenPwned.MinimalApi.Extensions;

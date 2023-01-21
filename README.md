@@ -56,6 +56,15 @@ Then you can require any of the available DI-ready types:
 - `IPwnedPasswordsClient`: [Pwned Passwords API](https://haveibeenpwned.com/API/v3#PwnedPasswords).
 - `IPwnedClient`: Marker interface, for conveniently injecting all of the above clients into a single client.
 
+### Without dependency injection
+
+If you're not using the DI approach, simple instaniate the `PwnedClient` class with your API key and use it as you see fit.
+
+```csharp
+IPwnedClient client = new PwnedClient("<API Key>");
+// TODO: Use client...
+```
+
 ### Example Minimal APIs
 
 ![Minimal APIs example code.](https://raw.githubusercontent.com/IEvangelist/pwned-client/main/assets/minimal-api.svg)

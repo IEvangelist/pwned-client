@@ -3,7 +3,15 @@
 
 namespace HaveIBeenPwned.Client;
 
-/// <summary></summary>
+/// <summary>
+/// An aggregate interface for convenience, exposing all
+/// "pwned" functionality including:
+/// <list type="bullet">
+/// <item><see cref="IPwnedBreachesClient"/></item>
+/// <item><see cref="IPwnedPastesClient"/></item>
+/// <item><see cref="IPwnedPasswordsClient"/></item>
+/// </list>
+/// </summary>
 public interface IPwnedClient :
     IPwnedBreachesClient,
     IPwnedPastesClient,

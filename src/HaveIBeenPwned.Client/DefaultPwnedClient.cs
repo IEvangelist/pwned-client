@@ -3,6 +3,7 @@
 
 namespace HaveIBeenPwned.Client;
 
+/// <inheritdoc cref="IPwnedClient" />
 internal sealed partial class DefaultPwnedClient : IPwnedClient
 {
     readonly IHttpClientFactory _httpClientFactory;

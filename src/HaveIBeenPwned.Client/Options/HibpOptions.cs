@@ -14,7 +14,7 @@ public sealed class HibpOptions : IOptions<HibpOptions>
             .GetCustomAttribute<AssemblyFileVersionAttribute>()
             ?.Version ?? "1.0";
 
-    static readonly string DefaultUserAgent =
+    internal static readonly string DefaultUserAgent =
         $".NET HIBP Client/{LibraryVersion}";
 
     private string? _userAgent = DefaultUserAgent;
