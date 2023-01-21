@@ -1,6 +1,7 @@
 ﻿// Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
+using HaveIBeenPwned.BlazorApp.Server.Extensions;
 using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,16 +30,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 // Map "have i been pwned" breaches.
-app.MapGet("api/breaches/{breachName}",
-    [Authorize] (string breachName, IPwnedBreachesClient client) => client.GetBreachAsync(breachName));
-app.MapGet("api/breaches/headers/{domain}",
-    [Authorize] (string? domain, IPwnedBreachesClient client) => client.GetBreachAsync(domain!));
-app.MapGet("api/breaches/{account}/breaches",
-    [Authorize] (string account, IPwnedBreachesClient client) => client.GetBreachesForAccountAsync(account));
-app.MapGet("api/breaches/{account}/headers",
-    [Authorize] (string account, IPwnedBreachesClient client) => client.GetBreachHeadersForAccountAsync(account));
-app.MapGet("api/breaches/dataclasses",
-    [Authorize] (IPwnedBreachesClient client) => client.GetDataClassesAsync());
+var group = app.MapGroup("api/breaches")
+    .MapPwnedBreachesApi();
 
 // Map "have i been pwned" passwords.
 app.MapGet("api/passwords/{plainTextPassword}",
