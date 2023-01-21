@@ -23,15 +23,17 @@ if (builder.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Map "have i been pwned" breaches.
-app.MapGet("api/breaches/{breachName}",
+var group = app.MapGroup("api/breaches");
+
+group.MapGet("{breachName}",
     (string breachName, IPwnedBreachesClient client) => client.GetBreachAsync(breachName));
-app.MapGet("api/breaches/headers/{domain}",
+group.MapGet("headers/{domain}",
     (string? domain, IPwnedBreachesClient client) => client.GetBreachAsync(domain!));
-app.MapGet("api/breaches/{account}/breaches",
+group.MapGet("{account}/breaches",
     (string account, IPwnedBreachesClient client) => client.GetBreachesForAccountAsync(account));
-app.MapGet("api/breaches/{account}/headers",
+group.MapGet("{account}/headers",
     (string account, IPwnedBreachesClient client) => client.GetBreachHeadersForAccountAsync(account));
-app.MapGet("api/breaches/dataclasses",
+group.MapGet("dataclasses",
     (IPwnedBreachesClient client) => client.GetDataClassesAsync());
 
 // Map "have i been pwned" passwords.
