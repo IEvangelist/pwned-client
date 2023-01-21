@@ -3,6 +3,7 @@
 
 namespace HaveIBeenPwned.Client.AcceptanceTests;
 
+[Trait("Category", "AcceptanceTests")]
 public sealed class PwnedPastesClientTests
 {
     private readonly IPwnedPastesClient _pastesClient;

@@ -3,7 +3,8 @@
 
 namespace HaveIBeenPwned.Client.AcceptanceTests;
 
-public class PwnedBreachesClientTests
+[Trait("Category", "AcceptanceTests")]
+public sealed class PwnedBreachesClientTests
 {
     private readonly IPwnedBreachesClient _breachesClient;
 

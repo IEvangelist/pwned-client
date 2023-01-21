@@ -3,6 +3,7 @@
 
 namespace HaveIBeenPwned.Client.AcceptanceTests;
 
+[Trait("Category", "AcceptanceTests")]
 public sealed class PwnedPasswordsClientTests
 {
     private readonly IPwnedPasswordsClient _passwordsClient;
@@ -11,7 +12,7 @@ public sealed class PwnedPasswordsClientTests
         _passwordsClient = new PwnedClient(
             Environment.GetEnvironmentVariable("HibpOptions__ApiKey")!);
 
-    [Fact, Trait("Category", "AcceptanceTests")]
+    [Fact]
     public async Task GetPwnedPasswordAsyncReturnsIsPwnedWithKnownPwnedPassword()
     {
         var pwnedPassword =
@@ -22,7 +23,7 @@ public sealed class PwnedPasswordsClientTests
         Assert.True(pwnedPassword.PwnedCount > 9_600_000);
     }
 
-    [Fact, Trait("Category", "AcceptanceTests")]
+    [Fact]
     public async Task IsPwnedPasswordAsyncRetrunsTrueForKnownPwnedPassword()
     {
         var (isPwned, count) =
