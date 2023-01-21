@@ -13,20 +13,20 @@ namespace HaveIBeenPwned.Client.PollyExtensionsTests.Extensions;
 public class PwnedClientServiceCollectionExtensionsTests
 {
     [Fact]
-    public void AddPwnedServices_Throws_When_ServiceCollectionIsNull() =>
+    public void AddPwnedServicesThrowsWhenServiceCollectionIsNull() =>
     Assert.Throws<ArgumentNullException>(
         "services",
         () => ((IServiceCollection)null!).AddPwnedServices(_ => { }));
 
     [Fact]
-    public void AddPwnedServices_Throws_When_ConfigureOptionsIsNull() =>
+    public void AddPwnedServicesThrowsWhenConfigureOptionsIsNull() =>
         Assert.Throws<ArgumentNullException>(
             "configureOptions",
             () => new ServiceCollection().AddPwnedServices(
                 (null as Action<HibpOptions>)!));
 
     [Fact]
-    public void AddPwnedServices_Throws_When_ConfigureRetryPolicyIsNull() =>
+    public void AddPwnedServicesThrowsWhenConfigureRetryPolicyIsNull() =>
         Assert.Throws<ArgumentNullException>(
             "configureRetryPolicy",
             () => new ServiceCollection().AddPwnedServices(
@@ -34,7 +34,7 @@ public class PwnedClientServiceCollectionExtensionsTests
                 (null as Func<PolicyBuilder<HttpResponseMessage>, IAsyncPolicy<HttpResponseMessage>>)!));
 
     [Fact]
-    public void AddPwnedServices_AddsDefaultImplementations_When_Valid()
+    public void AddPwnedServicesAddsDefaultImplementationsWhenValid()
     {
         static IAsyncPolicy<HttpResponseMessage> TestPolicyFactory(PolicyBuilder<HttpResponseMessage> _) => new TestPolicy();
 

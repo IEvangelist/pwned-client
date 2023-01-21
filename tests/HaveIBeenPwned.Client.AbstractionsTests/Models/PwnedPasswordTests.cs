@@ -15,7 +15,7 @@ public class PwnedPasswordTests
         InlineData("   ", false),
         InlineData("someValue", false)
     ]
-    public void PwnedPassword_Returns_CorrectValidityState_WhenConstructed(
+    public void PwnedPasswordReturnsCorrectValidityStateWhenConstructed(
         string value, bool expected)
     {
         PwnedPassword pwnedPassword = new() { PlainTextPassword = value };

@@ -42,6 +42,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HaveIBeenPwned.Client.Abstr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HaveIBeenPwned.Client.PollyExtensionsTests", "tests\HaveIBeenPwned.Client.PollyExtensionsTests\HaveIBeenPwned.Client.PollyExtensionsTests.csproj", "{6BFF5F8C-B5C6-4724-BEC8-5CFD16492BE4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaveIBeenPwned.Client.AcceptanceTests", "tests\HaveIBeenPwned.Client.AcceptanceTests\HaveIBeenPwned.Client.AcceptanceTests.csproj", "{1A2A64DC-3729-495C-8798-E9ADEFD806EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -88,6 +90,10 @@ Global
 		{6BFF5F8C-B5C6-4724-BEC8-5CFD16492BE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BFF5F8C-B5C6-4724-BEC8-5CFD16492BE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6BFF5F8C-B5C6-4724-BEC8-5CFD16492BE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A2A64DC-3729-495C-8798-E9ADEFD806EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A2A64DC-3729-495C-8798-E9ADEFD806EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A2A64DC-3729-495C-8798-E9ADEFD806EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A2A64DC-3729-495C-8798-E9ADEFD806EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -103,6 +109,7 @@ Global
 		{13901B13-2A98-4115-AB0A-5C206711EFBC} = {033A7DA8-9E54-4C45-9674-1FA069A1D587}
 		{7A84DA2F-60D0-4297-9566-E0E08E3F9A93} = {6B93FD23-7EC5-4866-82BC-5C091FA6589B}
 		{6BFF5F8C-B5C6-4724-BEC8-5CFD16492BE4} = {6B93FD23-7EC5-4866-82BC-5C091FA6589B}
+		{1A2A64DC-3729-495C-8798-E9ADEFD806EC} = {6B93FD23-7EC5-4866-82BC-5C091FA6589B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C6B82103-25E2-4AE9-AAD0-50B61A815882}
