@@ -1,6 +1,6 @@
 # ![';-- have i been pwned? — .NET HTTP client.](https://raw.githubusercontent.com/IEvangelist/pwned-client/main/assets/pwned-header.png)
 
-[![build](https://github.com/IEvangelist/pwned-client/actions/workflows/build-validation.yml/badge.svg)](https://github.com/IEvangelist/pwned-client/actions/workflows/build-validation.yml) [![code analysis](https://github.com/IEvangelist/pwned-client/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/IEvangelist/pwned-client/actions/workflows/codeql-analysis.yml) [![NuGet](https://img.shields.io/nuget/v/HaveIBeenPwned.Client.svg?style=flat)](https://www.nuget.org/packages/HaveIBeenPwned.Client)
+[![build](https://github.com/IEvangelist/pwned-client/actions/workflows/build-validation.yml/badge.svg)](https://github.com/IEvangelist/pwned-client/actions/workflows/build-validation.yml) [![code analysis](https://github.com/IEvangelist/pwned-client/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/IEvangelist/pwned-client/actions/workflows/codeql-analysis.yml) [![NuGet](https://img.shields.io/nuget/v/HaveIBeenPwned.Client.svg?style=flat)](https://www.nuget.org/packages/HaveIBeenPwned.Client) ![nuget downloads](https://img.shields.io/nuget/dt/HaveIBeenPwned.Client?color=blue&label=nuget%20downloads&logo=nuget) 
 
 `HaveIBeenPwned.Client` is a .NET HTTP client for the "have i been pwned" API service from Troy Hunt. This library is comprised of three NuGet packages:
 
