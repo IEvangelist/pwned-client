@@ -16,23 +16,14 @@ public static class PwnedClientServiceCollectionExtensions
     /// <param name="namedConfigurationSection">The name configuration section to bind options from.</param>
     /// <returns>The same <paramref name="services"/> instance with other services added.</returns>
     /// <exception cref="ArgumentNullException">
-    /// If either the <paramref name="services"/> or <paramref name="namedConfigurationSection"/> are <c>null</c>.
+    /// If either the <paramref name="services"/> or <paramref name="namedConfigurationSection"/> are <see langword="null" />.
     /// </exception>
     public static IServiceCollection AddPwnedServices(
         this IServiceCollection services,
         IConfiguration namedConfigurationSection)
     {
-        if (services is null)
-        {
-            throw new ArgumentNullException(
-                nameof(services), "The IServiceCollection cannot be null.");
-        }
-
-        if (namedConfigurationSection is null)
-        {
-            throw new ArgumentNullException(
-                nameof(namedConfigurationSection), "The IConfiguration cannot be null.");
-        }
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(namedConfigurationSection);
 
         services.Configure<HibpOptions>(namedConfigurationSection);
 
@@ -47,23 +38,14 @@ public static class PwnedClientServiceCollectionExtensions
     /// <param name="configureOptions">The action used to configure options.</param>
     /// <returns>The same <paramref name="services"/> instance with other services added.</returns>
     /// <exception cref="ArgumentNullException">
-    /// If either the <paramref name="services"/> or <paramref name="configureOptions"/> are <c>null</c>.
+    /// If either the <paramref name="services"/> or <paramref name="configureOptions"/> are <see langword="null" />.
     /// </exception>
     public static IServiceCollection AddPwnedServices(
         this IServiceCollection services,
         Action<HibpOptions> configureOptions)
     {
-        if (services is null)
-        {
-            throw new ArgumentNullException(
-                nameof(services), "The IServiceCollection cannot be null.");
-        }
-
-        if (configureOptions is null)
-        {
-            throw new ArgumentNullException(
-                nameof(configureOptions), "The Action<HibpOptions> cannot be null.");
-        }
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configureOptions);
 
         services.Configure(configureOptions);
 
@@ -103,8 +85,9 @@ public static class PwnedClientServiceCollectionExtensions
             httpClientName,
             (serviceProvider, client) =>
             {
-                var options = serviceProvider.GetRequiredService<IOptions<HibpOptions>>();
-                var (apiKey, userAgent) = options?.Value
+                var options = serviceProvider.GetRequiredService<IOptionsMonitor<HibpOptions>>();
+
+                var (apiKey, userAgent) = options?.CurrentValue
                     ?? throw new InvalidOperationException(
                         "The 'Have I Been Pwned' options object cannot be null.");
 

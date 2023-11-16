@@ -8,7 +8,7 @@ namespace HaveIBeenPwned.Client.Abstractions;
 /// hashed password. As well as whether the password is considered "pwned",
 /// and if so, how many times.
 /// </summary>
-public record class PwnedPassword
+public sealed record class PwnedPassword
 {
     /// <summary>
     /// The plain text password used for the lookup.

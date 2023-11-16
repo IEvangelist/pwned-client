@@ -8,7 +8,7 @@ on:
     - '**.csproj'
 
 env:
-  DOTNET_VERSION: '7.0.x' # set this to the dot net version to use
+  DOTNET_VERSION: '8.0.x' # set this to the dot net version to use
 
 jobs:
   validate:

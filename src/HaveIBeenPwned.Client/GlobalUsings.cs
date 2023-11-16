@@ -7,14 +7,19 @@ global using System.Reflection;
 global using System.Security.Cryptography;
 global using System.Text;
 global using System.Web;
+
 global using HaveIBeenPwned.Client;
 global using HaveIBeenPwned.Client.Abstractions;
 global using HaveIBeenPwned.Client.Extensions;
 global using HaveIBeenPwned.Client.Factories;
 global using HaveIBeenPwned.Client.Http;
+global using HaveIBeenPwned.Client.Internals;
 global using HaveIBeenPwned.Client.Options;
+
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
+global using Microsoft.Extensions.Logging.Abstractions;
 global using Microsoft.Extensions.Options;
+
 global using static HaveIBeenPwned.Client.Http.HttpClientNames;

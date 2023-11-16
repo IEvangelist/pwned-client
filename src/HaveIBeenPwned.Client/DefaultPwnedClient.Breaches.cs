@@ -16,7 +16,8 @@ internal sealed partial class DefaultPwnedClient
 
         try
         {
-            var client = _httpClientFactory.CreateClient(HibpClient);
+            var client = httpClientFactory.CreateClient(HibpClient);
+
             var breachDetails =
                 await client.GetFromJsonAsync<BreachDetails>(
                     $"breach/{breachName}");
@@ -25,7 +26,7 @@ internal sealed partial class DefaultPwnedClient
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "{ExceptionMessage}", ex.Message);
+            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
 
             return null!;
         }
@@ -36,7 +37,8 @@ internal sealed partial class DefaultPwnedClient
     {
         try
         {
-            var client = _httpClientFactory.CreateClient(HibpClient);
+            var client = httpClientFactory.CreateClient(HibpClient);
+
             var queryString = string.IsNullOrWhiteSpace(domain)
                 ? ""
                 : $"?domain={domain}";
@@ -45,13 +47,37 @@ internal sealed partial class DefaultPwnedClient
                 await client.GetFromJsonAsync<BreachHeader[]>(
                     $"breaches{queryString}");
 
-            return breachHeaders ?? Array.Empty<BreachHeader>();
+            return breachHeaders ?? [];
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
 
-            return Array.Empty<BreachHeader>();
+            return [];
+        }
+    }
+
+    /// <inheritdoc path="IPwnedBreachesClient.GetBreachesAsAsyncEnumerable(string?, CancellationToken)" />
+    IAsyncEnumerable<BreachHeader?> IPwnedBreachesClient.GetBreachesAsAsyncEnumerable(
+        string? domain, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var client = httpClientFactory.CreateClient(HibpClient);
+
+            var queryString = string.IsNullOrWhiteSpace(domain)
+                ? ""
+                : $"?domain={domain}";
+
+            return client.GetFromJsonAsAsyncEnumerable<BreachHeader>(
+                $"breaches{queryString}",
+                cancellationToken: cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
+
+            return AsyncEnumerable.Empty<BreachHeader?>();
         }
     }
 
@@ -66,18 +92,39 @@ internal sealed partial class DefaultPwnedClient
 
         try
         {
-            var client = _httpClientFactory.CreateClient(HibpClient);
+            var client = httpClientFactory.CreateClient(HibpClient);
+
             var breachDetails =
                 await client.GetFromJsonAsync<BreachDetails[]>(
                     $"breachedaccount/{HttpUtility.UrlEncode(account)}?truncateResponse=false");
 
-            return breachDetails ?? Array.Empty<BreachDetails>();
+            return breachDetails ?? [];
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "{ExceptionMessage}", ex.Message);
+            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
 
-            return Array.Empty<BreachDetails>();
+            return [];
+        }
+    }
+
+    /// <inheritdoc path="IPwnedBreachesClient.GetBreachesForAccountAsAsyncEnumerable(string, CancellationToken)" />"
+    IAsyncEnumerable<BreachDetails?> IPwnedBreachesClient.GetBreachesForAccountAsAsyncEnumerable(
+        string account, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var client = httpClientFactory.CreateClient(HibpClient);
+
+            return client.GetFromJsonAsAsyncEnumerable<BreachDetails>(
+                $"breachedaccount/{HttpUtility.UrlEncode(account)}?truncateResponse=false",
+                cancellationToken: cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
+
+            return AsyncEnumerable.Empty<BreachDetails?>();
         }
     }
 
@@ -92,37 +139,84 @@ internal sealed partial class DefaultPwnedClient
 
         try
         {
-            var client = _httpClientFactory.CreateClient(HibpClient);
-            var breachDetails =
-                await client.GetFromJsonAsync<BreachDetails[]>(
+            var client = httpClientFactory.CreateClient(HibpClient);
+
+            var breachHeaders =
+                await client.GetFromJsonAsync<BreachHeader[]>(
                     $"breachedaccount/{HttpUtility.UrlEncode(account)}?truncateResponse=true");
 
-            return breachDetails ?? Array.Empty<BreachDetails>();
+            return breachHeaders ?? [];
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "{ExceptionMessage}", ex.Message);
+            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
 
-            return Array.Empty<BreachDetails>();
+            return [];
         }
     }
 
-    /// <inheritdoc cref="IPwnedBreachesClient.GetDataClassesAsync" />
-    async Task<string[]> IPwnedBreachesClient.GetDataClassesAsync()
+    /// <inheritdoc path="IPwnedBreachesClient.GetBreachHeadersForAccountAsAsyncEnumerable(string, CancellationToken)" />
+    IAsyncEnumerable<BreachHeader?> IPwnedBreachesClient.GetBreachHeadersForAccountAsAsyncEnumerable(
+        string account, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrWhiteSpace(account))
+        {
+            throw new ArgumentException(
+                "The account cannot be either null, empty or whitespace.", nameof(account));
+        }
+
         try
         {
-            var client = _httpClientFactory.CreateClient(HibpClient);
-            var dataClasses =
-                await client.GetFromJsonAsync<string[]>("dataclasses");
+            var client = httpClientFactory.CreateClient(HibpClient);
 
-            return dataClasses ?? Array.Empty<string>();
+            return client.GetFromJsonAsAsyncEnumerable<BreachHeader>(
+                $"breachedaccount/{HttpUtility.UrlEncode(account)}?truncateResponse=true",
+                cancellationToken: cancellationToken);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "{ExceptionMessage}", ex.Message);
+            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
 
-            return Array.Empty<string>();
+            return AsyncEnumerable.Empty<BreachHeader?>();
+        }
+    }
+
+    /// <inheritdoc cref="IPwnedBreachesClient.GetDataClassesAsync(CancellationToken)" />
+    async Task<string[]> IPwnedBreachesClient.GetDataClassesAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            var client = httpClientFactory.CreateClient(HibpClient);
+
+            var dataClasses =
+                await client.GetFromJsonAsync<string[]>(
+                    "dataclasses", cancellationToken: cancellationToken);
+
+            return dataClasses ?? [];
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
+
+            return [];
+        }
+    }
+
+    /// <inheritdoc path="IPwnedBreachesClient.GetDataClassesAsAsyncEnumerable" />
+    IAsyncEnumerable<string?> IPwnedBreachesClient.GetDataClassesAsAsyncEnumerable(CancellationToken cancellationToken)
+    {
+        try
+        {
+            var client = httpClientFactory.CreateClient(HibpClient);
+
+            return client.GetFromJsonAsAsyncEnumerable<string>(
+                "dataclasses", cancellationToken: cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
+
+            return AsyncEnumerable.Empty<string?>();
         }
     }
 }

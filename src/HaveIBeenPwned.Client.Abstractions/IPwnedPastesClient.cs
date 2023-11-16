@@ -15,10 +15,27 @@ public interface IPwnedPastesClient
     /// This is an authenticated API and an HIBP API key must be passed with the request.
     /// See <a href="https://haveibeenpwned.com/API/v3#PastesForAccount"></a>
     /// </summary>
-    /// <param name="account"></param>
+    /// <param name="account">The email address to get pastes for.</param>
     /// <returns>An array of <see cref="Pastes"/> if found, otherwise an empty array.</returns>
     /// <exception cref="ArgumentNullException">
-    /// When the <paramref name="account"/> is <c>null</c>, empty or whitespace.
+    /// When the <paramref name="account"/> is <see langword="null" />, empty or whitespace.
     /// </exception>
     Task<Pastes[]> GetPastesAsync(string account);
+
+    /// <summary>
+    /// The API takes a single parameter which is the email address to be searched for.
+    /// The email is not case sensitive and will be trimmed of leading or trailing white spaces.
+    /// The email should always be URL encoded.
+    /// This is an authenticated API and an HIBP API key must be passed with the request.
+    /// See <a href="https://haveibeenpwned.com/API/v3#PastesForAccount"></a>
+    /// </summary>
+    /// <param name="account">The email address to get pastes for.</param>
+    /// <param name="cancellationToken">Used to signal cancellation.</param>
+    /// <returns>An array of <see cref="Pastes"/> if found, otherwise an empty array.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// When the <paramref name="account"/> is <see langword="null" />, empty or whitespace.
+    /// </exception>
+    IAsyncEnumerable<Pastes?> GetPastesAsAsyncEnumerable(
+        string account,
+        CancellationToken cancellationToken);
 }

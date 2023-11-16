@@ -12,9 +12,8 @@ namespace HaveIBeenPwned.Client;
 /// <item><see cref="IPwnedPasswordsClient"/></item>
 /// </list>
 /// </summary>
-public interface IPwnedClient :
-    IPwnedBreachesClient,
-    IPwnedPastesClient,
-    IPwnedPasswordsClient
+public interface IPwnedClient : IPwnedBreachesClient,
+                                IPwnedPastesClient,
+                                IPwnedPasswordsClient
 {
 }

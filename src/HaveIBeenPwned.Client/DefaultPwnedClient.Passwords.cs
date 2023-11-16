@@ -28,7 +28,7 @@ internal sealed partial class DefaultPwnedClient : IPwnedClient
         {
             var passwordHash = plainTextPassword.ToSha1Hash()!;
             var firstFiveChars = passwordHash[..5];
-            var client = _httpClientFactory.CreateClient(PasswordsClient);
+            var client = httpClientFactory.CreateClient(PasswordsClient);
             var passwordHashesInRange =
                 await client.GetStringAsync($"range/{firstFiveChars}");
 
@@ -37,11 +37,14 @@ internal sealed partial class DefaultPwnedClient : IPwnedClient
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "{ExceptionMessage}", ex.Message);
+            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
         }
 
         return pwnedPassword;
     }
+
+    internal static readonly char[] s_newLineSeparator = ['\n'];
+    internal static readonly char[] s_colonSeparator = [':'];
 
     internal static PwnedPassword ParsePasswordRangeResponseText(
         PwnedPassword pwnedPassword, string passwordRangeResponseText, string passwordHash)
@@ -65,12 +68,12 @@ internal sealed partial class DefaultPwnedClient : IPwnedClient
 
             var hashCountMap =
                 passwordRangeResponseText
-                    .Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Split(s_newLineSeparator, StringSplitOptions.RemoveEmptyEntries)
                     .Select(hashCountPair =>
                     {
                         var pair = hashCountPair
                             .Replace('\r', '\0')
-                            .Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                            .Split(s_colonSeparator, StringSplitOptions.RemoveEmptyEntries);
 
                         return pair?.Length != 2 || !long.TryParse(pair[1], out var count)
                             ? (Hash: "", Count: 0L, IsValid: false)

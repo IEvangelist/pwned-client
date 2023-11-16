@@ -3,7 +3,7 @@
 
 namespace HaveIBeenPwned.Client.Factories;
 
-internal sealed class HttpClientFactory : IHttpClientFactory
+internal sealed class InternalHttpClientFactory : IHttpClientFactory
 {
     private static string? _apiKey;
 
@@ -33,14 +33,14 @@ internal sealed class HttpClientFactory : IHttpClientFactory
         return client;
     });
 
-    internal static HttpClientFactory Create(string apiKey)
+    internal static InternalHttpClientFactory Create(string apiKey)
     {
         _apiKey = apiKey ?? throw new ArgumentNullException(apiKey);
 
         return new();
     }
 
-    private HttpClientFactory() { }
+    private InternalHttpClientFactory() { }
 
     HttpClient IHttpClientFactory.CreateClient(string name) =>
         name switch

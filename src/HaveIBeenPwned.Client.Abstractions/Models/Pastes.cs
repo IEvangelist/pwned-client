@@ -6,7 +6,7 @@ namespace HaveIBeenPwned.Client.Abstractions;
 /// <summary>
 /// See <a href="https://haveibeenpwned.com/API/v3#PasteModel"></a>
 /// </summary>
-public class Pastes
+public sealed class Pastes
 {
     /// <summary>
     /// The paste service the record was retrieved from.
@@ -23,7 +23,7 @@ public class Pastes
 
     /// <summary>
     /// The title of the paste as observed on the source site.
-    /// This may be <c>null</c> and if so will be omitted from the response.
+    /// This may be <see langword="null" /> and if so will be omitted from the response.
     /// </summary>
     public string? Title { get; set; } = null!;
 

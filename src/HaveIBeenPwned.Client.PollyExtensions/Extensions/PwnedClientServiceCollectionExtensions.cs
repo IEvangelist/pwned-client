@@ -14,37 +14,23 @@ public static class PwnedClientServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The service collection to add services to.</param>
     /// <param name="namedConfigurationSection">The name configuration section to bind options from.</param>
-    /// <param name="configureRetryPolicy">The rety policy configuration function, when provided adds transient HTTP error policy.</param>
+    /// <param name="configureResilienceOptions">The rety policy configuration function, when provided adds transient HTTP error policy.</param>
     /// <returns>The same <paramref name="services"/> instance with other services added.</returns>
     /// <exception cref="ArgumentNullException">
-    /// If either the <paramref name="services"/> or <paramref name="namedConfigurationSection"/> are <c>null</c>.
+    /// If either the <paramref name="services"/> or <paramref name="namedConfigurationSection"/> are <see langword="null" />.
     /// </exception>
     public static IServiceCollection AddPwnedServices(
         this IServiceCollection services,
         IConfiguration namedConfigurationSection,
-        Func<PolicyBuilder<HttpResponseMessage>, IAsyncPolicy<HttpResponseMessage>> configureRetryPolicy)
+        Action<HttpStandardResilienceOptions> configureResilienceOptions)
     {
-        if (services is null)
-        {
-            throw new ArgumentNullException(
-                nameof(services), "The IServiceCollection cannot be null.");
-        }
-
-        if (namedConfigurationSection is null)
-        {
-            throw new ArgumentNullException(
-                nameof(namedConfigurationSection), "The IConfiguration cannot be null.");
-        }
-
-        if (configureRetryPolicy is null)
-        {
-            throw new ArgumentNullException(
-                nameof(configureRetryPolicy), "The retry policy function cannot be null.");
-        }
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(namedConfigurationSection);
+        ArgumentNullException.ThrowIfNull(configureResilienceOptions);
 
         services.Configure<HibpOptions>(namedConfigurationSection);
 
-        return AddPwnedServices(services, configureRetryPolicy);
+        return AddPwnedServices(services, configureResilienceOptions);
     }
 
     /// <summary>
@@ -53,56 +39,60 @@ public static class PwnedClientServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The service collection to add services to.</param>
     /// <param name="configureOptions">The action used to configure options.</param>
-    /// <param name="configureRetryPolicy">The retry policy configuration function, when provided adds transient HTTP error policy.</param>
+    /// <param name="configureResilienceOptions">The retry policy configuration function, when provided adds transient HTTP error policy.</param>
     /// <returns>The same <paramref name="services"/> instance with other services added.</returns>
     /// <exception cref="ArgumentNullException">
-    /// If either the <paramref name="services"/> or <paramref name="configureOptions"/> are <c>null</c>.
+    /// If either the <paramref name="services"/> or <paramref name="configureOptions"/> are <see langword="null" />.
     /// </exception>
     public static IServiceCollection AddPwnedServices(
         this IServiceCollection services,
         Action<HibpOptions> configureOptions,
-        Func<PolicyBuilder<HttpResponseMessage>, IAsyncPolicy<HttpResponseMessage>> configureRetryPolicy)
+        Action<HttpStandardResilienceOptions> configureResilienceOptions)
     {
-        if (services is null)
-        {
-            throw new ArgumentNullException(
-                nameof(services), "The IServiceCollection cannot be null.");
-        }
-
-        if (configureOptions is null)
-        {
-            throw new ArgumentNullException(
-                nameof(configureOptions), "The Action<HibpOptions> cannot be null.");
-        }
-
-        if (configureRetryPolicy is null)
-        {
-            throw new ArgumentNullException(
-                nameof(configureRetryPolicy), "The retry policy function cannot be null.");
-        }
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configureOptions);
+        ArgumentNullException.ThrowIfNull(configureResilienceOptions);
 
         services.Configure(configureOptions);
 
-        return AddPwnedServices(services, configureRetryPolicy);
+        return AddPwnedServices(services, configureResilienceOptions);
     }
 
     static IServiceCollection AddPwnedServices(
         IServiceCollection services,
-        Func<PolicyBuilder<HttpResponseMessage>, IAsyncPolicy<HttpResponseMessage>>? configureRetryPolicy)
+        Action<HttpStandardResilienceOptions>? configureResilienceOptions)
     {
         services.AddLogging();
         services.AddOptions<HibpOptions>();
 
-        _ = AddPwnedHttpClient(
+        var builder = AddPwnedHttpClient(
             services,
             HttpClientNames.HibpClient,
-            HttpClientUrls.HibpApiUrl).AddTransientHttpErrorPolicy(configureRetryPolicy);
+            HttpClientUrls.HibpApiUrl);
 
-        _ = AddPwnedHttpClient(
+        if (configureResilienceOptions is not null)
+        {
+            _ = builder.AddStandardResilienceHandler(configureResilienceOptions);
+        }
+        else
+        {
+            _ = builder.AddStandardResilienceHandler();
+        }
+
+        builder = AddPwnedHttpClient(
             services,
             HttpClientNames.PasswordsClient,
             HttpClientUrls.PasswordsApiUrl,
-            isPlainText: true).AddTransientHttpErrorPolicy(configureRetryPolicy);
+            isPlainText: true);
+
+        if (configureResilienceOptions is not null)
+        {
+            _ = builder.AddStandardResilienceHandler(configureResilienceOptions);
+        }
+        else
+        {
+            _ = builder.AddStandardResilienceHandler();
+        }
 
         services.AddSingleton<IPwnedBreachesClient, DefaultPwnedClient>();
         services.AddSingleton<IPwnedPasswordsClient, DefaultPwnedClient>();

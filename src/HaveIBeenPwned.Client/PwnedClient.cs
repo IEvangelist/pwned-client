@@ -3,62 +3,87 @@
 
 namespace HaveIBeenPwned.Client;
 
-/// <inheritdoc cref="DefaultPwnedClient" />
-public sealed class PwnedClient : IPwnedClient
+/// <summary>
+/// Creates and returns an <see cref="PwnedClient"/> from the given
+/// <paramref name="apiKey"/> value. Consider the following example usage:
+/// <code language="csharp">
+/// IPwnedClient client = new PwnedClient(configuration["ApiKey"]);
+/// // TODO: use client...
+/// </code>
+/// </summary>
+/// <param name="apiKey">
+/// The API key, used to authorize HTTP calls to HIBP.
+/// See <a href="https://haveibeenpwned.com/api/v3#Authorisation"></a>
+/// </param>
+/// <param name="loggerFactory">
+/// An optional <see cref="ILoggerFactory"/> to create the
+/// <see cref="ILogger"/> used within the <see cref="PwnedClient"/> instance
+/// </param>
+/// <remarks>
+/// This is not intended for usage in conjunction with dependency injection
+/// (DI). In other words, if you don't want to use DI you can use this instead.
+/// </remarks>
+/// <returns>
+/// An <see cref="IPwnedClient"/> implementation from the given
+/// <paramref name="apiKey"/> value.
+/// </returns>
+/// <exception cref="ArgumentNullException">
+/// If the given <paramref name="apiKey"/> value is <see langword="null" />, this exception is thrown.
+/// </exception>
+public sealed class PwnedClient(string apiKey, ILoggerFactory? loggerFactory = default) : IPwnedClient
 {
-    private readonly IPwnedClient _pwnedClient;
+    private readonly IPwnedClient _pwnedClient = PwnedClientFactory.FromApiKey(apiKey, loggerFactory);
 
-    /// <summary>
-    /// Creates and returns an <see cref="PwnedClient"/> from the given
-    /// <paramref name="apiKey"/> value. Consider the following example usage:
-    /// <code language="csharp">
-    /// IPwnedClient client = new PwnedClient(configuration["ApiKey"]);
-    /// // TODO: use client...
-    /// </code>
-    /// </summary>
-    /// <param name="apiKey">
-    /// The API key, used to authorize HTTP calls to HIBP.
-    /// See <a href="https://haveibeenpwned.com/api/v3#Authorisation"></a>
-    /// </param>
-    /// <remarks>
-    /// This is not intended for usage in conjunction with dependency injection
-    /// (DI). In other words, if you don't want to use DI you can use this instead.
-    /// </remarks>
-    /// <returns>
-    /// An <see cref="IPwnedClient"/> implementation from the given
-    /// <paramref name="apiKey"/> value.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// If the given <paramref name="apiKey"/> value is <c>null</c>, this exception is thrown.
-    /// </exception>
-    public PwnedClient(string apiKey) =>
-        _pwnedClient = PwnedClientFactory.FromApiKey(apiKey);
-
-    /// <inheritdoc cref="IPwnedBreachesClient.GetBreachAsync(string)"/>
+    /// <inheritdoc/>
     Task<BreachDetails?> IPwnedBreachesClient.GetBreachAsync(string breachName) =>
         _pwnedClient.GetBreachAsync(breachName);
 
-    /// <inheritdoc cref="IPwnedBreachesClient.GetBreachesAsync(string?)"/>
+    /// <inheritdoc/>
     Task<BreachHeader[]> IPwnedBreachesClient.GetBreachesAsync(string? domain) =>
         _pwnedClient.GetBreachesAsync(domain);
 
-    /// <inheritdoc cref="IPwnedBreachesClient.GetBreachesForAccountAsync(string)"/>
+    /// <inheritdoc/>
     Task<BreachDetails[]> IPwnedBreachesClient.GetBreachesForAccountAsync(string account) =>
         _pwnedClient.GetBreachesForAccountAsync(account);
 
-    /// <inheritdoc cref="IPwnedBreachesClient.GetBreachHeadersForAccountAsync(string)"/>
+    /// <inheritdoc/>
     Task<BreachHeader[]> IPwnedBreachesClient.GetBreachHeadersForAccountAsync(string account) =>
         _pwnedClient.GetBreachHeadersForAccountAsync(account);
 
-    /// <inheritdoc cref="IPwnedBreachesClient.GetDataClassesAsync"/>
-    Task<string[]> IPwnedBreachesClient.GetDataClassesAsync() =>
-        _pwnedClient.GetDataClassesAsync();
+    /// <inheritdoc/>
+    Task<string[]> IPwnedBreachesClient.GetDataClassesAsync(CancellationToken cancellationToken) =>
+        _pwnedClient.GetDataClassesAsync(cancellationToken);
 
-    /// <inheritdoc cref="IPwnedPastesClient.GetPastesAsync(string)"/>
+    /// <inheritdoc/>
     Task<Pastes[]> IPwnedPastesClient.GetPastesAsync(string account) =>
         _pwnedClient.GetPastesAsync(account);
 
-    /// <inheritdoc cref="IPwnedPasswordsClient.GetPwnedPasswordAsync(string)"/>
+    /// <inheritdoc/>
     Task<PwnedPassword> IPwnedPasswordsClient.GetPwnedPasswordAsync(string plainTextPassword) =>
         _pwnedClient.GetPwnedPasswordAsync(plainTextPassword);
+
+    /// <inheritdoc/>
+    public IAsyncEnumerable<BreachHeader?> GetBreachesAsAsyncEnumerable(
+        string? domain = null, CancellationToken cancellationToken = default) =>
+        _pwnedClient.GetBreachesAsAsyncEnumerable(domain, cancellationToken);
+
+    /// <inheritdoc/>
+    public IAsyncEnumerable<BreachDetails?> GetBreachesForAccountAsAsyncEnumerable(
+        string account, CancellationToken cancellationToken = default) =>
+        _pwnedClient.GetBreachesForAccountAsAsyncEnumerable(account, cancellationToken);
+
+    /// <inheritdoc/>
+    public IAsyncEnumerable<BreachHeader?> GetBreachHeadersForAccountAsAsyncEnumerable(
+        string account, CancellationToken cancellationToken = default) =>
+        _pwnedClient.GetBreachHeadersForAccountAsAsyncEnumerable(account, cancellationToken);
+
+    /// <inheritdoc/>
+    public IAsyncEnumerable<string?> GetDataClassesAsAsyncEnumerable(
+        CancellationToken cancellationToken = default) =>
+        _pwnedClient.GetDataClassesAsAsyncEnumerable(cancellationToken);
+
+    /// <inheritdoc/>
+    public IAsyncEnumerable<Pastes?> GetPastesAsAsyncEnumerable(
+        string account, CancellationToken cancellationToken) =>
+        _pwnedClient.GetPastesAsAsyncEnumerable(account, cancellationToken);
 }

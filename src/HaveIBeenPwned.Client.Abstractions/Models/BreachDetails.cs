@@ -46,7 +46,7 @@ public sealed class BreachDetails : BreachHeader
     /// <summary>
     /// This attribute describes the nature of the data compromised in the breach and contains an alphabetically ordered string array of impacted data classes.
     /// </summary>
-    public string[] DataClasses { get; set; } = Array.Empty<string>();
+    public string[] DataClasses { get; set; } = [];
 
     /// <summary>
     /// Indicates that the breach is considered unverified. An unverified breach may not have been hacked from the indicated website. An unverified breach is still loaded into HIBP when there's sufficient confidence that a significant portion of the data is legitimate.

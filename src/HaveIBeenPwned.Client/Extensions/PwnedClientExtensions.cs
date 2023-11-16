@@ -70,7 +70,7 @@ public static class PwnedClientExtensions
         return
             (
                 IsBreached: breaches is { Length: > 0 },
-                Breaches: breaches?.Select(breach => breach.Name)?.ToArray() ?? Array.Empty<string>()
+                Breaches: breaches?.Select(breach => breach.Name)?.ToArray() ?? []
             );
     }
 }

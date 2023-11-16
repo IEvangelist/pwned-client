@@ -4,13 +4,8 @@
 namespace HaveIBeenPwned.Client;
 
 /// <inheritdoc cref="IPwnedClient" />
-internal sealed partial class DefaultPwnedClient : IPwnedClient
+internal sealed partial class DefaultPwnedClient(
+    IHttpClientFactory httpClientFactory,
+    ILogger<DefaultPwnedClient> logger) : IPwnedClient
 {
-    readonly IHttpClientFactory _httpClientFactory;
-    readonly ILogger<DefaultPwnedClient> _logger;
-
-    public DefaultPwnedClient(
-        IHttpClientFactory httpClientFactory,
-        ILogger<DefaultPwnedClient> logger) =>
-        (_httpClientFactory, _logger) = (httpClientFactory, logger);
 }

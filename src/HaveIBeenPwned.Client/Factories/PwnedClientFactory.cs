@@ -1,8 +1,6 @@
 ﻿// Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
-using HaveIBeenPwned.Client.Loggers;
-
 namespace HaveIBeenPwned.Client.Factories;
 
 /// <summary>
@@ -26,6 +24,10 @@ internal static class PwnedClientFactory
     /// The API key, used to authorize HTTP calls to HIBP.
     /// See <a href="https://haveibeenpwned.com/api/v3#Authorisation"></a>
     /// </param>
+    /// <param name="loggerFactory">
+    /// An optional <see cref="ILoggerFactory"/> to create the
+    /// <see cref="ILogger"/> used within the <see cref="PwnedClient"/> instance
+    /// </param>
     /// <remarks>
     /// This is static, and not intended for usage in conjunction with dependency injection
     /// (DI). In other words, if you don't want to use DI you can use this instead.
@@ -35,10 +37,16 @@ internal static class PwnedClientFactory
     /// <paramref name="apiKey"/> value.
     /// </returns>
     /// <exception cref="ArgumentNullException">
-    /// If the given <paramref name="apiKey"/> value is <c>null</c>, this exception is thrown.
+    /// If the given <paramref name="apiKey"/> value is <see langword="null" />, this exception is thrown.
     /// </exception>
-    internal static IPwnedClient FromApiKey(string apiKey) =>
-        new DefaultPwnedClient(
-            HttpClientFactory.Create(apiKey),
-            SimpleConsoleLogger<DefaultPwnedClient>.Instance);
+    internal static IPwnedClient FromApiKey(string apiKey, ILoggerFactory? loggerFactory = default)
+    {
+        var httpClientFactory = InternalHttpClientFactory.Create(apiKey);
+
+        loggerFactory ??= NullLoggerFactory.Instance;
+
+        var logger = loggerFactory.CreateLogger<DefaultPwnedClient>();
+
+        return new DefaultPwnedClient(httpClientFactory, logger);
+    }
 }

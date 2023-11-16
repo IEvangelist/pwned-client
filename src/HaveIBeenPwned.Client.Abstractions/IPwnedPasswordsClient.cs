@@ -15,7 +15,7 @@ public interface IPwnedPasswordsClient
     /// <param name="plainTextPassword">The plain text password to evaluate.</param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException">
-    /// When the <paramref name="plainTextPassword"/> is <c>null</c>, empty or whitespace.
+    /// When the <paramref name="plainTextPassword"/> is <see langword="null" />, empty or whitespace.
     /// </exception>
     Task<PwnedPassword> GetPwnedPasswordAsync(string plainTextPassword);
 }
