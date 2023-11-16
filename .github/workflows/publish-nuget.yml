@@ -44,7 +44,8 @@ jobs:
       run: dotnet test --filter "Category!=AcceptanceTests"
 
     - name: Acceptance test
-      env: ${{ secrets.HibpOptions__ApiKey }}
+      env:
+        HibpOptions__ApiKey: ${{ secrets.HibpOptions__ApiKey }}
       run: dotnet test --filter "Category=AcceptanceTests"
 
     - name: Pack
