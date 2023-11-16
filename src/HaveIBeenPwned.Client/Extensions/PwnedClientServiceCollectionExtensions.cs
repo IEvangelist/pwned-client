@@ -87,12 +87,12 @@ public static class PwnedClientServiceCollectionExtensions
             {
                 var options = serviceProvider.GetRequiredService<IOptionsMonitor<HibpOptions>>();
 
-                var (apiKey, userAgent) = options?.CurrentValue
+                var (apiKey, userAgent, _) = options?.CurrentValue
                     ?? throw new InvalidOperationException(
                         "The 'Have I Been Pwned' options object cannot be null.");
 
                 client.BaseAddress = new(baseAddress);
-                client.DefaultRequestHeaders.Add("hibp-api-key", apiKey);
+                client.DefaultRequestHeaders.Add(HttpHeaderNames.HibpApiKey, apiKey);
                 client.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
 
                 if (isPlainText)

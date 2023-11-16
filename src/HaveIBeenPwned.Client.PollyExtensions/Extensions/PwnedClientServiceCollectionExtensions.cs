@@ -70,14 +70,7 @@ public static class PwnedClientServiceCollectionExtensions
             HttpClientNames.HibpClient,
             HttpClientUrls.HibpApiUrl);
 
-        if (configureResilienceOptions is not null)
-        {
-            _ = builder.AddStandardResilienceHandler(configureResilienceOptions);
-        }
-        else
-        {
-            _ = builder.AddStandardResilienceHandler();
-        }
+        builder.ConfigureHttpResilience(configureResilienceOptions);
 
         builder = AddPwnedHttpClient(
             services,
@@ -85,14 +78,7 @@ public static class PwnedClientServiceCollectionExtensions
             HttpClientUrls.PasswordsApiUrl,
             isPlainText: true);
 
-        if (configureResilienceOptions is not null)
-        {
-            _ = builder.AddStandardResilienceHandler(configureResilienceOptions);
-        }
-        else
-        {
-            _ = builder.AddStandardResilienceHandler();
-        }
+        builder.ConfigureHttpResilience(configureResilienceOptions);
 
         services.AddSingleton<IPwnedBreachesClient, DefaultPwnedClient>();
         services.AddSingleton<IPwnedPasswordsClient, DefaultPwnedClient>();
@@ -112,7 +98,7 @@ public static class PwnedClientServiceCollectionExtensions
             (serviceProvider, client) =>
             {
                 var options = serviceProvider.GetRequiredService<IOptions<HibpOptions>>();
-                var (apiKey, userAgent) = options?.Value
+                var (apiKey, userAgent, _) = options?.Value
                     ?? throw new InvalidOperationException(
                         "The 'Have I Been Pwned' options object cannot be null.");
 

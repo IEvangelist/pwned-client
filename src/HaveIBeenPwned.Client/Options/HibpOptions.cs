@@ -35,9 +35,17 @@ public sealed class HibpOptions : IOptions<HibpOptions>
         set => _userAgent = value ?? DefaultUserAgent;
     }
 
+    /// <summary>
+    /// Gets or sets the subscription level for the "Have I Been Pwned" API.
+    /// The subscription level impacts rate limiting, and this setting can be 
+    /// used to employ a rate-limit aware HTTP resilience strategy when using:
+    /// <a href="https://www.nuget.org/packages/HaveIBeenPwned.Client.PollyExtensions"></a>.
+    /// </summary>
+    public HibpSubscriptionLevel? SubscriptionLevel { get; set;}
+
     /// <inheritdoc />
     HibpOptions IOptions<HibpOptions>.Value => this;
 
-    internal void Deconstruct(out string apiKey, out string userAgent) =>
-        (apiKey, userAgent) = (ApiKey, UserAgent);
+    internal void Deconstruct(out string apiKey, out string userAgent, out HibpSubscriptionLevel? subscriptionLevel) =>
+        (apiKey, userAgent, subscriptionLevel) = (ApiKey, UserAgent, SubscriptionLevel);
 }

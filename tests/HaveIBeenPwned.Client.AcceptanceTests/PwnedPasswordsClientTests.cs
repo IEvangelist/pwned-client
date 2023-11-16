@@ -20,7 +20,7 @@ public sealed class PwnedPasswordsClientTests
 
         Assert.NotNull(pwnedPassword);
         Assert.True(pwnedPassword.IsPwned);
-        Assert.True(pwnedPassword.PwnedCount > 9_600_000);
+        Assert.True(pwnedPassword.PwnedCount > 9_659_000);
     }
 
     [Fact]
@@ -30,6 +30,6 @@ public sealed class PwnedPasswordsClientTests
             await _passwordsClient.IsPasswordPwnedAsync("p@ssw0rd");
 
         Assert.True(isPwned);
-        Assert.True(count > 73_000);
+        Assert.True(count > 74_400);
     }
 }

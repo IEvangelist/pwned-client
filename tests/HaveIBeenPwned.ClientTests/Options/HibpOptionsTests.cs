@@ -24,9 +24,10 @@ public class HibpOptionsTests
     public void HibpOptions_DeconstructsProperly()
     {
         var options = Create<HibpOptions>(new() { ApiKey = "Test", UserAgent = "Fake" });
-        var (apiKey, userAgent) = options.Value;
+        var (apiKey, userAgent, subscriptionLevel) = options.Value;
 
         Assert.Equal("Test", apiKey);
         Assert.Equal("Fake", userAgent);
+        Assert.Null(subscriptionLevel);
     }
 }

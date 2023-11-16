@@ -26,7 +26,7 @@ public class PwnedClientServiceCollectionExtensionsTests
     [Fact]
     public void AddPwnedServicesThrowsWhenConfigureRetryPolicyIsNull() =>
         Assert.Throws<ArgumentNullException>(
-            "configureRetryPolicy",
+            "configureResilienceOptions",
             () => new ServiceCollection().AddPwnedServices(
                 options => { },
                 (null as Action<HttpStandardResilienceOptions>)!));

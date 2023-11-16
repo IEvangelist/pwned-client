@@ -1,7 +1,11 @@
 ﻿// Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
+global using System.Net;
 global using System.Net.Mime;
+
+global using Polly;
+global using Polly.RateLimiting;
 
 global using HaveIBeenPwned.Client;
 global using HaveIBeenPwned.Client.Http;

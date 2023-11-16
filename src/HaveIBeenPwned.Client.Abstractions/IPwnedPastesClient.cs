@@ -37,5 +37,5 @@ public interface IPwnedPastesClient
     /// </exception>
     IAsyncEnumerable<Pastes?> GetPastesAsAsyncEnumerable(
         string account,
-        CancellationToken cancellationToken);
+        CancellationToken cancellationToken = default);
 }
