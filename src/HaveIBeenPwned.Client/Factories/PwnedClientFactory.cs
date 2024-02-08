@@ -11,7 +11,7 @@ namespace HaveIBeenPwned.Client.Factories;
 /// This is static, and not intended for usage in conjunction with dependency injection
 /// (DI). In other words, if you don't want to use DI you can use this instead.
 /// </remarks>
-public static class PwnedClientFactory
+internal static class PwnedClientFactory
 {
     /// <summary>
     /// Creates and returns an <see cref="IPwnedClient"/> implementation from the given
