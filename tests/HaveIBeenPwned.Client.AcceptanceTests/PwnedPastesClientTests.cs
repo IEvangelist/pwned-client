@@ -24,7 +24,7 @@ public sealed class PwnedPastesClientTests
         Assert.Empty(pastes);
     }
 
-    [Fact]
+    [Fact(Skip = "These documented test accounts inconsistently return pastes.")]
     public async Task GetPastesAsAsyncEnumerableReturnsSinglePaste()
     {
         List<Pastes> pastes = [];
