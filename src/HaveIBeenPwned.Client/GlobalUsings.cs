@@ -10,6 +10,7 @@ global using System.Web;
 
 global using HaveIBeenPwned.Client;
 global using HaveIBeenPwned.Client.Abstractions;
+global using HaveIBeenPwned.Client.Abstractions.Serialization;
 global using HaveIBeenPwned.Client.Extensions;
 global using HaveIBeenPwned.Client.Factories;
 global using HaveIBeenPwned.Client.Http;

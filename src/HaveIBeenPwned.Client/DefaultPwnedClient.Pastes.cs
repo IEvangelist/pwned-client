@@ -19,7 +19,8 @@ internal sealed partial class DefaultPwnedClient : IPwnedClient
             var client = httpClientFactory.CreateClient(HibpClient);
             var pastes =
                 await client.GetFromJsonAsync<Pastes[]>(
-                    $"pasteaccount/{HttpUtility.UrlEncode(account)}");
+                    $"pasteaccount/{HttpUtility.UrlEncode(account)}",
+                    SourceGeneratorContext.Default.PastesArray);
 
             return pastes ?? [];
         }
@@ -47,6 +48,7 @@ internal sealed partial class DefaultPwnedClient : IPwnedClient
             
                 return client.GetFromJsonAsAsyncEnumerable<Pastes>(
                     $"pasteaccount/{HttpUtility.UrlEncode(account)}",
+                    SourceGeneratorContext.Default.Pastes,
                     cancellationToken: cancellationToken);
         }
         catch (Exception ex)

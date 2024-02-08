@@ -20,7 +20,8 @@ internal sealed partial class DefaultPwnedClient
 
             var breachDetails =
                 await client.GetFromJsonAsync<BreachDetails>(
-                    $"breach/{breachName}");
+                    $"breach/{breachName}",
+                    SourceGeneratorContext.Default.BreachDetails);
 
             return breachDetails;
         }
@@ -45,7 +46,8 @@ internal sealed partial class DefaultPwnedClient
 
             var breachHeaders =
                 await client.GetFromJsonAsync<BreachHeader[]>(
-                    $"breaches{queryString}");
+                    $"breaches{queryString}",
+                    SourceGeneratorContext.Default.BreachHeaderArray);
 
             return breachHeaders ?? [];
         }
@@ -71,6 +73,7 @@ internal sealed partial class DefaultPwnedClient
 
             return client.GetFromJsonAsAsyncEnumerable<BreachHeader>(
                 $"breaches{queryString}",
+                SourceGeneratorContext.Default.BreachHeader,
                 cancellationToken: cancellationToken);
         }
         catch (Exception ex)
@@ -96,7 +99,8 @@ internal sealed partial class DefaultPwnedClient
 
             var breachDetails =
                 await client.GetFromJsonAsync<BreachDetails[]>(
-                    $"breachedaccount/{HttpUtility.UrlEncode(account)}?truncateResponse=false");
+                    $"breachedaccount/{HttpUtility.UrlEncode(account)}?truncateResponse=false",
+                    SourceGeneratorContext.Default.BreachDetailsArray);
 
             return breachDetails ?? [];
         }
@@ -118,6 +122,7 @@ internal sealed partial class DefaultPwnedClient
 
             return client.GetFromJsonAsAsyncEnumerable<BreachDetails>(
                 $"breachedaccount/{HttpUtility.UrlEncode(account)}?truncateResponse=false",
+                SourceGeneratorContext.Default.BreachDetails,
                 cancellationToken: cancellationToken);
         }
         catch (Exception ex)
@@ -143,7 +148,8 @@ internal sealed partial class DefaultPwnedClient
 
             var breachHeaders =
                 await client.GetFromJsonAsync<BreachHeader[]>(
-                    $"breachedaccount/{HttpUtility.UrlEncode(account)}?truncateResponse=true");
+                    $"breachedaccount/{HttpUtility.UrlEncode(account)}?truncateResponse=true",
+                    SourceGeneratorContext.Default.BreachHeaderArray);
 
             return breachHeaders ?? [];
         }
@@ -171,6 +177,7 @@ internal sealed partial class DefaultPwnedClient
 
             return client.GetFromJsonAsAsyncEnumerable<BreachHeader>(
                 $"breachedaccount/{HttpUtility.UrlEncode(account)}?truncateResponse=true",
+                SourceGeneratorContext.Default.BreachHeader,
                 cancellationToken: cancellationToken);
         }
         catch (Exception ex)
@@ -190,7 +197,9 @@ internal sealed partial class DefaultPwnedClient
 
             var dataClasses =
                 await client.GetFromJsonAsync<string[]>(
-                    "dataclasses", cancellationToken: cancellationToken);
+                    "dataclasses",
+                    SourceGeneratorContext.Default.StringArray,
+                    cancellationToken: cancellationToken);
 
             return dataClasses ?? [];
         }
@@ -210,7 +219,9 @@ internal sealed partial class DefaultPwnedClient
             var client = httpClientFactory.CreateClient(HibpClient);
 
             return client.GetFromJsonAsAsyncEnumerable<string>(
-                "dataclasses", cancellationToken: cancellationToken);
+                "dataclasses",
+                SourceGeneratorContext.Default.String,
+                cancellationToken: cancellationToken);
         }
         catch (Exception ex)
         {

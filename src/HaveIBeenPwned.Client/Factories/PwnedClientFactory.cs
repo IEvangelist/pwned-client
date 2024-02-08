@@ -4,13 +4,14 @@
 namespace HaveIBeenPwned.Client.Factories;
 
 /// <summary>
-/// A "pwned" client factory.
+/// A "pwned" client factory. Call <see cref="FromApiKey(string, ILoggerFactory?)"/> to
+/// get a hydrated <see cref="IPwnedClient"/> instance.
 /// </summary>
 /// <remarks>
 /// This is static, and not intended for usage in conjunction with dependency injection
 /// (DI). In other words, if you don't want to use DI you can use this instead.
 /// </remarks>
-internal static class PwnedClientFactory
+public static class PwnedClientFactory
 {
     /// <summary>
     /// Creates and returns an <see cref="IPwnedClient"/> implementation from the given

@@ -23,16 +23,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{033A7DA8-9E54-4C45-9674-1FA069A1D587}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6B93FD23-7EC5-4866-82BC-5C091FA6589B}"
-	ProjectSection(SolutionItems) = preProject
-		tests\Directory.Build.props = tests\Directory.Build.props
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HaveIBeenPwned.ClientTests", "tests\HaveIBeenPwned.ClientTests\HaveIBeenPwned.ClientTests.csproj", "{07F2B8D6-CEE9-4A2D-8CC8-61D53C7BBBE8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{3044EDD9-13CF-47A3-8589-A7B84AEFE0C1}"
-	ProjectSection(SolutionItems) = preProject
-		samples\Directory.Build.props = samples\Directory.Build.props
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HaveIBeenPwned.WebApi", "samples\HaveIBeenPwned.WebApi\HaveIBeenPwned.WebApi.csproj", "{D9FEEEE8-1621-46C0-AE64-6E1BF9DF4C8A}"
 EndProject

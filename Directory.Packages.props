@@ -4,16 +4,15 @@
     <RuntimeVersion>8.0.0</RuntimeVersion>
     <AspNetCoreVersion>8.0.0</AspNetCoreVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <!-- Source -->
     <PackageVersion Include="Microsoft.Extensions.Http" Version="$(RuntimeVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="$(RuntimeVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(RuntimeVersion)" />
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="$(RuntimeVersion)" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageVersion Include="System.Net.Http.Json" Version="$(RuntimeVersion)" />
-    <PackageVersion Include="MinVer" Version="4.2.0" />
-
+    <PackageVersion Include="MinVer" Version="4.3.0" />
     <!-- Samples -->
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="$(AspNetCoreVersion)" />
@@ -23,7 +22,6 @@
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(AspNetCoreVersion)" />
     <PackageVersion Include="Microsoft.Identity.Web" Version="1.25.10" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-
     <!-- Tests -->
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
     <PackageVersion Include="xunit" Version="2.4.2" />

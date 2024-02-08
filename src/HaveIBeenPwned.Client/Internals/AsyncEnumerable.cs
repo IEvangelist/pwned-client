@@ -5,14 +5,14 @@ namespace HaveIBeenPwned.Client.Internals;
 
 internal static class AsyncEnumerable
 {
-    public static IAsyncEnumerable<T> Empty<T>() => EmptyAsyncInterator<T>.Instance;
+    public static IAsyncEnumerable<T> Empty<T>() => EmptyAsyncIterator<T>.Instance;
 }
 
-file sealed class EmptyAsyncInterator<T> : IAsyncEnumerable<T>, IAsyncEnumerator<T>
+file sealed class EmptyAsyncIterator<T> : IAsyncEnumerable<T>, IAsyncEnumerator<T>
 {
-    public static EmptyAsyncInterator<T> Instance { get; } = new();
+    public static EmptyAsyncIterator<T> Instance { get; } = new();
 
-    public ValueTask DisposeAsync() => default;
+    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 
     public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken _) => this;
 

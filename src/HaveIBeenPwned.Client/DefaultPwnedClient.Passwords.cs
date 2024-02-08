@@ -1,6 +1,8 @@
 ﻿// Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
+using System.Collections.Frozen;
+
 namespace HaveIBeenPwned.Client;
 
 internal sealed partial class DefaultPwnedClient : IPwnedClient
@@ -80,7 +82,7 @@ internal sealed partial class DefaultPwnedClient : IPwnedClient
                             : (Hash: pair[0], Count: count, IsValid: true);
                     })
                     .Where(t => t.IsValid)
-                    .ToDictionary(t => t.Hash, t => t.Count, StringComparer.OrdinalIgnoreCase);
+                    .ToFrozenDictionary(t => t.Hash, t => t.Count, StringComparer.OrdinalIgnoreCase);
 
             var hashSuffix = passwordHash[5..];
             if (hashCountMap.TryGetValue(hashSuffix, out var count))
