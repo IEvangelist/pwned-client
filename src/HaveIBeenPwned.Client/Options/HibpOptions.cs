@@ -41,7 +41,7 @@ public sealed class HibpOptions : IOptions<HibpOptions>
     /// used to employ a rate-limit aware HTTP resilience strategy when using:
     /// <a href="https://www.nuget.org/packages/HaveIBeenPwned.Client.PollyExtensions"></a>.
     /// </summary>
-    public HibpSubscriptionLevel? SubscriptionLevel { get; set;}
+    public HibpSubscriptionLevel? SubscriptionLevel { get; set; }
 
     /// <inheritdoc />
     HibpOptions IOptions<HibpOptions>.Value => this;

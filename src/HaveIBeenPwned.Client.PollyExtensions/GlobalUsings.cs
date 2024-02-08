@@ -4,9 +4,6 @@
 global using System.Net;
 global using System.Net.Mime;
 
-global using Polly;
-global using Polly.RateLimiting;
-
 global using HaveIBeenPwned.Client;
 global using HaveIBeenPwned.Client.Http;
 global using HaveIBeenPwned.Client.Options;

@@ -1,9 +1,6 @@
 ﻿// Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
 using BreachDetailsModel = HaveIBeenPwned.Client.Abstractions.BreachDetails;
 using BreachHeaderModel = HaveIBeenPwned.Client.Abstractions.BreachHeader;
 using PastesModel = HaveIBeenPwned.Client.Abstractions.Pastes;

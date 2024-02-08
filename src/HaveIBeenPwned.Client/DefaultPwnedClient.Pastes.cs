@@ -45,11 +45,11 @@ internal sealed partial class DefaultPwnedClient : IPwnedClient
         try
         {
             var client = httpClientFactory.CreateClient(HibpClient);
-            
-                return client.GetFromJsonAsAsyncEnumerable<Pastes>(
-                    $"pasteaccount/{HttpUtility.UrlEncode(account)}",
-                    SourceGeneratorContext.Default.Pastes,
-                    cancellationToken: cancellationToken);
+
+            return client.GetFromJsonAsAsyncEnumerable<Pastes>(
+                $"pasteaccount/{HttpUtility.UrlEncode(account)}",
+                SourceGeneratorContext.Default.Pastes,
+                cancellationToken: cancellationToken);
         }
         catch (Exception ex)
         {
