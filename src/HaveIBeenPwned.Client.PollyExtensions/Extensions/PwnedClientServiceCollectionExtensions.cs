@@ -14,7 +14,7 @@ public static class PwnedClientServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The service collection to add services to.</param>
     /// <param name="namedConfigurationSection">The name configuration section to bind options from.</param>
-    /// <param name="configureResilienceOptions">The rety policy configuration function, when provided adds transient HTTP error policy.</param>
+    /// <param name="configureResilienceOptions">The retry policy configuration function, when provided adds transient HTTP error policy.</param>
     /// <returns>The same <paramref name="services"/> instance with other services added.</returns>
     /// <exception cref="ArgumentNullException">
     /// If either the <paramref name="services"/> or <paramref name="namedConfigurationSection"/> are <see langword="null" />.

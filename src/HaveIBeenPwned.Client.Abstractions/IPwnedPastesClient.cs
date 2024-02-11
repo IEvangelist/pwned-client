@@ -16,11 +16,14 @@ public interface IPwnedPastesClient
     /// See <a href="https://haveibeenpwned.com/API/v3#PastesForAccount"></a>
     /// </summary>
     /// <param name="account">The email address to get pastes for.</param>
+    /// <param name="cancellationToken">Used to signal cancellation.</param>
     /// <returns>An array of <see cref="Pastes"/> if found, otherwise an empty array.</returns>
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="account"/> is <see langword="null" />, empty or whitespace.
     /// </exception>
-    Task<Pastes[]> GetPastesAsync(string account);
+    Task<Pastes[]> GetPastesAsync(
+        string account,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// The API takes a single parameter which is the email address to be searched for.

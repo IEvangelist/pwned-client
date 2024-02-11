@@ -3,15 +3,18 @@
 
 namespace HaveIBeenPwned.Client;
 
-/// <summary></summary>
+/// <summary>
+/// Provides extension methods for the <see cref="IPwnedClient"/> interface.
+/// </summary>
 public static class PwnedClientExtensions
 {
     /// <summary>
     /// An extension method that evaluates whether the <paramref name="plainTextPassword"/> is "pwned".
     /// When <c>true</c>, the <c>Count</c> is at least <c>1</c>.
     /// </summary>
-    /// <param name="pwnedPasswordsClient"></param>
-    /// <param name="plainTextPassword"></param>
+    /// <param name="pwnedPasswordsClient">The client instance that this method extends.</param>
+    /// <param name="plainTextPassword">The plaint text password to evaluate.</param>
+    /// <param name="cancellationToken">Used to signal cancellation.</param>
     /// <returns>
     /// <list type="bullet">
     /// <item>
@@ -26,9 +29,12 @@ public static class PwnedClientExtensions
     /// </list>
     /// </returns>
     public static async Task<(bool? IsPwned, long? Count)> IsPasswordPwnedAsync(
-        this IPwnedPasswordsClient pwnedPasswordsClient, string plainTextPassword)
+        this IPwnedPasswordsClient pwnedPasswordsClient,
+        string plainTextPassword,
+        CancellationToken cancellationToken = default)
     {
-        var pwnedPassword = await pwnedPasswordsClient.GetPwnedPasswordAsync(plainTextPassword);
+        var pwnedPassword = await pwnedPasswordsClient.GetPwnedPasswordAsync(
+            plainTextPassword, cancellationToken);
 
         return
             (
@@ -41,8 +47,9 @@ public static class PwnedClientExtensions
     /// An extension method that evaluates whether the <paramref name="account"/> is part of a breach.
     /// When <c>true</c>, the <c>Breaches</c> has at least one breach name.
     /// </summary>
-    /// <param name="pwnedBreachesClient"></param>
-    /// <param name="account"></param>
+    /// <param name="pwnedBreachesClient">The client instance that this method extends.</param>
+    /// <param name="account">The account to evaluate.</param>
+    /// <param name="cancellationToken">Used to signal cancellation.</param>
     /// <returns>
     /// <list type="bullet">
     /// <item>
@@ -58,14 +65,17 @@ public static class PwnedClientExtensions
     /// </list>
     /// </returns>
     public static async Task<(bool? IsBreached, string[]? Breaches)> IsBreachedAccountAsync(
-        this IPwnedBreachesClient pwnedBreachesClient, string account)
+        this IPwnedBreachesClient pwnedBreachesClient,
+        string account,
+        CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(account))
         {
             return (null, null);
         }
 
-        var breaches = await pwnedBreachesClient.GetBreachHeadersForAccountAsync(account);
+        var breaches = await pwnedBreachesClient.GetBreachHeadersForAccountAsync(
+            account, cancellationToken);
 
         return
             (

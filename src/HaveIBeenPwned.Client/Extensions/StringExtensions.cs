@@ -17,6 +17,7 @@ static class StringExtensions
         }
 
         var hash = SHA1.HashData(Encoding.UTF8.GetBytes(value));
+
         StringBuilder stringBuilder = new(hash.Length * 2);
 
         foreach (var b in hash)

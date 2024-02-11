@@ -13,9 +13,12 @@ public interface IPwnedPasswordsClient
     /// all hashed passwords in the HIBP range data.
     /// </summary>
     /// <param name="plainTextPassword">The plain text password to evaluate.</param>
+    /// <param name="cancellationToken">Used to signal cancellation.</param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="plainTextPassword"/> is <see langword="null" />, empty or whitespace.
     /// </exception>
-    Task<PwnedPassword> GetPwnedPasswordAsync(string plainTextPassword);
+    Task<PwnedPassword> GetPwnedPasswordAsync(
+        string plainTextPassword,
+        CancellationToken cancellationToken = default);
 }

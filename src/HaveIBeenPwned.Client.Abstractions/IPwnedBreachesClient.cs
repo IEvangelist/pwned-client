@@ -15,6 +15,7 @@ public interface IPwnedBreachesClient
     /// See <a href="https://haveibeenpwned.com/API/v3#BreachesForAccount"></a>
     /// </summary>
     /// <param name="account">The account to search for breaches.</param>
+    /// <param name="cancellationToken">Used to signal cancellation.</param>
     /// <returns>An array of breach headers if found, or an empty array if not found.</returns>
     /// <remarks>
     /// The <c>truncateResponse</c> is set to <c>true</c>, causing only the breach headers to be returned.
@@ -22,7 +23,9 @@ public interface IPwnedBreachesClient
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="account"/> is either <see langword="null" />, empty or whitespace.
     /// </exception>
-    Task<BreachHeader[]> GetBreachHeadersForAccountAsync(string account);
+    Task<BreachHeader[]> GetBreachHeadersForAccountAsync(
+        string account,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Retrieves an asynchronous stream of <see cref="BreachHeader"/> objects representing all known data breaches that include the specified account.
@@ -50,6 +53,7 @@ public interface IPwnedBreachesClient
     /// See <a href="https://haveibeenpwned.com/API/v3#BreachesForAccount"></a>
     /// </summary>
     /// <param name="account">The account to search for breaches.</param>
+    /// <param name="cancellationToken">Used to signal cancellation.</param>
     /// <returns>An array of breach details if found, or an empty array if not found.</returns>
     /// <remarks>
     /// The <c>truncateResponse</c> is set to <c>false</c>, allows breach details to be returned.
@@ -57,7 +61,9 @@ public interface IPwnedBreachesClient
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="account"/> is <see langword="null" />, empty or whitespace.
     /// </exception>
-    Task<BreachDetails[]> GetBreachesForAccountAsync(string account);
+    Task<BreachDetails[]> GetBreachesForAccountAsync(
+        string account,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Retrieves a collection of all breaches that a particular account has been involved in, as an asynchronous enumerable.
@@ -75,17 +81,21 @@ public interface IPwnedBreachesClient
     /// When the <paramref name="account"/> is <see langword="null" />, empty or whitespace.
     /// </exception>
     IAsyncEnumerable<BreachDetails?> GetBreachesForAccountAsAsyncEnumerable(
-        string account, CancellationToken cancellationToken = default);
+        string account,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets an array of <see cref="BreachHeader"/>, optionally filtering on <paramref name="domain"/>.
     /// </summary>
     /// <param name="domain">An optional domain to filter the returned breaches to.</param>
+    /// <param name="cancellationToken">Used to signal cancellation.</param>
     /// <returns>An array of breach headers, or an empty array.</returns>
     /// <remarks>
     /// Example JSON payload: <a href="https://haveibeenpwned.com/api/v3/breaches"></a>
     /// </remarks>
-    Task<BreachHeader[]> GetBreachesAsync(string? domain = default);
+    Task<BreachHeader[]> GetBreachesAsync(
+        string? domain = default,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Retrieves a collection of breach headers as an asynchronous enumerable, optionally filtering on <paramref name="domain"/>.
@@ -104,6 +114,7 @@ public interface IPwnedBreachesClient
     /// Gets the <see cref="BreachDetails"/> object for the given <paramref name="breachName"/>.
     /// </summary>
     /// <param name="breachName">The name of the breach to get.</param>
+    /// <param name="cancellationToken">Used to signal cancellation.</param>
     /// <returns>The breach details for the given <paramref name="breachName"/>, if unable to find one <see langword="null" /> is returned.</returns>
     /// <remarks>
     /// Example JSON payload: <a href="https://haveibeenpwned.com/api/v3/breach/Adobe"></a>
@@ -111,7 +122,9 @@ public interface IPwnedBreachesClient
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="breachName"/> is <see langword="null" />, empty or whitespace.
     /// </exception>
-    Task<BreachDetails?> GetBreachAsync(string breachName);
+    Task<BreachDetails?> GetBreachAsync(
+        string breachName,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets all of the data classes possible for any given <see cref="BreachDetails.DataClasses"/>.
@@ -120,6 +133,7 @@ public interface IPwnedBreachesClient
     /// <remarks>
     /// Example JSON payload: <a href="https://haveibeenpwned.com/api/v3/dataclasses"></a>
     /// </remarks>
+    /// <param name="cancellationToken">Used to signal cancellation.</param>
     Task<string[]> GetDataClassesAsync(CancellationToken cancellationToken = default);
 
     /// <summary>

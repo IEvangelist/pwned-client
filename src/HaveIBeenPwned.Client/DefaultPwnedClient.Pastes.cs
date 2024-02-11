@@ -5,8 +5,10 @@ namespace HaveIBeenPwned.Client;
 
 internal sealed partial class DefaultPwnedClient : IPwnedClient
 {
-    /// <inheritdoc cref="IPwnedPastesClient.GetPastesAsync(string)" />
-    async Task<Pastes[]> IPwnedPastesClient.GetPastesAsync(string account)
+    /// <inheritdoc cref="IPwnedPastesClient.GetPastesAsync(string, CancellationToken)" />
+    async Task<Pastes[]> IPwnedPastesClient.GetPastesAsync(
+        string account,
+        CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(account))
         {
@@ -18,9 +20,7 @@ internal sealed partial class DefaultPwnedClient : IPwnedClient
         {
             var client = httpClientFactory.CreateClient(HibpClient);
             var pastes =
-                await client.GetFromJsonAsync<Pastes[]>(
-                    $"pasteaccount/{HttpUtility.UrlEncode(account)}",
-                    SourceGeneratorContext.Default.PastesArray);
+                await client.GetFromJsonAsync<Pastes[]>($"pasteaccount/{HttpUtility.UrlEncode(account)}", SourceGeneratorContext.Default.PastesArray, cancellationToken: cancellationToken);
 
             return pastes ?? [];
         }
@@ -34,7 +34,8 @@ internal sealed partial class DefaultPwnedClient : IPwnedClient
 
     /// <inheritdoc cref="IPwnedPastesClient.GetPastesAsAsyncEnumerable(string, CancellationToken)" />
     IAsyncEnumerable<Pastes?> IPwnedPastesClient.GetPastesAsAsyncEnumerable(
-        string account, CancellationToken cancellationToken)
+        string account,
+        CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(account))
         {

@@ -35,46 +35,61 @@ public sealed class PwnedClient(string apiKey, ILoggerFactory? loggerFactory = d
     private readonly IPwnedClient _pwnedClient = PwnedClientFactory.FromApiKey(apiKey, loggerFactory);
 
     /// <inheritdoc/>
-    Task<BreachDetails?> IPwnedBreachesClient.GetBreachAsync(string breachName) =>
-        _pwnedClient.GetBreachAsync(breachName);
+    Task<BreachDetails?> IPwnedBreachesClient.GetBreachAsync(
+        string breachName,
+        CancellationToken cancellationToken) =>
+        _pwnedClient.GetBreachAsync(breachName, cancellationToken);
 
     /// <inheritdoc/>
-    Task<BreachHeader[]> IPwnedBreachesClient.GetBreachesAsync(string? domain) =>
-        _pwnedClient.GetBreachesAsync(domain);
+    Task<BreachHeader[]> IPwnedBreachesClient.GetBreachesAsync(
+        string? domain,
+        CancellationToken cancellationToken) =>
+        _pwnedClient.GetBreachesAsync(domain, cancellationToken);
 
     /// <inheritdoc/>
-    Task<BreachDetails[]> IPwnedBreachesClient.GetBreachesForAccountAsync(string account) =>
-        _pwnedClient.GetBreachesForAccountAsync(account);
+    Task<BreachDetails[]> IPwnedBreachesClient.GetBreachesForAccountAsync(
+        string account,
+        CancellationToken cancellationToken) =>
+        _pwnedClient.GetBreachesForAccountAsync(account, cancellationToken);
 
     /// <inheritdoc/>
-    Task<BreachHeader[]> IPwnedBreachesClient.GetBreachHeadersForAccountAsync(string account) =>
-        _pwnedClient.GetBreachHeadersForAccountAsync(account);
+    Task<BreachHeader[]> IPwnedBreachesClient.GetBreachHeadersForAccountAsync(
+        string account,
+        CancellationToken cancellationToken) =>
+        _pwnedClient.GetBreachHeadersForAccountAsync(account, cancellationToken);
 
     /// <inheritdoc/>
     Task<string[]> IPwnedBreachesClient.GetDataClassesAsync(CancellationToken cancellationToken) =>
         _pwnedClient.GetDataClassesAsync(cancellationToken);
 
     /// <inheritdoc/>
-    Task<Pastes[]> IPwnedPastesClient.GetPastesAsync(string account) =>
-        _pwnedClient.GetPastesAsync(account);
+    Task<Pastes[]> IPwnedPastesClient.GetPastesAsync(
+        string account,
+        CancellationToken cancellationToken) =>
+        _pwnedClient.GetPastesAsync(account, cancellationToken);
 
     /// <inheritdoc/>
-    Task<PwnedPassword> IPwnedPasswordsClient.GetPwnedPasswordAsync(string plainTextPassword) =>
-        _pwnedClient.GetPwnedPasswordAsync(plainTextPassword);
+    Task<PwnedPassword> IPwnedPasswordsClient.GetPwnedPasswordAsync(
+        string plainTextPassword,
+        CancellationToken cancellationToken) =>
+        _pwnedClient.GetPwnedPasswordAsync(plainTextPassword, cancellationToken);
 
     /// <inheritdoc/>
     public IAsyncEnumerable<BreachHeader?> GetBreachesAsAsyncEnumerable(
-        string? domain = null, CancellationToken cancellationToken = default) =>
+        string? domain = null,
+        CancellationToken cancellationToken = default) =>
         _pwnedClient.GetBreachesAsAsyncEnumerable(domain, cancellationToken);
 
     /// <inheritdoc/>
     public IAsyncEnumerable<BreachDetails?> GetBreachesForAccountAsAsyncEnumerable(
-        string account, CancellationToken cancellationToken = default) =>
+        string account,
+        CancellationToken cancellationToken = default) =>
         _pwnedClient.GetBreachesForAccountAsAsyncEnumerable(account, cancellationToken);
 
     /// <inheritdoc/>
     public IAsyncEnumerable<BreachHeader?> GetBreachHeadersForAccountAsAsyncEnumerable(
-        string account, CancellationToken cancellationToken = default) =>
+        string account,
+        CancellationToken cancellationToken = default) =>
         _pwnedClient.GetBreachHeadersForAccountAsAsyncEnumerable(account, cancellationToken);
 
     /// <inheritdoc/>
@@ -84,6 +99,7 @@ public sealed class PwnedClient(string apiKey, ILoggerFactory? loggerFactory = d
 
     /// <inheritdoc/>
     public IAsyncEnumerable<Pastes?> GetPastesAsAsyncEnumerable(
-        string account, CancellationToken cancellationToken) =>
+        string account,
+        CancellationToken cancellationToken) =>
         _pwnedClient.GetPastesAsAsyncEnumerable(account, cancellationToken);
 }
