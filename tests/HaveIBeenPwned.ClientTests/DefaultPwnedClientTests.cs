@@ -20,7 +20,7 @@ public class DefaultPwnedClientTests
             NullHttpClientFactory.Instance,
             NullLoggerFactory.Instance.CreateLogger<DefaultPwnedClient>());
 
-        await Assert.ThrowsAsync<ArgumentException>(
+        await Assert.ThrowsAsync<ArgumentNullException>(
             () => sut.GetBreachAsync(breachName: null!));
     }
 
@@ -31,7 +31,7 @@ public class DefaultPwnedClientTests
             NullHttpClientFactory.Instance,
             NullLoggerFactory.Instance.CreateLogger<DefaultPwnedClient>());
 
-        await Assert.ThrowsAsync<ArgumentException>(
+        await Assert.ThrowsAsync<ArgumentNullException>(
             () => sut.GetBreachesForAccountAsync(account: null!));
     }
 
@@ -54,7 +54,7 @@ public class DefaultPwnedClientTests
             NullHttpClientFactory.Instance,
             NullLoggerFactory.Instance.CreateLogger<DefaultPwnedClient>());
 
-        await Assert.ThrowsAsync<ArgumentException>(
+        await Assert.ThrowsAsync<ArgumentNullException>(
             async () => await sut.GetBreachHeadersForAccountAsync(account: null!));
     }
 
