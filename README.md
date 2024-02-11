@@ -58,7 +58,7 @@ Then you can require any of the available DI-ready types:
 
 ### Without dependency injection
 
-If you're not using the DI approach, simple instaniate the `PwnedClient` class with your API key and use it as you see fit.
+If you're not using the DI approach, simply instaniate `PwnedClient` with your API key and use it as you see fit.
 
 ```csharp
 IPwnedClient client = new PwnedClient("<API Key>");
