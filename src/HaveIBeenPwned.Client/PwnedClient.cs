@@ -35,6 +35,11 @@ public sealed class PwnedClient(string apiKey, ILoggerFactory? loggerFactory = d
     private readonly IPwnedClient _pwnedClient = PwnedClientFactory.FromApiKey(apiKey, loggerFactory);
 
     /// <inheritdoc/>
+    Task<SubscriptionStatus?> IPwnedClient.GetSubscriptionStatusAsync(
+        CancellationToken cancellationToken) =>
+        _pwnedClient.GetSubscriptionStatusAsync(cancellationToken);
+
+    /// <inheritdoc/>
     Task<BreachDetails?> IPwnedBreachesClient.GetBreachAsync(
         string breachName,
         CancellationToken cancellationToken) =>
