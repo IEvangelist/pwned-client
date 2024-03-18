@@ -16,7 +16,7 @@ public class PwnedPasswordTests
         InlineData("someValue", false)
     ]
     public void PwnedPasswordReturnsCorrectValidityStateWhenConstructed(
-        string value, bool expected)
+        string? value, bool expected)
     {
         PwnedPassword pwnedPassword = new() { PlainTextPassword = value };
         Assert.Equal(expected, pwnedPassword.IsInvalid());

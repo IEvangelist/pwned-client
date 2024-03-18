@@ -6,17 +6,12 @@ using Microsoft.OpenApi.Models;
 
 namespace HaveIBeenPwned.WebApi;
 
-public class Startup
+public class Startup(IConfiguration configuration)
 {
-    readonly IConfiguration _configuration;
-
-    public Startup(IConfiguration configuration) =>
-        _configuration = configuration;
-
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddSingleton<IPwnedClient>(
-            services => new PwnedClient(_configuration["HibpOptions:ApiKey"]!));
+            services => new PwnedClient(configuration["HibpOptions:ApiKey"]!));
 
         services.AddControllers();
         services.AddSwaggerGen(

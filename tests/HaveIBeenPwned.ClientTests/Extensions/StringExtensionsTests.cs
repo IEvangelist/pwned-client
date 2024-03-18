@@ -14,7 +14,7 @@ public class StringExtensionsTests
         InlineData("", "")
     ]
     public void ToSha1Hash_Returns_UselessValues_WhenGiven_UselessValues(
-        string value, string expected)
+        string? value, string? expected)
     {
         var actual = value.ToSha1Hash();
         Assert.Equal(expected, actual);

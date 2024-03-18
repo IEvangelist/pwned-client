@@ -6,10 +6,7 @@ namespace HaveIBeenPwned.Client.AcceptanceTests;
 [Trait("Category", "AcceptanceTests")]
 public class PwnedClientTests
 {
-    private readonly IPwnedClient _pwnedClient;
-
-    public PwnedClientTests() =>
-        _pwnedClient = new PwnedClient(
+    private readonly IPwnedClient _pwnedClient = new PwnedClient(
             Environment.GetEnvironmentVariable("HibpOptions__ApiKey")!);
 
     [Fact]
