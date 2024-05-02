@@ -10,7 +10,7 @@ internal static class AsyncEnumerable
 
 file sealed class EmptyAsyncIterator<T> : IAsyncEnumerable<T>, IAsyncEnumerator<T>
 {
-    public static EmptyAsyncIterator<T> Instance { get; } = new();
+    internal static EmptyAsyncIterator<T> Instance { get; } = new();
 
     public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 
