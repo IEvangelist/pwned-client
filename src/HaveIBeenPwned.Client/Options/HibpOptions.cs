@@ -7,12 +7,13 @@ namespace HaveIBeenPwned.Client.Options;
 /// The "Have I Been Pwned" API options object.
 /// See <a href="https://haveibeenpwned.com/api"></a>
 /// </summary>
-public sealed class HibpOptions : IOptions<HibpOptions>
+[OptionsValidator]
+public sealed partial class HibpOptions : IValidateOptions<HibpOptions>
 {
     static readonly string LibraryVersion =
         typeof(HibpOptions).Assembly
             .GetCustomAttribute<AssemblyFileVersionAttribute>()
-            ?.Version ?? "1.0";
+            ?.Version ?? "8.0";
 
     internal static readonly string DefaultUserAgent =
         $".NET HIBP Client/{LibraryVersion}";
@@ -23,6 +24,9 @@ public sealed class HibpOptions : IOptions<HibpOptions>
     /// Gets or sets the API key, used to authorize HTTP calls to HIBP.
     /// See <a href="https://haveibeenpwned.com/api/v3#Authorisation"></a>
     /// </summary>
+    [Required(ErrorMessage = """
+        An API Key is required for most client calls, please provide one
+        """)]
     public string ApiKey { get; set; } = null!;
 
     /// <summary>
@@ -42,9 +46,6 @@ public sealed class HibpOptions : IOptions<HibpOptions>
     /// <a href="https://www.nuget.org/packages/HaveIBeenPwned.Client.PollyExtensions"></a>.
     /// </summary>
     public HibpSubscriptionLevel? SubscriptionLevel { get; set; }
-
-    /// <inheritdoc />
-    HibpOptions IOptions<HibpOptions>.Value => this;
 
     internal void Deconstruct(out string apiKey, out string userAgent, out HibpSubscriptionLevel? subscriptionLevel) =>
         (apiKey, userAgent, subscriptionLevel) = (ApiKey, UserAgent, SubscriptionLevel);

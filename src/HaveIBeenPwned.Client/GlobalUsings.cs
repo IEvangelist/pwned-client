@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 global using System.Collections.Frozen;
+global using System.ComponentModel.DataAnnotations;
 global using System.Net.Http.Json;
 global using System.Net.Mime;
 global using System.Reflection;
