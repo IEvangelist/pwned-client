@@ -13,7 +13,7 @@ internal sealed class InternalHttpClientFactory : IHttpClientFactory
         {
             BaseAddress = new Uri(HttpClientUrls.HibpApiUrl)
         };
-        client.DefaultRequestHeaders.Add("hibp-api-key", _apiKey);
+        client.DefaultRequestHeaders.Add(HttpHeaderNames.HibpApiKey, _apiKey);
         client.DefaultRequestHeaders.UserAgent.ParseAdd(HibpOptions.DefaultUserAgent);
 
         return client;
@@ -25,7 +25,7 @@ internal sealed class InternalHttpClientFactory : IHttpClientFactory
         {
             BaseAddress = new Uri(HttpClientUrls.PasswordsApiUrl)
         };
-        client.DefaultRequestHeaders.Add("hibp-api-key", _apiKey);
+        client.DefaultRequestHeaders.Add(HttpHeaderNames.HibpApiKey, _apiKey);
         client.DefaultRequestHeaders.UserAgent.ParseAdd(HibpOptions.DefaultUserAgent);
         client.DefaultRequestHeaders.Accept.Add(
             new(MediaTypeNames.Text.Plain));
