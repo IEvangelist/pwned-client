@@ -22,7 +22,7 @@ jobs:
     - name: Print version number
       run: echo '${{ steps.regex-match.outputs.match }}'
       
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
