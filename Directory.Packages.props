@@ -11,7 +11,7 @@
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(RuntimeVersion)" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageVersion Include="System.Net.Http.Json" Version="$(RuntimeVersion)" />
-    <PackageVersion Include="MinVer" Version="5.0.0" />
+    <PackageVersion Include="MinVer" Version="6.0.0" />
     <!-- Samples -->
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.8" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.8" />
