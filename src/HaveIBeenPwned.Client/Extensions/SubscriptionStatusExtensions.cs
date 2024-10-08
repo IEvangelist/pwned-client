@@ -18,9 +18,7 @@ public static class SubscriptionStatusExtensions
     /// doesn't map to a level.
     /// </exception>
     public static HibpSubscriptionLevel GetSubscriptionLevel(
-        this SubscriptionStatus subscriptionStatus)
-    {
-        return subscriptionStatus.SubscriptionName switch
+        this SubscriptionStatus subscriptionStatus) => subscriptionStatus.SubscriptionName switch
         {
             "Pwned 1" => HibpSubscriptionLevel.One,
             "Pwned 2" => HibpSubscriptionLevel.Two,
@@ -30,5 +28,4 @@ public static class SubscriptionStatusExtensions
             _ => throw new ArgumentException(
                 $"Unknown subscription level: {subscriptionStatus.SubscriptionName}.")
         };
-    }
 }

@@ -12,6 +12,5 @@ namespace HaveIBeenPwned.WebApi.Controllers;
 public class PastesController(IPwnedPastesClient pwnedPastesClient) : ControllerBase
 {
     [HttpGet, Route("{account}")]
-    public Task<Pastes[]> GetPaste([FromRoute] string account) =>
-        pwnedPastesClient.GetPastesAsync(account);
+    public Task<Pastes[]> GetPaste([FromRoute] string account) => pwnedPastesClient.GetPastesAsync(account);
 }

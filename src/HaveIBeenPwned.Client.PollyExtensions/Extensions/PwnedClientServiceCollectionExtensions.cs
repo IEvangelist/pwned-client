@@ -92,8 +92,7 @@ public static class PwnedClientServiceCollectionExtensions
         IServiceCollection services,
         string httpClientName,
         string baseAddress,
-        bool isPlainText = false) =>
-        services.AddHttpClient(
+        bool isPlainText = false) => services.AddHttpClient(
             httpClientName,
             (serviceProvider, client) =>
             {

@@ -18,15 +18,9 @@ internal static class HttpClientBuilderExtensions
     {
         // Don't log our API key, or auth/cookie headers.
         builder.RedactLoggedHeaders(
-            shouldRedactHeaderValue: static headerName =>
-            {
-                return s_redactedHttpHeaders.Any(
-                    predicate: name =>
-                    {
-                        return string.Equals(
-                            name, headerName, StringComparison.OrdinalIgnoreCase);
-                    });
-            });
+            shouldRedactHeaderValue: static headerName => s_redactedHttpHeaders.Any(
+                    predicate: name => string.Equals(
+                            name, headerName, StringComparison.OrdinalIgnoreCase)));
 
         if (configureResilienceOptions is not null)
         {

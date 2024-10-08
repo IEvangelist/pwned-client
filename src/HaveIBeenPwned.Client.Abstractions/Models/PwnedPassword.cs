@@ -33,6 +33,5 @@ public sealed record class PwnedPassword
     /// </summary>
     public string? HashedPassword { get; set; }
 
-    internal bool IsInvalid() =>
-        PlainTextPassword is null or { Length: 0 };
+    internal bool IsInvalid() => PlainTextPassword is null or { Length: 0 };
 }

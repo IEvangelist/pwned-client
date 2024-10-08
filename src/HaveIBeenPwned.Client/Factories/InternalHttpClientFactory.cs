@@ -42,11 +42,10 @@ internal sealed class InternalHttpClientFactory : IHttpClientFactory
 
     private InternalHttpClientFactory() { }
 
-    HttpClient IHttpClientFactory.CreateClient(string name) =>
-        name switch
-        {
-            HttpClientNames.HibpClient => _hibpClient.Value,
-            HttpClientNames.PasswordsClient => _passwordsClient.Value,
-            _ => throw new NotImplementedException()
-        };
+    HttpClient IHttpClientFactory.CreateClient(string name) => name switch
+    {
+        HttpClientNames.HibpClient => _hibpClient.Value,
+        HttpClientNames.PasswordsClient => _passwordsClient.Value,
+        _ => throw new NotImplementedException()
+    };
 }

@@ -11,21 +11,18 @@ namespace HaveIBeenPwned.Client.PollyExtensionsTests.Extensions;
 public class PwnedClientServiceCollectionExtensionsTests
 {
     [Fact]
-    public void AddPwnedServicesThrowsWhenServiceCollectionIsNull() =>
-    Assert.Throws<ArgumentNullException>(
+    public void AddPwnedServicesThrowsWhenServiceCollectionIsNull() => Assert.Throws<ArgumentNullException>(
         "services",
         () => ((IServiceCollection)null!).AddPwnedServices(_ => { }));
 
     [Fact]
-    public void AddPwnedServicesThrowsWhenConfigureOptionsIsNull() =>
-        Assert.Throws<ArgumentNullException>(
+    public void AddPwnedServicesThrowsWhenConfigureOptionsIsNull() => Assert.Throws<ArgumentNullException>(
             "configureOptions",
             () => new ServiceCollection().AddPwnedServices(
                 (null as Action<HibpOptions>)!));
 
     [Fact]
-    public void AddPwnedServicesThrowsWhenConfigureRetryPolicyIsNull() =>
-        Assert.Throws<ArgumentNullException>(
+    public void AddPwnedServicesThrowsWhenConfigureRetryPolicyIsNull() => Assert.Throws<ArgumentNullException>(
             "configureResilienceOptions",
             () => new ServiceCollection().AddPwnedServices(
                 options => { },

@@ -9,10 +9,7 @@ namespace HaveIBeenPwned.ClientTests;
 public sealed class PwnedClientFactoryTests
 {
     [Fact]
-    public void PwnedClientFactory_Throws_WhenApiIsNull()
-    {
-        Assert.Throws<ArgumentNullException>(() => PwnedClientFactory.FromApiKey(null!));
-    }
+    public void PwnedClientFactory_Throws_WhenApiIsNull() => Assert.Throws<ArgumentNullException>(() => PwnedClientFactory.FromApiKey(null!));
 
     [Fact]
     public void PwnedClientFactory_ReturnsValidClient_WithApiKey()

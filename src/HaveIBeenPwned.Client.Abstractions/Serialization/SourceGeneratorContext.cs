@@ -1,11 +1,11 @@
 ﻿// Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
-using SubscriptionStatusModel = HaveIBeenPwned.Client.Abstractions.SubscriptionStatus;
 using BreachDetailsModel = HaveIBeenPwned.Client.Abstractions.BreachDetails;
 using BreachHeaderModel = HaveIBeenPwned.Client.Abstractions.BreachHeader;
 using PastesModel = HaveIBeenPwned.Client.Abstractions.Pastes;
 using PwnedPasswordModel = HaveIBeenPwned.Client.Abstractions.PwnedPassword;
+using SubscriptionStatusModel = HaveIBeenPwned.Client.Abstractions.SubscriptionStatus;
 
 namespace HaveIBeenPwned.Client.Abstractions.Serialization;
 
@@ -22,6 +22,4 @@ namespace HaveIBeenPwned.Client.Abstractions.Serialization;
 [JsonSerializable(typeof(PastesModel[]))]
 [JsonSerializable(typeof(PwnedPasswordModel))]
 [JsonSerializable(typeof(string[]))]
-public sealed partial class SourceGeneratorContext : JsonSerializerContext
-{
-}
+public sealed partial class SourceGeneratorContext : JsonSerializerContext;

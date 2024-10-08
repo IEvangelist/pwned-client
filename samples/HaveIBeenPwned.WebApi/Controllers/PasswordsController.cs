@@ -12,6 +12,5 @@ namespace HaveIBeenPwned.WebApi.Controllers;
 public class PasswordsController(IPwnedPasswordsClient pwnedPasswordsClient) : ControllerBase
 {
     [HttpGet, Route("{plainTextPassword}")]
-    public Task<PwnedPassword> GetPwnedPassword([FromRoute] string plainTextPassword) =>
-        pwnedPasswordsClient.GetPwnedPasswordAsync(plainTextPassword);
+    public Task<PwnedPassword> GetPwnedPassword([FromRoute] string plainTextPassword) => pwnedPasswordsClient.GetPwnedPasswordAsync(plainTextPassword);
 }

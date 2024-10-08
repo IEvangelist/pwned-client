@@ -47,6 +47,5 @@ public sealed partial class HibpOptions : IValidateOptions<HibpOptions>
     /// </summary>
     public HibpSubscriptionLevel? SubscriptionLevel { get; set; }
 
-    internal void Deconstruct(out string apiKey, out string userAgent, out HibpSubscriptionLevel? subscriptionLevel) =>
-        (apiKey, userAgent, subscriptionLevel) = (ApiKey, UserAgent, SubscriptionLevel);
+    internal void Deconstruct(out string apiKey, out string userAgent, out HibpSubscriptionLevel? subscriptionLevel) => (apiKey, userAgent, subscriptionLevel) = (ApiKey, UserAgent, SubscriptionLevel);
 }
