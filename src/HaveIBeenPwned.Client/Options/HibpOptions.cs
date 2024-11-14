@@ -18,8 +18,6 @@ public sealed partial class HibpOptions : IValidateOptions<HibpOptions>
     internal static readonly string DefaultUserAgent =
         $".NET HIBP Client/{LibraryVersion}";
 
-    private string? _userAgent = DefaultUserAgent;
-
     /// <summary>
     /// Gets or sets the API key, used to authorize HTTP calls to HIBP.
     /// See <a href="https://haveibeenpwned.com/api/v3#Authorisation"></a>
@@ -35,9 +33,9 @@ public sealed partial class HibpOptions : IValidateOptions<HibpOptions>
     /// </summary>
     public string UserAgent
     {
-        get => _userAgent ?? DefaultUserAgent;
-        set => _userAgent = value ?? DefaultUserAgent;
-    }
+        get => field ?? DefaultUserAgent;
+        set => field = value ?? DefaultUserAgent;
+    } = DefaultUserAgent;
 
     /// <summary>
     /// Gets or sets the subscription level for the "Have I Been Pwned" API.
