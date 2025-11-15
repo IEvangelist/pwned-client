@@ -56,7 +56,7 @@ internal sealed partial class DefaultPwnedClient : IPwnedClient
         {
             logger.LogError(ex, "{ExceptionMessage}", ex.Message);
 
-            return AsyncEnumerable.Empty<Pastes?>();
+            return Internals.AsyncEnumerable.Empty<Pastes?>();
         }
     }
 }

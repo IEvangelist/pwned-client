@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using HaveIBeenPwned.Client;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace HaveIBeenPwned.WebApi;
 
