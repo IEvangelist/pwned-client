@@ -28,7 +28,7 @@ on:
         default: 'Manual build'
 
 env:
-  DOTNET_VERSION: '9.0.x' # set this to the dot net version to use
+  DOTNET_VERSION: '10.0.x' # set this to the dot net version to use
 
 jobs:
   analyze:
