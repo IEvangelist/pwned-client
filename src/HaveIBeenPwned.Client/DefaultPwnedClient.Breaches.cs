@@ -87,7 +87,7 @@ internal sealed partial class DefaultPwnedClient
         {
             logger.LogError(ex, "{ExceptionMessage}", ex.Message);
 
-            return AsyncEnumerable.Empty<BreachHeader?>();
+            return Internals.AsyncEnumerable.Empty<BreachHeader?>();
         }
     }
 
@@ -138,7 +138,7 @@ internal sealed partial class DefaultPwnedClient
         {
             logger.LogError(ex, "{ExceptionMessage}", ex.Message);
 
-            return AsyncEnumerable.Empty<BreachDetails?>();
+            return Internals.AsyncEnumerable.Empty<BreachDetails?>();
         }
     }
 
@@ -188,7 +188,7 @@ internal sealed partial class DefaultPwnedClient
         {
             logger.LogError(ex, "{ExceptionMessage}", ex.Message);
 
-            return AsyncEnumerable.Empty<BreachHeader?>();
+            return Internals.AsyncEnumerable.Empty<BreachHeader?>();
         }
     }
 
@@ -233,7 +233,7 @@ internal sealed partial class DefaultPwnedClient
         {
             logger.LogError(ex, "{ExceptionMessage}", ex.Message);
 
-            return AsyncEnumerable.Empty<string?>();
+            return Internals.AsyncEnumerable.Empty<string?>();
         }
     }
 }
