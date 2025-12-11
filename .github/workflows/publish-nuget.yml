@@ -56,7 +56,7 @@ jobs:
       
     - name: Publish package
       run: |
-        nuget push **\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -NoSymbols -NonInteractive -ApiKey ${{secrets.NUGET_API_KEY}}
+        dotnet nuget push "packages/*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{secrets.NUGET_API_KEY}} --skip-duplicate
 
     - name: Upload abstractions package
       uses: actions/upload-artifact@main
