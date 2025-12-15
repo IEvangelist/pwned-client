@@ -36,4 +36,9 @@ public sealed record class SubscriptionStatus
     /// excluding those that appear solely in spam list.
     /// </summary>
     public int DomainSearchMaxBreachedAccounts { get; init; }
+
+    /// <summary>
+    /// Indicates if the subscription includes access to the stealer logs APIs.
+    /// </summary>
+    public bool IncludesStealerLogs { get; init; }
 }

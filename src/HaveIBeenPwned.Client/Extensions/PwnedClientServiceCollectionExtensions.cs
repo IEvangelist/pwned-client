@@ -71,6 +71,8 @@ public static class PwnedClientServiceCollectionExtensions
         services.AddSingleton<IPwnedBreachesClient, DefaultPwnedClient>();
         services.AddSingleton<IPwnedPasswordsClient, DefaultPwnedClient>();
         services.AddSingleton<IPwnedPastesClient, DefaultPwnedClient>();
+        services.AddSingleton<IPwnedDomainClient, DefaultPwnedClient>();
+        services.AddSingleton<IPwnedStealerLogsClient, DefaultPwnedClient>();
         services.AddSingleton<IPwnedClient, DefaultPwnedClient>();
 
         return services;

@@ -53,6 +53,8 @@ public interface IPwnedBreachesClient
     /// See <a href="https://haveibeenpwned.com/API/v3#BreachesForAccount"></a>
     /// </summary>
     /// <param name="account">The account to search for breaches.</param>
+    /// <param name="includeUnverified">When set to false, unverified breaches are excluded from the results. Defaults to true.</param>
+    /// <param name="domain">Filters the result set to only breaches against the domain specified.</param>
     /// <param name="cancellationToken">Used to signal cancellation.</param>
     /// <returns>An array of breach details if found, or an empty array if not found.</returns>
     /// <remarks>
@@ -63,6 +65,8 @@ public interface IPwnedBreachesClient
     /// </exception>
     Task<BreachDetails[]> GetBreachesForAccountAsync(
         string account,
+        bool includeUnverified = true,
+        string? domain = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -72,6 +76,8 @@ public interface IPwnedBreachesClient
     /// See <a href="https://haveibeenpwned.com/API/v3#BreachesForAccount"></a>
     /// </summary>
     /// <param name="account">The account to retrieve breaches for.</param>
+    /// <param name="includeUnverified">When set to false, unverified breaches are excluded from the results. Defaults to true.</param>
+    /// <param name="domain">Filters the result set to only breaches against the domain specified.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the asynchronous operation.</param>
     /// <returns>An asynchronous enumerable of <see cref="BreachDetails"/> objects representing the breaches that the account has been involved in.</returns>
     /// <remarks>
@@ -82,12 +88,15 @@ public interface IPwnedBreachesClient
     /// </exception>
     IAsyncEnumerable<BreachDetails?> GetBreachesForAccountAsAsyncEnumerable(
         string account,
+        bool includeUnverified = true,
+        string? domain = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Gets an array of <see cref="BreachHeader"/>, optionally filtering on <paramref name="domain"/>.
+    /// Gets an array of <see cref="BreachHeader"/>, optionally filtering on <paramref name="domain"/> or <paramref name="isSpamList"/>.
     /// </summary>
     /// <param name="domain">An optional domain to filter the returned breaches to.</param>
+    /// <param name="isSpamList">Filters the result set to only breaches that are or are not flagged as a spam list.</param>
     /// <param name="cancellationToken">Used to signal cancellation.</param>
     /// <returns>An array of breach headers, or an empty array.</returns>
     /// <remarks>
@@ -95,12 +104,14 @@ public interface IPwnedBreachesClient
     /// </remarks>
     Task<BreachHeader[]> GetBreachesAsync(
         string? domain = default,
+        bool? isSpamList = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Retrieves a collection of breach headers as an asynchronous enumerable, optionally filtering on <paramref name="domain"/>.
+    /// Retrieves a collection of breach headers as an asynchronous enumerable, optionally filtering on <paramref name="domain"/> or <paramref name="isSpamList"/>.
     /// </summary>
     /// <param name="domain">An optional domain to filter the returned breaches to.</param>
+    /// <param name="isSpamList">Filters the result set to only breaches that are or are not flagged as a spam list.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the asynchronous operation.</param>
     /// <returns>An asynchronous enumerable of <see cref="BreachHeader"/> objects.</returns>
     /// <remarks>
@@ -108,6 +119,7 @@ public interface IPwnedBreachesClient
     /// </remarks>
     IAsyncEnumerable<BreachHeader?> GetBreachesAsAsyncEnumerable(
         string? domain = default,
+        bool? isSpamList = null,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -129,11 +141,11 @@ public interface IPwnedBreachesClient
     /// <summary>
     /// Gets all of the data classes possible for any given <see cref="BreachDetails.DataClasses"/>.
     /// </summary>
+    /// <param name="cancellationToken">Used to signal cancellation.</param>
     /// <returns>An array of all the possible data classes, or an empty array.</returns>
     /// <remarks>
     /// Example JSON payload: <a href="https://haveibeenpwned.com/api/v3/dataclasses"></a>
     /// </remarks>
-    /// <param name="cancellationToken">Used to signal cancellation.</param>
     Task<string[]> GetDataClassesAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -145,4 +157,15 @@ public interface IPwnedBreachesClient
     /// Example JSON payload: <a href="https://haveibeenpwned.com/api/v3/dataclasses"></a>
     /// </remarks>
     IAsyncEnumerable<string?> GetDataClassesAsAsyncEnumerable(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets the most recently added breach based on the AddedDate attribute.
+    /// See <a href="https://haveibeenpwned.com/API/v3#LatestBreach"></a>
+    /// </summary>
+    /// <param name="cancellationToken">Used to signal cancellation.</param>
+    /// <returns>The most recently added breach details, or null if not found.</returns>
+    /// <remarks>
+    /// Example JSON payload: <a href="https://haveibeenpwned.com/api/v3/latestbreach"></a>
+    /// </remarks>
+    Task<BreachDetails?> GetLatestBreachAsync(CancellationToken cancellationToken = default);
 }

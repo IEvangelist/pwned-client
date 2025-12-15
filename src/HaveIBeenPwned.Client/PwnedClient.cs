@@ -46,12 +46,15 @@ public sealed class PwnedClient(string apiKey, ILoggerFactory? loggerFactory = d
     /// <inheritdoc/>
     Task<BreachHeader[]> IPwnedBreachesClient.GetBreachesAsync(
         string? domain,
-        CancellationToken cancellationToken) => _pwnedClient.GetBreachesAsync(domain, cancellationToken);
+        bool? isSpamList,
+        CancellationToken cancellationToken) => _pwnedClient.GetBreachesAsync(domain, isSpamList, cancellationToken);
 
     /// <inheritdoc/>
     Task<BreachDetails[]> IPwnedBreachesClient.GetBreachesForAccountAsync(
         string account,
-        CancellationToken cancellationToken) => _pwnedClient.GetBreachesForAccountAsync(account, cancellationToken);
+        bool includeUnverified,
+        string? domain,
+        CancellationToken cancellationToken) => _pwnedClient.GetBreachesForAccountAsync(account, includeUnverified, domain, cancellationToken);
 
     /// <inheritdoc/>
     Task<BreachHeader[]> IPwnedBreachesClient.GetBreachHeadersForAccountAsync(
@@ -62,6 +65,9 @@ public sealed class PwnedClient(string apiKey, ILoggerFactory? loggerFactory = d
     Task<string[]> IPwnedBreachesClient.GetDataClassesAsync(CancellationToken cancellationToken) => _pwnedClient.GetDataClassesAsync(cancellationToken);
 
     /// <inheritdoc/>
+    Task<BreachDetails?> IPwnedBreachesClient.GetLatestBreachAsync(CancellationToken cancellationToken) => _pwnedClient.GetLatestBreachAsync(cancellationToken);
+
+    /// <inheritdoc/>
     Task<Pastes[]> IPwnedPastesClient.GetPastesAsync(
         string account,
         CancellationToken cancellationToken) => _pwnedClient.GetPastesAsync(account, cancellationToken);
@@ -69,17 +75,55 @@ public sealed class PwnedClient(string apiKey, ILoggerFactory? loggerFactory = d
     /// <inheritdoc/>
     Task<PwnedPassword> IPwnedPasswordsClient.GetPwnedPasswordAsync(
         string plainTextPassword,
-        CancellationToken cancellationToken) => _pwnedClient.GetPwnedPasswordAsync(plainTextPassword, cancellationToken);
+        bool addPadding,
+        CancellationToken cancellationToken) => _pwnedClient.GetPwnedPasswordAsync(plainTextPassword, addPadding, cancellationToken);
+
+    /// <inheritdoc/>
+    Task<PwnedPassword> IPwnedPasswordsClient.GetPwnedPasswordWithNtlmAsync(
+        string plainTextPassword,
+        bool addPadding,
+        CancellationToken cancellationToken) => _pwnedClient.GetPwnedPasswordWithNtlmAsync(plainTextPassword, addPadding, cancellationToken);
+
+    /// <inheritdoc/>
+    Task<DomainBreaches?> IPwnedDomainClient.GetBreachedDomainAsync(
+        string domain,
+        CancellationToken cancellationToken) => _pwnedClient.GetBreachedDomainAsync(domain, cancellationToken);
+
+    /// <inheritdoc/>
+    Task<SubscribedDomain[]> IPwnedDomainClient.GetSubscribedDomainsAsync(
+        CancellationToken cancellationToken) => _pwnedClient.GetSubscribedDomainsAsync(cancellationToken);
+
+    /// <inheritdoc/>
+    IAsyncEnumerable<SubscribedDomain?> IPwnedDomainClient.GetSubscribedDomainsAsAsyncEnumerable(
+        CancellationToken cancellationToken) => _pwnedClient.GetSubscribedDomainsAsAsyncEnumerable(cancellationToken);
+
+    /// <inheritdoc/>
+    Task<string[]?> IPwnedStealerLogsClient.GetStealerLogsByEmailAsync(
+        string emailAddress,
+        CancellationToken cancellationToken) => _pwnedClient.GetStealerLogsByEmailAsync(emailAddress, cancellationToken);
+
+    /// <inheritdoc/>
+    Task<string[]?> IPwnedStealerLogsClient.GetStealerLogsByWebsiteDomainAsync(
+        string domain,
+        CancellationToken cancellationToken) => _pwnedClient.GetStealerLogsByWebsiteDomainAsync(domain, cancellationToken);
+
+    /// <inheritdoc/>
+    Task<StealerLogsByEmailDomain?> IPwnedStealerLogsClient.GetStealerLogsByEmailDomainAsync(
+        string domain,
+        CancellationToken cancellationToken) => _pwnedClient.GetStealerLogsByEmailDomainAsync(domain, cancellationToken);
 
     /// <inheritdoc/>
     public IAsyncEnumerable<BreachHeader?> GetBreachesAsAsyncEnumerable(
         string? domain = null,
-        CancellationToken cancellationToken = default) => _pwnedClient.GetBreachesAsAsyncEnumerable(domain, cancellationToken);
+        bool? isSpamList = null,
+        CancellationToken cancellationToken = default) => _pwnedClient.GetBreachesAsAsyncEnumerable(domain, isSpamList, cancellationToken);
 
     /// <inheritdoc/>
     public IAsyncEnumerable<BreachDetails?> GetBreachesForAccountAsAsyncEnumerable(
         string account,
-        CancellationToken cancellationToken = default) => _pwnedClient.GetBreachesForAccountAsAsyncEnumerable(account, cancellationToken);
+        bool includeUnverified = true,
+        string? domain = null,
+        CancellationToken cancellationToken = default) => _pwnedClient.GetBreachesForAccountAsAsyncEnumerable(account, includeUnverified, domain, cancellationToken);
 
     /// <inheritdoc/>
     public IAsyncEnumerable<BreachHeader?> GetBreachHeadersForAccountAsAsyncEnumerable(

@@ -74,7 +74,27 @@ public sealed class BreachDetails : BreachHeader
     public bool IsSpamList { get; set; }
 
     /// <summary>
+    /// Indicates if the breach is sourced from malware. This flag has no impact on any other attributes, it merely flags that the data was sourced from a malware campaign rather than a security compromise of an online service.
+    /// </summary>
+    public bool IsMalware { get; set; }
+
+    /// <summary>
+    /// Indicates if the breach is subscription-free. This flag has no impact on any other attributes, it is only used when running a domain search where a sufficiently sized subscription isn't present.
+    /// </summary>
+    public bool IsSubscriptionFree { get; set; }
+
+    /// <summary>
+    /// Indicates if the breach is sourced from stealer logs. A breach with this flag also has the domains that appear in the logs loaded against each email address. This data can be accessed via the stealer logs API.
+    /// </summary>
+    public bool IsStealerLog { get; set; }
+
+    /// <summary>
     /// A URI that specifies where a logo for the breached service can be found. Logos are always in PNG format.
     /// </summary>
     public string LogoPath { get; set; } = null!;
+
+    /// <summary>
+    /// Sometimes requested by the party that provides the data to HIBP.
+    /// </summary>
+    public string? Attribution { get; set; }
 }

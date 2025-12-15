@@ -10,11 +10,15 @@ namespace HaveIBeenPwned.Client;
 /// <item><see cref="IPwnedBreachesClient"/></item>
 /// <item><see cref="IPwnedPastesClient"/></item>
 /// <item><see cref="IPwnedPasswordsClient"/></item>
+/// <item><see cref="IPwnedDomainClient"/></item>
+/// <item><see cref="IPwnedStealerLogsClient"/></item>
 /// </list>
 /// </summary>
 public interface IPwnedClient : IPwnedBreachesClient,
                                 IPwnedPastesClient,
-                                IPwnedPasswordsClient
+                                IPwnedPasswordsClient,
+                                IPwnedDomainClient,
+                                IPwnedStealerLogsClient
 {
     /// <summary>
     /// Gets the <see cref="SubscriptionStatus"/> representing current status

@@ -34,7 +34,7 @@ public static class PwnedClientExtensions
         CancellationToken cancellationToken = default)
     {
         var pwnedPassword = await pwnedPasswordsClient.GetPwnedPasswordAsync(
-            plainTextPassword, cancellationToken);
+            plainTextPassword, false, cancellationToken);
 
         return
             (

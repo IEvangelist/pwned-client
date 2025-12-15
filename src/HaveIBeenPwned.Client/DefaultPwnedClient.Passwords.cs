@@ -5,9 +5,10 @@ namespace HaveIBeenPwned.Client;
 
 internal sealed partial class DefaultPwnedClient : IPwnedClient
 {
-    /// <inheritdoc cref="IPwnedPasswordsClient.GetPwnedPasswordAsync(string, CancellationToken)" />
+    /// <inheritdoc cref="IPwnedPasswordsClient.GetPwnedPasswordAsync(string, bool, CancellationToken)" />
     async Task<PwnedPassword> IPwnedPasswordsClient.GetPwnedPasswordAsync(
         string plainTextPassword,
+        bool addPadding,
         CancellationToken cancellationToken)
     {
         if (plainTextPassword is null or { Length: 0 })
@@ -34,9 +35,70 @@ internal sealed partial class DefaultPwnedClient : IPwnedClient
 
             var client = httpClientFactory.CreateClient(PasswordsClient);
 
-            var passwordHashesInRange =
-                await client.GetStringAsync($"range/{firstFiveChars}", cancellationToken)
-                            .ConfigureAwait(false);
+            // Create request with optional padding header
+            using var request = new HttpRequestMessage(HttpMethod.Get, $"range/{firstFiveChars}");
+            if (addPadding)
+            {
+                request.Headers.Add("Add-Padding", "true");
+            }
+
+            var response = await client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+
+            var passwordHashesInRange = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+
+            pwnedPassword = ParsePasswordRangeResponseText(
+                pwnedPassword, passwordHashesInRange, passwordHash);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
+        }
+
+        return pwnedPassword;
+    }
+
+    /// <inheritdoc cref="IPwnedPasswordsClient.GetPwnedPasswordWithNtlmAsync(string, bool, CancellationToken)" />
+    async Task<PwnedPassword> IPwnedPasswordsClient.GetPwnedPasswordWithNtlmAsync(
+        string plainTextPassword,
+        bool addPadding,
+        CancellationToken cancellationToken)
+    {
+        if (plainTextPassword is null or { Length: 0 })
+        {
+            throw new ArgumentException(
+                "The plainTextPassword cannot be either null, or empty.", nameof(plainTextPassword));
+        }
+
+        var pwnedPassword = new PwnedPassword()
+        {
+            PlainTextPassword = plainTextPassword
+        };
+
+        if (pwnedPassword.IsInvalid())
+        {
+            return pwnedPassword;
+        }
+
+        try
+        {
+            var passwordHash = plainTextPassword.ToNtlmHash()!;
+
+            var firstFiveChars = passwordHash[..5];
+
+            var client = httpClientFactory.CreateClient(PasswordsClient);
+
+            // Create request with NTLM mode and optional padding header
+            using var request = new HttpRequestMessage(HttpMethod.Get, $"range/{firstFiveChars}?mode=ntlm");
+            if (addPadding)
+            {
+                request.Headers.Add("Add-Padding", "true");
+            }
+
+            var response = await client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+
+            var passwordHashesInRange = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
             pwnedPassword = ParsePasswordRangeResponseText(
                 pwnedPassword, passwordHashesInRange, passwordHash);
