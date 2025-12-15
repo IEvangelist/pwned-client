@@ -12,16 +12,6 @@ jobs:
     - name: Print tag ref
       run: echo $GITHUB_REF
       
-    - name: Extract version number
-      uses: actions-ecosystem/action-regex-match@v2
-      id: regex-match
-      with:
-        text: ${{ github.ref }}
-        regex: '[0-9.]+'
-       
-    - name: Print version number
-      run: echo '${{ steps.regex-match.outputs.match }}'
-      
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
@@ -53,28 +43,16 @@ jobs:
 
     - name: Pack
       run: |
-        dotnet pack ./src/HaveIBeenPwned.Client.Abstractions/HaveIBeenPwned.Client.Abstractions.csproj --output packages
-        dotnet pack ./src/HaveIBeenPwned.Client/HaveIBeenPwned.Client.csproj --output packages
-        dotnet pack ./src/HaveIBeenPwned.Client.PollyExtensions/HaveIBeenPwned.Client.PollyExtensions.csproj --output packages
+        dotnet pack ./src/HaveIBeenPwned.Client.Abstractions/HaveIBeenPwned.Client.Abstractions.csproj --configuration Release --no-build --output packages
+        dotnet pack ./src/HaveIBeenPwned.Client/HaveIBeenPwned.Client.csproj --configuration Release --no-build --output packages
+        dotnet pack ./src/HaveIBeenPwned.Client.PollyExtensions/HaveIBeenPwned.Client.PollyExtensions.csproj --configuration Release --no-build --output packages
       
     - name: Publish package
       run: |
         dotnet nuget push "packages/*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{secrets.NUGET_API_KEY}} --skip-duplicate
 
-    - name: Upload abstractions package
+    - name: Upload packages
       uses: actions/upload-artifact@main
       with:
-        name: HaveIBeenPwned.Client.Abstractions.${{ steps.regex-match.outputs.match }}.nupkg
-        path: packages/
-
-    - name: Upload client package
-      uses: actions/upload-artifact@main
-      with:
-        name: HaveIBeenPwned.Client.${{ steps.regex-match.outputs.match }}.nupkg
-        path: packages/
-
-    - name: Upload polly extensions package
-      uses: actions/upload-artifact@main
-      with:
-        name: HaveIBeenPwned.Client.PollyExtensions.${{ steps.regex-match.outputs.match }}.nupkg
-        path: packages/
+        name: nuget-packages
+        path: packages/*.nupkg

@@ -4,14 +4,6 @@
     <TargetFramework>net10.0</TargetFramework>
     <Description>This is an unofficial .NET HTTP client library exposing various "Have I Been Pwned" APIs, including Breaches, Pastes, and of course Pwned Passwords.</Description>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <CurrentDate>$([System.DateTime]::Now.ToString(yyyyMMdd))</CurrentDate>
-    <ClientVersion Condition=" '$(IsPreview)' != 'true' ">$(ClientOfficialVersion)</ClientVersion>
-    <ClientVersion Condition=" '$(IsPreview)' == 'true' ">$(ClientPreviewVersion)</ClientVersion>
-    <VersionSuffix Condition=" '$(IsNightly)' == 'true' ">nightly-$(CurrentDate)</VersionSuffix>
-    <VersionSuffix Condition=" '$(IsPreview)' == 'true' ">preview</VersionSuffix>
-    <Version Condition=" '$(VersionSuffix)' == '' ">$(ClientVersion)</Version>
-    <Version Condition=" '$(VersionSuffix)' != '' ">$(ClientVersion)-$(VersionSuffix)</Version>
-    <FileVersion>$(ClientVersion)</FileVersion>
     <Authors>David Pine</Authors>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AssemblyName>HaveIBeenPwned.Client</AssemblyName>
