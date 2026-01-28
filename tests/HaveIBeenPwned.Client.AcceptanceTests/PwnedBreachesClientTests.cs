@@ -7,7 +7,8 @@ namespace HaveIBeenPwned.Client.AcceptanceTests;
 public sealed class PwnedBreachesClientTests
 {
     private readonly IPwnedBreachesClient _breachesClient = new PwnedClient(
-            Environment.GetEnvironmentVariable("HibpOptions__ApiKey")!);
+            Environment.GetEnvironmentVariable("HibpOptions__ApiKey")
+            ?? "00000000000000000000000000000000");
 
     [
         Theory(Skip = "These documented test accounts inconsistently return breaches."),

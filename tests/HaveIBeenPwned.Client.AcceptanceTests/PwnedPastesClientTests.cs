@@ -9,7 +9,8 @@ namespace HaveIBeenPwned.Client.AcceptanceTests;
 public sealed class PwnedPastesClientTests
 {
     private readonly IPwnedPastesClient _pastesClient = new PwnedClient(
-        Environment.GetEnvironmentVariable("HibpOptions__ApiKey")!);
+        Environment.GetEnvironmentVariable("HibpOptions__ApiKey")
+        ?? "00000000000000000000000000000000");
 
     [Fact]
     public async Task GetPastesAsyncReturnsNoPastes()
