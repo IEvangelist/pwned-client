@@ -109,6 +109,81 @@ internal sealed partial class DefaultPwnedClient
         }
     }
 
+    /// <inheritdoc cref="IPwnedBreachesClient.GetAllBreachDetailsAsync(string?, bool?, CancellationToken)" />
+    async Task<BreachDetails[]> IPwnedBreachesClient.GetAllBreachDetailsAsync(
+        string? domain,
+        bool? isSpamList,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var client = httpClientFactory.CreateClient(HibpClient);
+
+            var queryParams = new List<string>();
+            if (!string.IsNullOrWhiteSpace(domain))
+            {
+                queryParams.Add($"domain={domain}");
+            }
+            if (isSpamList.HasValue)
+            {
+                queryParams.Add($"isSpamList={isSpamList.Value.ToString().ToLowerInvariant()}");
+            }
+
+            var queryString = queryParams.Count > 0 ? $"?{string.Join("&", queryParams)}" : "";
+
+            var breachDetails =
+                await client.GetFromJsonAsync<BreachDetails[]>(
+                        $"breaches{queryString}",
+                        SourceGeneratorContext.Default.BreachDetailsArray,
+                        cancellationToken
+                    )
+                    .ConfigureAwait(false);
+
+            return breachDetails ?? [];
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
+
+            return [];
+        }
+    }
+
+    /// <inheritdoc path="IPwnedBreachesClient.GetAllBreachDetailsAsAsyncEnumerable(string?, bool?, CancellationToken)" />
+    IAsyncEnumerable<BreachDetails?> IPwnedBreachesClient.GetAllBreachDetailsAsAsyncEnumerable(
+        string? domain,
+        bool? isSpamList,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var client = httpClientFactory.CreateClient(HibpClient);
+
+            var queryParams = new List<string>();
+            if (!string.IsNullOrWhiteSpace(domain))
+            {
+                queryParams.Add($"domain={domain}");
+            }
+            if (isSpamList.HasValue)
+            {
+                queryParams.Add($"isSpamList={isSpamList.Value.ToString().ToLowerInvariant()}");
+            }
+
+            var queryString = queryParams.Count > 0 ? $"?{string.Join("&", queryParams)}" : "";
+
+            return client.GetFromJsonAsAsyncEnumerable<BreachDetails>(
+                    $"breaches{queryString}",
+                    SourceGeneratorContext.Default.BreachDetails,
+                    cancellationToken: cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
+
+            return Internals.AsyncEnumerable.Empty<BreachDetails?>();
+        }
+    }
+
     /// <inheritdoc cref="IPwnedBreachesClient.GetBreachesForAccountAsync(string, bool, string?, CancellationToken)" />
     async Task<BreachDetails[]> IPwnedBreachesClient.GetBreachesForAccountAsync(
         string account,

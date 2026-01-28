@@ -3,4 +3,5 @@
 
 global using HaveIBeenPwned.Client;
 global using HaveIBeenPwned.Client.Options;
+global using Scalar.AspNetCore;
 global using HaveIBeenPwned.MinimalApi.Extensions;

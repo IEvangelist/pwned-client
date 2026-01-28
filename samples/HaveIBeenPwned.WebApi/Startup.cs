@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using HaveIBeenPwned.Client;
-using Microsoft.OpenApi;
+using Scalar.AspNetCore;
 
 namespace HaveIBeenPwned.WebApi;
 
@@ -14,10 +14,7 @@ public class Startup(IConfiguration configuration)
             services => new PwnedClient(configuration["HibpOptions:ApiKey"]!));
 
         services.AddControllers();
-        services.AddSwaggerGen(
-            options =>
-            options.SwaggerDoc(
-                "v1", new OpenApiInfo { Title = "HaveIBeenPwned.WebApi", Version = "v1" }));
+        services.AddOpenApi();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -25,13 +22,16 @@ public class Startup(IConfiguration configuration)
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HaveIBeenPwned.WebApi v1"));
         }
 
         app.UseHttpsRedirection();
         app.UseRouting();
         app.UseAuthorization();
-        app.UseEndpoints(endpoints => endpoints.MapControllers());
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+            endpoints.MapOpenApi();
+            endpoints.MapScalarApiReference();
+        });
     }
 }

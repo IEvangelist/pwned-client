@@ -123,6 +123,36 @@ public interface IPwnedBreachesClient
         CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Gets an array of <see cref="BreachDetails"/> for all breaches in the system, optionally filtering on <paramref name="domain"/> or <paramref name="isSpamList"/>.
+    /// </summary>
+    /// <param name="domain">An optional domain to filter the returned breaches to.</param>
+    /// <param name="isSpamList">Filters the result set to only breaches that are or are not flagged as a spam list.</param>
+    /// <param name="cancellationToken">Used to signal cancellation.</param>
+    /// <returns>An array of breach details, or an empty array.</returns>
+    /// <remarks>
+    /// Example JSON payload: <a href="https://haveibeenpwned.com/api/v3/breaches"></a>
+    /// </remarks>
+    Task<BreachDetails[]> GetAllBreachDetailsAsync(
+        string? domain = default,
+        bool? isSpamList = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Retrieves a collection of all breach details in the system as an asynchronous enumerable, optionally filtering on <paramref name="domain"/> or <paramref name="isSpamList"/>.
+    /// </summary>
+    /// <param name="domain">An optional domain to filter the returned breaches to.</param>
+    /// <param name="isSpamList">Filters the result set to only breaches that are or are not flagged as a spam list.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used to cancel the asynchronous operation.</param>
+    /// <returns>An asynchronous enumerable of <see cref="BreachDetails"/> objects.</returns>
+    /// <remarks>
+    /// Example JSON payload: <a href="https://haveibeenpwned.com/api/v3/breaches"></a>
+    /// </remarks>
+    IAsyncEnumerable<BreachDetails?> GetAllBreachDetailsAsAsyncEnumerable(
+        string? domain = default,
+        bool? isSpamList = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Gets the <see cref="BreachDetails"/> object for the given <paramref name="breachName"/>.
     /// </summary>
     /// <param name="breachName">The name of the breach to get.</param>

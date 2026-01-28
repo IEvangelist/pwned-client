@@ -50,6 +50,12 @@ public sealed class PwnedClient(string apiKey, ILoggerFactory? loggerFactory = d
         CancellationToken cancellationToken) => _pwnedClient.GetBreachesAsync(domain, isSpamList, cancellationToken);
 
     /// <inheritdoc/>
+    Task<BreachDetails[]> IPwnedBreachesClient.GetAllBreachDetailsAsync(
+        string? domain,
+        bool? isSpamList,
+        CancellationToken cancellationToken) => _pwnedClient.GetAllBreachDetailsAsync(domain, isSpamList, cancellationToken);
+
+    /// <inheritdoc/>
     Task<BreachDetails[]> IPwnedBreachesClient.GetBreachesForAccountAsync(
         string account,
         bool includeUnverified,
@@ -117,6 +123,12 @@ public sealed class PwnedClient(string apiKey, ILoggerFactory? loggerFactory = d
         string? domain = null,
         bool? isSpamList = null,
         CancellationToken cancellationToken = default) => _pwnedClient.GetBreachesAsAsyncEnumerable(domain, isSpamList, cancellationToken);
+
+    /// <inheritdoc/>
+    public IAsyncEnumerable<BreachDetails?> GetAllBreachDetailsAsAsyncEnumerable(
+        string? domain = null,
+        bool? isSpamList = null,
+        CancellationToken cancellationToken = default) => _pwnedClient.GetAllBreachDetailsAsAsyncEnumerable(domain, isSpamList, cancellationToken);
 
     /// <inheritdoc/>
     public IAsyncEnumerable<BreachDetails?> GetBreachesForAccountAsAsyncEnumerable(

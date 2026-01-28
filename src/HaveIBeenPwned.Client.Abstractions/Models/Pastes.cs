@@ -31,7 +31,7 @@ public sealed class Pastes
     /// The date and time (precision to the second) that the paste was posted.
     /// This is taken directly from the paste site when this information is available but may be null if no date is published.
     /// </summary>
-    public DateTime Date { get; set; }
+    public DateTime? Date { get; set; }
 
     /// <summary>
     /// The number of emails that were found when processing the paste.

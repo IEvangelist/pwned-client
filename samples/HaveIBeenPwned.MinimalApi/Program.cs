@@ -7,23 +7,17 @@ builder.Services.AddPwnedServices(
     builder.Configuration.GetSection(nameof(HibpOptions)));
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-    options.SwaggerDoc("v1", new()
-    {
-        Title = "HaveIBeenPwned.MinimalApi",
-        Version = "v1"
-    }));
+builder.Services.AddOpenApi();
 
 using var app = builder.Build();
 
 if (builder.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-        options.SwaggerEndpoint(
-            "/swagger/v1/swagger.json", "HaveIBeenPwned.MinimalApi v1"));
 }
+
+app.MapOpenApi();
+app.MapScalarApiReference();
 
 app.UseHttpsRedirection();
 
