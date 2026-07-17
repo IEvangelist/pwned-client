@@ -1,0 +1,27 @@
+---
+const items = [
+  { path: "/docs/", label: "Overview", icon: "ph-compass" },
+  { path: "/docs/breaches/", label: "Breaches", icon: "ph-door-open" },
+  { path: "/docs/passwords/", label: "Pwned passwords", icon: "ph-key" },
+  { path: "/docs/pastes/", label: "Pastes", icon: "ph-clipboard-text" },
+  { path: "/docs/domains/", label: "Domains & stealer logs", icon: "ph-globe-hemisphere-west" },
+  { path: "/docs/telemetry/", label: "Telemetry", icon: "ph-chart-line-up" },
+];
+const currentPath = Astro.url.pathname;
+const base = import.meta.env.BASE_URL;
+---
+
+<aside class="docs-side">
+  <div class="docs-side-label">API surface</div>
+  <nav class="docs-nav" aria-label="Documentation">
+    {items.map((item) => (
+      <a
+        href={`${base}${item.path.replace(/^\//, "")}`}
+        aria-current={currentPath.endsWith(item.path) ? "page" : undefined}
+        class:list={["docs-nav-link", { "is-active": currentPath.endsWith(item.path) }]}
+      >
+        <i class={`ph ${item.icon}`} aria-hidden="true"></i>{item.label}
+      </a>
+    ))}
+  </nav>
+</aside>

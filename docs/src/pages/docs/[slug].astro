@@ -1,0 +1,262 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import DocsSidebar from "../../components/DocsSidebar.astro";
+import CodeBlock from "../../components/CodeBlock.astro";
+import { apiDocs } from "../../data/api";
+
+export function getStaticPaths() {
+  return Object.entries(apiDocs).map(([slug, doc]) => ({
+    params: { slug },
+    props: { doc },
+  }));
+}
+
+const { doc } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const hasOps = doc.operations.length > 0;
+
+// Wrap long C# signatures so each parameter sits on its own indented line,
+// which avoids a horizontal scrollbar on narrow viewports.
+function formatSignature(sig: string): string {
+  const s = sig.trim();
+  if (s.length <= 72 || !s.endsWith(")")) return s;
+  let depth = 0;
+  let open = -1;
+  for (let i = s.length - 1; i >= 0; i--) {
+    const c = s[i];
+    if (c === ")") depth++;
+    else if (c === "(") {
+      depth--;
+      if (depth === 0) { open = i; break; }
+    }
+  }
+  if (open < 0) return s;
+  const head = s.slice(0, open);
+  const inner = s.slice(open + 1, -1);
+  const parts: string[] = [];
+  let d = 0;
+  let last = 0;
+  for (let i = 0; i < inner.length; i++) {
+    const c = inner[i];
+    if (c === "<" || c === "(" || c === "[") d++;
+    else if (c === ">" || c === ")" || c === "]") d--;
+    else if (c === "," && d === 0) { parts.push(inner.slice(last, i).trim()); last = i + 1; }
+  }
+  parts.push(inner.slice(last).trim());
+  if (parts.length <= 1) return s;
+  return `${head}(\n${parts.map((p) => `    ${p}`).join(",\n")})`;
+}
+
+// Sentence that connects a code sample to the output block beneath it.
+function outputNote(op: { outputNote?: string; outputLang?: string }): string {
+  if (op.outputNote) return op.outputNote;
+  return op.outputLang === "json"
+    ? "Calling the snippet above yields the following payload:"
+    : "Running the snippet above prints:";
+}
+---
+
+<Layout title={`${doc.title} - API docs`} description={doc.summary} currentPath={`/docs/${Astro.params.slug}/`}>
+  <div class="container docs-shell">
+    <DocsSidebar />
+    <article class="docs-article api-article">
+      <a class="docs-back" href={`${base}docs/`}><i class="ph ph-arrow-left" aria-hidden="true"></i> All API docs</a>
+
+      <div class="api-head">
+        <i class={`ph ${doc.icon} api-head-icon`} aria-hidden="true"></i>
+        <div>
+          <h1 class="display">{doc.title}</h1>
+          <p class="lead" style="margin-top: 0.9rem;">{doc.summary}</p>
+        </div>
+      </div>
+
+      <div class="di-callout" data-reveal>
+        <div class="di-callout-head">
+          <i class="ph ph-plugs-connected" aria-hidden="true"></i>
+          <span>Inject in DI</span>
+        </div>
+        <ul class="di-clients">
+          {doc.clients.map((client) => (
+            <li>
+              <code>{client.name}</code>
+              <span>{client.desc}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="di-note">{doc.inject}</p>
+        {doc.registration && (
+          <div class="di-reg">
+            <CodeBlock label="Registration" code={doc.registration} />
+          </div>
+        )}
+      </div>
+
+      {hasOps && (
+        <nav class="on-this-page" aria-label="On this page">
+          <div class="docs-side-label">Operations</div>
+          <ul>
+            {doc.operations.map((op) => (
+              <li><a href={`#${op.id}`}><code>{op.name}</code></a></li>
+            ))}
+          </ul>
+        </nav>
+      )}
+
+      {doc.operations.map((op) => (
+        <section class="op-block" id={op.id} data-reveal>
+          <h3 class="op-heading">
+            <a class="op-anchor" href={`#${op.id}`} aria-label={`Link to ${op.name}`}><i class="ph ph-link" aria-hidden="true"></i></a>
+            <code>{op.name}</code>
+            <span class={`op-auth auth-${op.auth.split(" ")[0].toLowerCase()}`}>
+              <i class="ph ph-lock-key" aria-hidden="true"></i>{op.auth}
+            </span>
+          </h3>
+          <p class="op-summary">{op.summary}</p>
+
+          <div class="op-signature">
+            <CodeBlock bare code={formatSignature(op.signature)} />
+          </div>
+
+          {op.params.length > 0 && (
+            <div class="api-table-wrap">
+              <div class="api-table-label">Parameters</div>
+              <table class="api-table">
+                <thead>
+                  <tr><th>Name</th><th>Type</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                  {op.params.map((p) => (
+                    <tr>
+                      <td>
+                        <code>{p.name}</code>
+                        {p.required && <span class="req" title="Required">required</span>}
+                      </td>
+                      <td><code class="type">{p.type}</code></td>
+                      <td>{p.desc}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          <div class="api-table-wrap">
+            <div class="api-table-label">Returns</div>
+            <table class="api-table">
+              <tbody>
+                <tr>
+                  <td class="return-type"><code class="type">{op.returns.type}</code></td>
+                  <td>{op.returns.desc}</td>
+                </tr>
+                {op.streaming && (
+                  <tr>
+                    <td class="return-type"><span class="stream-tag"><i class="ph ph-waveform" aria-hidden="true"></i>Streams</span></td>
+                    <td>Also available as <code>{op.streaming}</code> for <code>IAsyncEnumerable</code> consumption.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="op-example">
+            <CodeBlock label="Example usage" code={op.example} />
+            <p class="op-output-note">{outputNote(op)}</p>
+            <CodeBlock label="Sample output" code={op.output} language={op.outputLang || "text"} />
+          </div>
+
+          <div class="op-tables">
+            <div class="api-table-wrap">
+              <div class="api-table-label">Exceptions</div>
+              <table class="api-table">
+                <thead><tr><th>Type</th><th>Thrown when</th></tr></thead>
+                <tbody>
+                  {op.exceptions.map((ex) => (
+                    <tr>
+                      <td><code class="type">{ex.type}</code></td>
+                      <td>{ex.when}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div class="api-table-wrap">
+              <div class="api-table-label">Status codes</div>
+              <table class="api-table">
+                <thead><tr><th>Code</th><th>Meaning</th></tr></thead>
+                <tbody>
+                  {op.statusCodes.map((sc) => (
+                    <tr>
+                      <td><span class={`status status-${sc.code[0]}xx`}>{sc.code}</span></td>
+                      <td>{sc.meaning}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {op.notes && op.notes.length > 0 && (
+            <div class="op-notes">
+              {op.notes.map((note) => (
+                <p><i class="ph ph-info" aria-hidden="true"></i>{note}</p>
+              ))}
+            </div>
+          )}
+        </section>
+      ))}
+
+      {doc.constants && (
+        <section class="op-block" data-reveal>
+          <div class="api-table-wrap">
+            <div class="api-table-label">Constants</div>
+            <table class="api-table">
+              <thead><tr><th>Member</th><th>Value</th><th>Description</th></tr></thead>
+              <tbody>
+                {doc.constants.map((c) => (
+                  <tr>
+                    <td><code>{c.name}</code></td>
+                    <td><code class="type">{c.value}</code></td>
+                    <td>{c.desc}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+
+      {doc.instruments && (
+        <section class="op-block" data-reveal>
+          <div class="api-table-wrap">
+            <div class="api-table-label">Instruments</div>
+            <table class="api-table">
+              <thead><tr><th>Instrument</th><th>Kind</th><th>Unit</th><th>Description</th></tr></thead>
+              <tbody>
+                {doc.instruments.map((inst) => (
+                  <tr>
+                    <td><code>{inst.instrument}</code></td>
+                    <td>{inst.kind}</td>
+                    <td><code class="type">{inst.unit}</code></td>
+                    <td>{inst.desc}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+
+      {doc.closingExample && (
+        <div class="op-example" style="margin-top: 2rem;">
+          <CodeBlock label={doc.closingExample.label} code={doc.closingExample.code} language={doc.closingExample.outputLang || "text"} />
+        </div>
+      )}
+
+      <div class="note">
+        <strong><i class="ph ph-shield-check" aria-hidden="true"></i> Privacy note</strong>
+        <p>Never log or export plaintext passwords. K-anonymity range results that do not match the requested value must not be retained.</p>
+      </div>
+    </article>
+  </div>
+</Layout>

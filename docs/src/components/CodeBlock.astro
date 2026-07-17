@@ -1,0 +1,29 @@
+---
+import { codeToHtml } from "shiki";
+
+interface Props {
+  label?: string;
+  code: string;
+  language?: string;
+  bare?: boolean;
+}
+const { label, code, language = "csharp", bare = false } = Astro.props;
+const langLabel = language === "csharp" ? "C#" : language;
+const highlighted = await codeToHtml(code, {
+  lang: language,
+  themes: { light: "github-light", dark: "github-dark-default" },
+  defaultColor: false,
+});
+---
+
+{bare ? (
+  <div class="code-block" set:html={highlighted}></div>
+) : (
+  <div class="code-frame" data-reveal>
+    <div class="code-toolbar">
+      <span>{label || "Example"}</span>
+      <span class="lang">{langLabel}</span>
+    </div>
+    <div class="code-block" set:html={highlighted}></div>
+  </div>
+)}

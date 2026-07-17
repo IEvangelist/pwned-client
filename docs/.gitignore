@@ -1,0 +1,12 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+
+# generated types cache
+.astro/
+
+# local tooling artifacts
+.playwright-cli/
+*.log

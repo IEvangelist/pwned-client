@@ -1,0 +1,200 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  currentPath?: string;
+}
+
+const { title, description, currentPath = "" } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const homeHref = base;
+const docsHref = `${base}docs/`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const year = new Date().getFullYear();
+const repo = "https://github.com/IEvangelist/pwned-client";
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="light dark" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={base + "assets/logo.png"} />
+    <link rel="preload" as="font" type="font/woff2" href={base + "fonts/space-grotesk-700.woff2"} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={base + "fonts/geist-400.woff2"} crossorigin />
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1" is:inline></script>
+    <title>{title}</title>
+    <script is:inline>
+      const saved = localStorage.getItem("pwned-client-theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = saved || (prefersDark ? "dark" : "light");
+    </script>
+  </head>
+  <body>
+    <span data-top-sentinel aria-hidden="true" style="position:absolute; top:0; left:0; width:1px; height:1px;"></span>
+    <header class="site-header" data-site-header>
+      <div class="container site-header-inner">
+        <a class="brand" href={homeHref} aria-label="Have I Been Pwned .NET client, home">
+          <img class="brand-mark" src={base + "assets/logo.png"} alt="" width="34" height="34" />
+          <span>pwned<span class="brand-sub">.client</span></span>
+        </a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href={docsHref} aria-current={currentPath.includes("/docs") ? "page" : undefined}>
+            <i class="ph ph-book-open-text" aria-hidden="true"></i> API docs
+          </a>
+          <a href="https://github.com/IEvangelist/pwned-client" rel="noopener">
+            <svg class="gh-mark" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path></svg>
+            GitHub
+          </a>
+          <a href="https://www.nuget.org/packages/HaveIBeenPwned.Client" rel="noopener">
+            <i class="ph ph-package" aria-hidden="true"></i> NuGet
+          </a>
+          <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch color theme">
+            <i class="ph ph-sun" data-theme-icon aria-hidden="true"></i>
+          </button>
+        </nav>
+        <div class="mobile-only">
+          <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch color theme">
+            <i class="ph ph-sun" data-theme-icon aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+    <main><slot /></main>
+    <footer class="site-footer">
+      <div class="container site-footer-top">
+        <div class="footer-brand">
+          <a class="brand" href={homeHref} aria-label="pwned.client home">
+            <img class="brand-mark" src={base + "assets/logo.png"} alt="" width="34" height="34" />
+            <span>pwned<span class="brand-sub">.client</span></span>
+          </a>
+          <p class="footer-tagline">
+            <span class="sqli">';--</span> Unofficial, AOT-compatible .NET client for the Have I Been Pwned REST API v3.
+          </p>
+          <div class="footer-social">
+            <a href={repo} rel="noopener" aria-label="GitHub repository">
+              <svg class="gh-mark" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path></svg>
+            </a>
+            <a href="https://www.nuget.org/packages/HaveIBeenPwned.Client" rel="noopener" aria-label="NuGet package">
+              <i class="ph ph-package" aria-hidden="true"></i>
+            </a>
+            <a href="https://davidpine.dev" rel="noopener" aria-label="David Pine, davidpine.dev">
+              <i class="ph ph-globe" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <nav class="footer-col" aria-label="Documentation">
+          <h2 class="footer-heading">Documentation</h2>
+          <a href={docsHref}><i class="ph ph-book-open-text" aria-hidden="true"></i> API overview</a>
+          <a href={base + "docs/breaches/"}><i class="ph ph-door-open" aria-hidden="true"></i> Breaches</a>
+          <a href={base + "docs/passwords/"}><i class="ph ph-key" aria-hidden="true"></i> Pwned passwords</a>
+          <a href={base + "docs/domains/"}><i class="ph ph-globe-hemisphere-west" aria-hidden="true"></i> Domains &amp; stealer logs</a>
+        </nav>
+
+        <nav class="footer-col" aria-label="Project">
+          <h2 class="footer-heading">Project</h2>
+          <a href={repo} rel="noopener"><i class="ph ph-git-branch" aria-hidden="true"></i> Source on GitHub</a>
+          <a href="https://www.nuget.org/packages/HaveIBeenPwned.Client" rel="noopener"><i class="ph ph-package" aria-hidden="true"></i> NuGet package</a>
+          <a href={repo + "/issues/new/choose"} rel="noopener"><i class="ph ph-bug-beetle" aria-hidden="true"></i> Create an issue</a>
+          <a href={repo + "/releases"} rel="noopener"><i class="ph ph-tag" aria-hidden="true"></i> Releases</a>
+        </nav>
+
+        <nav class="footer-col" aria-label="Resources">
+          <h2 class="footer-heading">Resources</h2>
+          <a href="https://haveibeenpwned.com/" rel="noopener"><i class="ph ph-shield-check" aria-hidden="true"></i> Have I Been Pwned</a>
+          <a href="https://haveibeenpwned.com/API/v3" rel="noopener"><i class="ph ph-plugs" aria-hidden="true"></i> HIBP API v3</a>
+          <a href="https://davidpine.dev" rel="noopener"><i class="ph ph-user" aria-hidden="true"></i> David Pine</a>
+        </nav>
+      </div>
+      <div class="footer-baseline">
+        <div class="container footer-baseline-inner">
+          <span class="footer-copy">
+            &copy; <span data-year>{year}</span> David Pine &middot;
+            <a href="https://davidpine.dev" rel="noopener">davidpine.dev</a>
+          </span>
+          <span class="footer-built">
+            Built with <i class="ph ph-heart" aria-hidden="true"></i> for the .NET community.
+          </span>
+        </div>
+      </div>
+    </footer>
+    <script is:inline>
+      // Theme toggle
+      const setIcons = () => {
+        const isDark = document.documentElement.dataset.theme === "dark";
+        document.querySelectorAll("[data-theme-icon]").forEach((icon) => {
+          icon.className = isDark ? "ph ph-moon" : "ph ph-sun";
+        });
+      };
+      document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+          document.documentElement.dataset.theme = next;
+          localStorage.setItem("pwned-client-theme", next);
+          setIcons();
+        });
+      });
+      setIcons();
+
+      // Keep the footer year current on the client
+      const yearEl = document.querySelector("[data-year]");
+      if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+      // Copy-to-clipboard
+      document.querySelectorAll("[data-copy]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(button.getAttribute("data-copy") || "");
+            const label = button.querySelector("[data-copy-label]");
+            const original = label ? label.textContent : "";
+            button.setAttribute("data-copied", "true");
+            if (label) label.textContent = "Copied";
+            setTimeout(() => {
+              button.removeAttribute("data-copied");
+              if (label) label.textContent = original;
+            }, 1600);
+          } catch (error) {
+            /* clipboard unavailable */
+          }
+        });
+      });
+
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      // Scroll-reveal via IntersectionObserver (no scroll listeners)
+      if (!reduced && "IntersectionObserver" in window) {
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12 });
+        document.querySelectorAll("[data-reveal]").forEach((el) => revealObserver.observe(el));
+      } else {
+        document.querySelectorAll("[data-reveal]").forEach((el) => el.classList.add("is-visible"));
+      }
+
+      // Header elevation on scroll via a sentinel (no scroll listeners)
+      const sentinel = document.querySelector("[data-top-sentinel]");
+      const header = document.querySelector("[data-site-header]");
+      if (sentinel && header && "IntersectionObserver" in window) {
+        const headerObserver = new IntersectionObserver((entries) => {
+          header.dataset.scrolled = (!entries[0].isIntersecting).toString();
+        }, { threshold: 0 });
+        headerObserver.observe(sentinel);
+      }
+    </script>
+  </body>
+</html>
