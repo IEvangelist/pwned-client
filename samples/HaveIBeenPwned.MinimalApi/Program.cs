@@ -26,9 +26,15 @@ app.MapGroup("api/breaches")
    .MapPwnedBreachesApi();
 
 // Map "have i been pwned" passwords.
-app.MapGet("api/passwords/{plainTextPassword}",
-    static (string plainTextPassword, IPwnedPasswordsClient client) =>
-        client.GetPwnedPasswordAsync(plainTextPassword));
+app.MapPost("api/passwords",
+    static (PasswordLookupRequest request, IPwnedPasswordsClient client) =>
+        request.UseNtlm
+            ? client.GetPwnedPasswordWithNtlmAsync(
+                request.Password,
+                request.AddPadding)
+            : client.GetPwnedPasswordAsync(
+                request.Password,
+                request.AddPadding));
 
 // Map "have i been pwned" pastes.
 app.MapGet("api/pastes/{account}",
@@ -36,3 +42,8 @@ app.MapGet("api/pastes/{account}",
         client.GetPastesAsync(account));
 
 await app.RunAsync();
+
+internal sealed record PasswordLookupRequest(
+    string Password,
+    bool AddPadding = true,
+    bool UseNtlm = false);

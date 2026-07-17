@@ -30,4 +30,13 @@ public class HibpOptionsTests
         Assert.Equal("Fake", userAgent);
         Assert.Null(subscriptionLevel);
     }
+
+    [Fact]
+    public void HibpOptions_AllowsMissingApiKeyForPublicEndpoints()
+    {
+        var options = Create<HibpOptions>(new());
+
+        Assert.Null(options.Value.ApiKey);
+        Assert.NotEmpty(options.Value.UserAgent);
+    }
 }

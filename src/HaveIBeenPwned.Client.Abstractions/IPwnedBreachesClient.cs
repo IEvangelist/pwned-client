@@ -28,6 +28,20 @@ public interface IPwnedBreachesClient
         CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Gets breach headers for an account with the documented account-search filters.
+    /// </summary>
+    /// <param name="account">The account to search for breaches.</param>
+    /// <param name="includeUnverified">Whether to include unverified breaches.</param>
+    /// <param name="domain">An optional breach-domain filter.</param>
+    /// <param name="cancellationToken">Used to signal cancellation.</param>
+    /// <returns>An array of breach headers if found, or an empty array.</returns>
+    Task<BreachHeader[]> GetBreachHeadersForAccountAsync(
+        string account,
+        bool includeUnverified,
+        string? domain = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Retrieves an asynchronous stream of <see cref="BreachHeader"/> objects representing all known data breaches that include the specified account.
     /// The account is not case sensitive and will be trimmed of leading or trailing white spaces.
     /// The account should always be URL encoded.
@@ -43,6 +57,41 @@ public interface IPwnedBreachesClient
     /// When the <paramref name="account"/> is either <see langword="null" />, empty or whitespace.
     /// </exception>
     IAsyncEnumerable<BreachHeader?> GetBreachHeadersForAccountAsAsyncEnumerable(
+        string account,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Streams breach headers for an account with the documented account-search filters.
+    /// </summary>
+    /// <param name="account">The account to search for breaches.</param>
+    /// <param name="includeUnverified">Whether to include unverified breaches.</param>
+    /// <param name="domain">An optional breach-domain filter.</param>
+    /// <param name="cancellationToken">Used to signal cancellation.</param>
+    /// <returns>An asynchronous stream of breach headers.</returns>
+    IAsyncEnumerable<BreachHeader?> GetBreachHeadersForAccountAsAsyncEnumerable(
+        string account,
+        bool includeUnverified,
+        string? domain = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets breach headers for an account using the privacy-preserving k-anonymity API.
+    /// Only the first six characters of the normalized email address's SHA-1 hash are sent.
+    /// </summary>
+    /// <param name="account">The email address to search for breaches.</param>
+    /// <param name="cancellationToken">Used to signal cancellation.</param>
+    /// <returns>An array of matching breach headers, or an empty array.</returns>
+    Task<BreachHeader[]> GetBreachHeadersForAccountUsingKAnonymityAsync(
+        string account,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Streams breach headers for an account using the privacy-preserving k-anonymity API.
+    /// </summary>
+    /// <param name="account">The email address to search for breaches.</param>
+    /// <param name="cancellationToken">Used to signal cancellation.</param>
+    /// <returns>An asynchronous stream containing only locally matched breach headers.</returns>
+    IAsyncEnumerable<BreachHeader?> GetBreachHeadersForAccountUsingKAnonymityAsAsyncEnumerable(
         string account,
         CancellationToken cancellationToken = default);
 

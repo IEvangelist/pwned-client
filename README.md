@@ -1,114 +1,205 @@
-# ![';-- have i been pwned? — .NET HTTP client.](https://raw.githubusercontent.com/IEvangelist/pwned-client/main/assets/pwned-header.png)
+# ![';-- have i been pwned? - .NET HTTP client.](https://raw.githubusercontent.com/IEvangelist/pwned-client/main/assets/pwned-header.png)
 
-[![build](https://github.com/IEvangelist/pwned-client/actions/workflows/build-validation.yml/badge.svg)](https://github.com/IEvangelist/pwned-client/actions/workflows/build-validation.yml) [![code analysis](https://github.com/IEvangelist/pwned-client/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/IEvangelist/pwned-client/actions/workflows/codeql-analysis.yml) [![NuGet](https://img.shields.io/nuget/v/HaveIBeenPwned.Client.svg?style=flat)](https://www.nuget.org/packages/HaveIBeenPwned.Client) ![nuget downloads](https://img.shields.io/nuget/dt/HaveIBeenPwned.Client?color=blue&label=nuget%20downloads&logo=nuget) 
+[![build](https://github.com/IEvangelist/pwned-client/actions/workflows/build-validation.yml/badge.svg)](https://github.com/IEvangelist/pwned-client/actions/workflows/build-validation.yml)
+[![code analysis](https://github.com/IEvangelist/pwned-client/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/IEvangelist/pwned-client/actions/workflows/codeql-analysis.yml)
+[![NuGet](https://img.shields.io/nuget/v/HaveIBeenPwned.Client.svg?style=flat)](https://www.nuget.org/packages/HaveIBeenPwned.Client)
+![NuGet downloads](https://img.shields.io/nuget/dt/HaveIBeenPwned.Client?color=blue&label=nuget%20downloads&logo=nuget)
 
-`HaveIBeenPwned.Client` is a .NET HTTP client for the "have i been pwned" API service from Troy Hunt. This library is comprised of three NuGet packages:
+`HaveIBeenPwned.Client` is an unofficial, AOT-compatible .NET client for the complete [Have I Been Pwned REST API v3](https://haveibeenpwned.com/API/v3).
+
+The repository publishes three packages:
 
 - [`HaveIBeenPwned.Client`](https://www.nuget.org/packages/HaveIBeenPwned.Client)
 - [`HaveIBeenPwned.Client.Abstractions`](https://www.nuget.org/packages/HaveIBeenPwned.Client.Abstractions)
 - [`HaveIBeenPwned.Client.PollyExtensions`](https://www.nuget.org/packages/HaveIBeenPwned.Client.PollyExtensions)
 
-> Consumers of the API can use the abstractions for the models returned from the API, while server APIs can consume and wrap the client.
+## Supported API surface
+
+| Area | Operations | Client | Access |
+| --- | --- | --- | --- |
+| Email search | Direct account search, filtered/truncated responses, six-character k-anonymity search | `IPwnedBreachesClient` | Core, Pro, or High RPM; k-anonymity requires Pro or High RPM |
+| Domain verification | Generate DNS token, verify DNS token, send verification email | `IPwnedDomainClient` | Pro |
+| Domain search | Breached domain and subscribed domains | `IPwnedDomainClient` | Core or Pro |
+| Breaches | All breaches, single breach, latest breach, data classes | `IPwnedBreachesClient` | Public |
+| Stealer logs | By email, website domain, or email domain | `IPwnedStealerLogsClient` | Pro |
+| Pastes | Pastes for an email address | `IPwnedPastesClient` | Core, Pro, or High RPM |
+| Subscription | Current status and capabilities | `IPwnedClient` | Authenticated |
+| Pwned Passwords | SHA-1 and NTLM range searches with optional padding | `IPwnedPasswordsClient` | Public |
+
+`IPwnedClient` aggregates all specialized clients.
 
 ## Getting started
 
-Install from the .NET CLI:
+Install the client:
 
 ```shell
 dotnet add package HaveIBeenPwned.Client
 ```
 
-Alternatively add manually to your consuming _.csproj_:
-
-```xml
-<PackageReference Include="HaveIBeenPwned.Client" Version="{VersionNumber}" />
-```
-
-Or, install using the NuGet Package Manager:
-
-```powershell
-Install-Package HaveIBeenPwned.Client
-```
-
 ### Dependency injection
 
-To add all of the services to the dependency injection container, call one of the `AddPwnedServices` overloads. From Minimal APIs for example, with using a named configuration section:
-
 ```csharp
-builder.Services.AddPwnedServices(
-    builder.Configuration.GetSection(nameof(HibpOptions)));
+builder.Services.AddPwnedServices(options =>
+{
+    options.ApiKey = builder.Configuration["HibpOptions:ApiKey"];
+    options.UserAgent = "my-service/1.0";
+});
 ```
 
-From a `ConfigureServices` method, with an `IConfiguration` instance:
+The API key is optional when only public breach-catalogue or Pwned Passwords operations are used:
 
 ```csharp
-services.AddPwnedServices(options =>
-    {
-        options.ApiKey = _configuration["HibpOptions:ApiKey"];
-        options.UserAgent = _configuration["HibpOptions:UserAgent"];
-    });
+builder.Services.AddPwnedServices(options =>
+{
+    options.UserAgent = "my-public-service/1.0";
+});
 ```
 
-Then you can require any of the available DI-ready types:
+Resolve either a specialized client or `IPwnedClient`:
 
-- `IPwnedBreachesClient`: [Breaches API](https://haveibeenpwned.com/API/v3#BreachesForAccount).
-- `IPwnedPastesClient`: [Pastes API](https://haveibeenpwned.com/API/v3#PastesForAccount).
-- `IPwnedPasswordsClient`: [Pwned Passwords API](https://haveibeenpwned.com/API/v3#PwnedPasswords).
-- `IPwnedClient`: Marker interface, for conveniently injecting all of the above clients into a single client.
+```csharp
+var breaches = serviceProvider.GetRequiredService<IPwnedBreachesClient>();
+var allApis = serviceProvider.GetRequiredService<IPwnedClient>();
+```
 
 ### Without dependency injection
 
-If you're not using the DI approach, simply instantiate `PwnedClient` with your API key and use it as you see fit.
-
 ```csharp
-IPwnedClient client = new PwnedClient("<API Key>");
-// TODO: Use client...
+IPwnedClient publicClient = new PwnedClient();
+IPwnedClient authenticatedClient = new PwnedClient("<HIBP API key>");
 ```
 
-### Example Minimal APIs
+## Examples
 
-![Minimal APIs example code.](https://raw.githubusercontent.com/IEvangelist/pwned-client/main/assets/minimal-api.svg)
+### Search an account directly
 
-## Configuration
+```csharp
+var breaches = await client.GetBreachesForAccountAsync(
+    "user@example.com",
+    includeUnverified: false,
+    domain: "example.com",
+    cancellationToken);
+```
 
-To configure the `HaveIBeenPwned.Client`, the following table identifies the well-known configuration object:
+### Search an account with k-anonymity
 
-### Well-known keys
+```csharp
+var breachHeaders =
+    await client.GetBreachHeadersForAccountUsingKAnonymityAsync(
+        "user@example.com",
+        cancellationToken);
+```
 
-Depending on the [.NET configuration provider](https://docs.microsoft.com/dotnet/core/extensions/configuration-providers?WC.m_id=dapine) your app is using, there are several well-known keys that map to the `HibpOptions` that configure your usage of the HTTP client. When using environment variables, such as those in Azure App Service configuration or Azure Key Vault secrets, the following keys map to the `HibpOption` instance:
+The client normalizes and hashes the address locally, sends only the first six SHA-1 characters, matches the returned suffix locally, and does not expose nonmatching range entries.
 
-| Key                      | Data type | Default value                              |
-|--------------------------|-----------|--------------------------------------------|
-| `HibpOptions__ApiKey`    | `string`  | `null`                                     |
-| `HibpOptions__UserAgent` | `string`  | `".NET HIBP Client/{AssemblyFileVersion}"` |
+### Verify a domain
 
-The `ApiKey` is required, to get one &mdash; sign up here: <https://haveibeenpwned.com/api/key>
+```csharp
+var token = await client.GenerateDomainVerificationDnsTokenAsync(
+    "example.com",
+    cancellationToken);
 
-### Example `appsettings.json`
+// Publish token.TxtRecordValue as a DNS TXT record, then:
+await client.VerifyDomainViaDnsAsync("example.com", cancellationToken);
+```
 
-```json
+Email verification is also supported:
+
+```csharp
+await client.SendDomainVerificationEmailAsync(
+    "example.com",
+    DomainVerificationEmailAlias.Security,
+    cancellationToken);
+```
+
+### Search Pwned Passwords
+
+```csharp
+var result = await client.GetPwnedPasswordAsync(
+    plainTextPassword,
+    addPadding: true,
+    cancellationToken);
+
+var ntlmResult = await client.GetPwnedPasswordWithNtlmAsync(
+    plainTextPassword,
+    addPadding: true,
+    cancellationToken);
+```
+
+Only a five-character hash prefix is sent to the Pwned Passwords service. Padding rows with a zero count are discarded.
+
+## Error behavior
+
+Documented `404 Not Found` responses map to the operation's no-result shape, such as an empty collection or `null`. Other HTTP failures throw `PwnedApiException`:
+
+```csharp
+try
 {
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft": "Warning",
-      "Microsoft.Hosting.Lifetime": "Information"
-    }
-  },
-  "AllowedHosts": "*",
-  "HibpOptions": {
-    "ApiKey": "<YourApiKey>",
-    "UserAgent": "<YourUserAgent>"
-  }
+    await client.GetBreachesForAccountAsync("user@example.com");
+}
+catch (PwnedApiException exception)
+{
+    Console.WriteLine(exception.StatusCode);
+    Console.WriteLine(exception.ResponseContent);
+    Console.WriteLine(exception.RetryAfter);
 }
 ```
 
-For more information, see [JSON configuration provider](https://docs.microsoft.com/dotnet/core/extensions/configuration-providers?WC.m_id=dapine#json-configuration-provider).
+Cancellation, transport failures, and JSON failures are never converted into empty successful-looking results.
 
-<!--
-Notes for tagging releases:
-  https://rehansaeed.com/the-easiest-way-to-version-nuget-packages/#minver
+## OpenTelemetry and Aspire
 
-git tag -a 0.0.3 -m "Build version 0.0.3"
-git push upstream --tags
--->
+The client emits dependency-free .NET diagnostics through a stable `ActivitySource` and `Meter`. Register them with an existing OpenTelemetry setup:
+
+```csharp
+builder.Services
+    .AddOpenTelemetry()
+    .WithTracing(tracing =>
+        tracing.AddSource(PwnedClientTelemetry.ActivitySourceName))
+    .WithMetrics(metrics =>
+        metrics.AddMeter(PwnedClientTelemetry.MeterName));
+```
+
+This integrates with standard OpenTelemetry exporters and Aspire service defaults. If an Aspire `ServiceDefaults` project already configures OpenTelemetry, add the source and meter to that existing configuration.
+
+The following instruments are emitted:
+
+| Instrument | Type | Description |
+| --- | --- | --- |
+| `hibp.client.request.count` | Counter | Logical client requests |
+| `hibp.client.request.duration` | Histogram, seconds | Logical request duration |
+| `hibp.client.request.failure.count` | Counter | Failed requests |
+| `hibp.client.rate_limit.count` | Counter | HTTP 429 responses |
+
+Spans and metrics use low-cardinality operation, API surface, method, outcome, and status tags. The client does not attach email addresses, domains, passwords, hashes, API keys, response bodies, or raw URLs to its own telemetry.
+
+Authenticated HIBP endpoints place email addresses or domains in the HTTP path. If standard `HttpClient` instrumentation is also enabled, configure its filtering or redaction so `url.full` is not exported for these hosts. The library-level spans remain available even when the lower-level HTTP spans are filtered.
+
+## Resilience
+
+Install `HaveIBeenPwned.Client.PollyExtensions` to configure the standard .NET HTTP resilience pipeline. Its default policy:
+
+- honors the HIBP `Retry-After` header;
+- retries HTTP 429 and 503 responses;
+- applies jitter, a circuit breaker, and an overall timeout;
+- redacts the `hibp-api-key` header from HTTP logs.
+
+Custom `HttpStandardResilienceOptions` can be supplied through the package's `AddPwnedServices` overloads.
+
+## Configuration
+
+| Key | Type | Default |
+| --- | --- | --- |
+| `HibpOptions__ApiKey` | `string?` | `null` |
+| `HibpOptions__UserAgent` | `string` | `.NET HIBP Client/{AssemblyFileVersion}` |
+| `HibpOptions__SubscriptionLevel` | `HibpSubscriptionLevel?` | `null` |
+
+Every API request includes a user agent. Authenticated email, domain, paste, stealer-log, and subscription operations require a valid [HIBP API key](https://haveibeenpwned.com/API/Key).
+
+## Privacy, security, and attribution
+
+- Do not run password searches for every keystroke; wait until password entry is complete.
+- Do not log or export plaintext passwords or `PwnedPassword.PlainTextPassword`.
+- K-anonymity range results that do not match the requested account or password must not be retained.
+- Breach and paste API data is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); consuming experiences must attribute Have I Been Pwned.
+- Pwned Passwords does not require attribution.

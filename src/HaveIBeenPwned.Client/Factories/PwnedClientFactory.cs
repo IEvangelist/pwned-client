@@ -40,7 +40,7 @@ internal static class PwnedClientFactory
     /// <exception cref="ArgumentNullException">
     /// If the given <paramref name="apiKey"/> value is <see langword="null" />, this exception is thrown.
     /// </exception>
-    internal static IPwnedClient FromApiKey(string apiKey, ILoggerFactory? loggerFactory = default)
+    internal static IPwnedClient FromApiKey(string? apiKey = null, ILoggerFactory? loggerFactory = default)
     {
         var httpClientFactory = InternalHttpClientFactory.Create(apiKey);
 

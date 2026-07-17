@@ -7,6 +7,9 @@ on:
 jobs: 
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
     
     - name: Print tag ref
@@ -47,12 +50,18 @@ jobs:
         dotnet pack ./src/HaveIBeenPwned.Client/HaveIBeenPwned.Client.csproj --configuration Release --no-build --output packages
         dotnet pack ./src/HaveIBeenPwned.Client.PollyExtensions/HaveIBeenPwned.Client.PollyExtensions.csproj --configuration Release --no-build --output packages
       
+    - name: Log in to NuGet with trusted publishing
+      id: nuget-login
+      uses: NuGet/login@v1
+      with:
+        user: dpine
+
     - name: Publish package
       run: |
-        dotnet nuget push "packages/*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{secrets.NUGET_API_KEY}} --skip-duplicate
+        dotnet nuget push "packages/*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --skip-duplicate
 
     - name: Upload packages
-      uses: actions/upload-artifact@main
+      uses: actions/upload-artifact@v4
       with:
         name: nuget-packages
         path: packages/*.nupkg

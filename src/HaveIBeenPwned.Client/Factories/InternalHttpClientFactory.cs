@@ -5,47 +5,41 @@ namespace HaveIBeenPwned.Client.Factories;
 
 internal sealed class InternalHttpClientFactory : IHttpClientFactory
 {
-    private static string? _apiKey;
-
-    private static readonly Lazy<HttpClient> _hibpClient = new(() =>
+    private static readonly SocketsHttpHandler s_handler = new()
     {
-        var client = new HttpClient
+        PooledConnectionLifetime = TimeSpan.FromMinutes(15)
+    };
+
+    private readonly HttpClient _hibpClient;
+    private readonly HttpClient _passwordsClient;
+
+    private InternalHttpClientFactory(string? apiKey)
+    {
+        _hibpClient = new HttpClient(s_handler, disposeHandler: false)
         {
             BaseAddress = new Uri(HttpClientUrls.HibpApiUrl)
         };
-        client.DefaultRequestHeaders.Add(HttpHeaderNames.HibpApiKey, _apiKey);
-        client.DefaultRequestHeaders.UserAgent.ParseAdd(HibpOptions.DefaultUserAgent);
+        if (!string.IsNullOrWhiteSpace(apiKey))
+        {
+            _hibpClient.DefaultRequestHeaders.Add(HttpHeaderNames.HibpApiKey, apiKey);
+        }
+        _hibpClient.DefaultRequestHeaders.UserAgent.ParseAdd(HibpOptions.DefaultUserAgent);
 
-        return client;
-    });
-
-    private static readonly Lazy<HttpClient> _passwordsClient = new(() =>
-    {
-        var client = new HttpClient
+        _passwordsClient = new HttpClient(s_handler, disposeHandler: false)
         {
             BaseAddress = new Uri(HttpClientUrls.PasswordsApiUrl)
         };
-        client.DefaultRequestHeaders.Add(HttpHeaderNames.HibpApiKey, _apiKey);
-        client.DefaultRequestHeaders.UserAgent.ParseAdd(HibpOptions.DefaultUserAgent);
-        client.DefaultRequestHeaders.Accept.Add(
+        _passwordsClient.DefaultRequestHeaders.UserAgent.ParseAdd(HibpOptions.DefaultUserAgent);
+        _passwordsClient.DefaultRequestHeaders.Accept.Add(
             new(MediaTypeNames.Text.Plain));
-
-        return client;
-    });
-
-    internal static InternalHttpClientFactory Create(string apiKey)
-    {
-        _apiKey = apiKey ?? throw new ArgumentNullException(apiKey);
-
-        return new();
     }
 
-    private InternalHttpClientFactory() { }
+    internal static InternalHttpClientFactory Create(string? apiKey) => new(apiKey);
 
     HttpClient IHttpClientFactory.CreateClient(string name) => name switch
     {
-        HttpClientNames.HibpClient => _hibpClient.Value,
-        HttpClientNames.PasswordsClient => _passwordsClient.Value,
+        HttpClientNames.HibpClient => _hibpClient,
+        HttpClientNames.PasswordsClient => _passwordsClient,
         _ => throw new NotImplementedException()
     };
 }

@@ -6,6 +6,7 @@ on:
     paths:
     - '**.cs'
     - '**.csproj'
+    - '**.props'
   workflow_dispatch:
     inputs:
       reason:

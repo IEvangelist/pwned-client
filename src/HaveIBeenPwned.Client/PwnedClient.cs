@@ -12,7 +12,7 @@ namespace HaveIBeenPwned.Client;
 /// </code>
 /// </summary>
 /// <param name="apiKey">
-/// The API key, used to authorize HTTP calls to HIBP.
+/// The optional API key used to authorize authenticated HTTP calls to HIBP.
 /// See <a href="https://haveibeenpwned.com/api/v3#Authorisation"></a>
 /// </param>
 /// <param name="loggerFactory">
@@ -27,10 +27,9 @@ namespace HaveIBeenPwned.Client;
 /// An <see cref="IPwnedClient"/> implementation from the given
 /// <paramref name="apiKey"/> value.
 /// </returns>
-/// <exception cref="ArgumentNullException">
-/// If the given <paramref name="apiKey"/> value is <see langword="null" />, this exception is thrown.
-/// </exception>
-public sealed class PwnedClient(string apiKey, ILoggerFactory? loggerFactory = default) : IPwnedClient
+public sealed class PwnedClient(
+    string? apiKey = null,
+    ILoggerFactory? loggerFactory = default) : IPwnedClient
 {
     private readonly IPwnedClient _pwnedClient = PwnedClientFactory.FromApiKey(apiKey, loggerFactory);
 
@@ -68,6 +67,20 @@ public sealed class PwnedClient(string apiKey, ILoggerFactory? loggerFactory = d
         CancellationToken cancellationToken) => _pwnedClient.GetBreachHeadersForAccountAsync(account, cancellationToken);
 
     /// <inheritdoc/>
+    Task<BreachHeader[]> IPwnedBreachesClient.GetBreachHeadersForAccountAsync(
+        string account,
+        bool includeUnverified,
+        string? domain,
+        CancellationToken cancellationToken) => _pwnedClient.GetBreachHeadersForAccountAsync(
+            account, includeUnverified, domain, cancellationToken);
+
+    /// <inheritdoc/>
+    Task<BreachHeader[]> IPwnedBreachesClient.GetBreachHeadersForAccountUsingKAnonymityAsync(
+        string account,
+        CancellationToken cancellationToken) => _pwnedClient
+            .GetBreachHeadersForAccountUsingKAnonymityAsync(account, cancellationToken);
+
+    /// <inheritdoc/>
     Task<string[]> IPwnedBreachesClient.GetDataClassesAsync(CancellationToken cancellationToken) => _pwnedClient.GetDataClassesAsync(cancellationToken);
 
     /// <inheritdoc/>
@@ -94,6 +107,25 @@ public sealed class PwnedClient(string apiKey, ILoggerFactory? loggerFactory = d
     Task<DomainBreaches?> IPwnedDomainClient.GetBreachedDomainAsync(
         string domain,
         CancellationToken cancellationToken) => _pwnedClient.GetBreachedDomainAsync(domain, cancellationToken);
+
+    /// <inheritdoc/>
+    Task<DomainVerificationDnsToken> IPwnedDomainClient.GenerateDomainVerificationDnsTokenAsync(
+        string domain,
+        CancellationToken cancellationToken) => _pwnedClient.GenerateDomainVerificationDnsTokenAsync(
+            domain, cancellationToken);
+
+    /// <inheritdoc/>
+    Task IPwnedDomainClient.VerifyDomainViaDnsAsync(
+        string domain,
+        CancellationToken cancellationToken) => _pwnedClient.VerifyDomainViaDnsAsync(
+            domain, cancellationToken);
+
+    /// <inheritdoc/>
+    Task IPwnedDomainClient.SendDomainVerificationEmailAsync(
+        string domain,
+        DomainVerificationEmailAlias emailAlias,
+        CancellationToken cancellationToken) => _pwnedClient.SendDomainVerificationEmailAsync(
+            domain, emailAlias, cancellationToken);
 
     /// <inheritdoc/>
     Task<SubscribedDomain[]> IPwnedDomainClient.GetSubscribedDomainsAsync(
@@ -141,6 +173,22 @@ public sealed class PwnedClient(string apiKey, ILoggerFactory? loggerFactory = d
     public IAsyncEnumerable<BreachHeader?> GetBreachHeadersForAccountAsAsyncEnumerable(
         string account,
         CancellationToken cancellationToken = default) => _pwnedClient.GetBreachHeadersForAccountAsAsyncEnumerable(account, cancellationToken);
+
+    /// <inheritdoc/>
+    public IAsyncEnumerable<BreachHeader?> GetBreachHeadersForAccountAsAsyncEnumerable(
+        string account,
+        bool includeUnverified,
+        string? domain = null,
+        CancellationToken cancellationToken = default) => _pwnedClient
+            .GetBreachHeadersForAccountAsAsyncEnumerable(
+                account, includeUnverified, domain, cancellationToken);
+
+    /// <inheritdoc/>
+    public IAsyncEnumerable<BreachHeader?> GetBreachHeadersForAccountUsingKAnonymityAsAsyncEnumerable(
+        string account,
+        CancellationToken cancellationToken = default) => _pwnedClient
+            .GetBreachHeadersForAccountUsingKAnonymityAsAsyncEnumerable(
+                account, cancellationToken);
 
     /// <inheritdoc/>
     public IAsyncEnumerable<string?> GetDataClassesAsAsyncEnumerable(

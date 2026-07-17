@@ -41,4 +41,16 @@ public sealed class PwnedBreachesClientTests
         var breach = await _breachesClient.GetBreachAsync(randomBreach.Name);
         Assert.NotNull(breach);
     }
+
+    [Fact]
+    public async Task PublicBreachEndpointsWorkWithoutApiKey()
+    {
+        IPwnedBreachesClient publicClient = new PwnedClient();
+
+        var latest = await publicClient.GetLatestBreachAsync();
+        var dataClasses = await publicClient.GetDataClassesAsync();
+
+        Assert.NotNull(latest);
+        Assert.NotEmpty(dataClasses);
+    }
 }

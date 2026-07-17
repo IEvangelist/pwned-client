@@ -11,6 +11,19 @@ namespace HaveIBeenPwned.WebApi.Controllers;
 [Route("api/passwords")]
 public class PasswordsController(IPwnedPasswordsClient pwnedPasswordsClient) : ControllerBase
 {
-    [HttpGet, Route("{plainTextPassword}")]
-    public Task<PwnedPassword> GetPwnedPassword([FromRoute] string plainTextPassword) => pwnedPasswordsClient.GetPwnedPasswordAsync(plainTextPassword);
+    [HttpPost]
+    public Task<PwnedPassword> GetPwnedPassword(
+        [FromBody] PasswordLookupRequest request) =>
+        request.UseNtlm
+            ? pwnedPasswordsClient.GetPwnedPasswordWithNtlmAsync(
+                request.Password,
+                request.AddPadding)
+            : pwnedPasswordsClient.GetPwnedPasswordAsync(
+                request.Password,
+                request.AddPadding);
 }
+
+public sealed record PasswordLookupRequest(
+    string Password,
+    bool AddPadding = true,
+    bool UseNtlm = false);
