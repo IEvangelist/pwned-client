@@ -1,48 +1,71 @@
-﻿// Copyright (c) David Pine. All rights reserved.
+// Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
 
 namespace HaveIBeenPwned.Client.Options;
 
 /// <summary>
-/// Represents the subscription level for the "Have I Been Pwned" API.
-/// For more information on how a subscription level impacts various rate limiting,
-/// see <a href="https://haveibeenpwned.com/API/v3#RateLimiting"></a> and
-/// <a href="https://haveibeenpwned.com/API/Key"></a>.
+/// Represents a current or legacy Have I Been Pwned subscription plan.
 /// </summary>
 public enum HibpSubscriptionLevel
 {
-    /// <summary>
-    /// Represents the subscription level of one. As documented in 
-    /// <a href="https://haveibeenpwned.com/API/Key"></a>, this subscription level allows
-    /// 10PRM and $3.95 per month (or $39.50 annually).
-    /// A rate limited key allowing 10 email address searches per minute, and searches of 
-    /// domains with up to 25 breached email addresses each.
-    /// </summary>
-    One,
+    /// <summary>Core 1.</summary>
+    Core1 = 0,
 
-    /// <summary>
-    /// Represents the subscription level of two. As documented in 
-    /// <a href="https://haveibeenpwned.com/API/Key"></a>, this subscription level allows
-    /// 50PRM and $16.95 per month (or $169.50 annually).
-    /// A rate limited key allowing 50 email address searches per minute, and searches of 
-    /// domains with up to 100 breached email addresses each.
-    /// </summary>
-    Two,
+    /// <summary>Core 2.</summary>
+    Core2 = 1,
 
-    /// <summary>
-    /// Represents the subscription level of three. As documented in 
-    /// <a href="https://haveibeenpwned.com/API/Key"></a>, this subscription level allows
-    /// 100PRM and $28.50 per month (or $285 annually).
-    /// A rate limited key allowing 100 email address searches per minute, and searches of 
-    /// domains with up to 500 breached email addresses each .
-    /// </summary>
-    Three,
+    /// <summary>Core 3.</summary>
+    Core3 = 2,
 
-    /// <summary>
-    /// Represents the subscription level of four. As documented in 
-    /// <a href="https://haveibeenpwned.com/API/Key"></a>, this subscription level allows
-    /// 500PRM and $115 per month (or $1,150 annually).
-    /// A rate limited key allowing 500 email address searches per minute, and domain searches with unlimited breached email addresses each.
-    /// </summary>
-    Four
+    /// <summary>Core 4.</summary>
+    Core4 = 3,
+
+    /// <summary>Core 5.</summary>
+    Core5 = 4,
+
+    /// <summary>Pro 1.</summary>
+    Pro1 = 5,
+
+    /// <summary>Pro 2.</summary>
+    Pro2 = 6,
+
+    /// <summary>Pro 3.</summary>
+    Pro3 = 7,
+
+    /// <summary>Pro 4.</summary>
+    Pro4 = 8,
+
+    /// <summary>Pro 5.</summary>
+    Pro5 = 9,
+
+    /// <summary>High RPM 4000.</summary>
+    HighRpm4000 = 10,
+
+    /// <summary>High RPM 8000.</summary>
+    HighRpm8000 = 11,
+
+    /// <summary>High RPM 12000.</summary>
+    HighRpm12000 = 12,
+
+    /// <summary>High RPM 16000.</summary>
+    HighRpm16000 = 13,
+
+    /// <summary>High RPM 24000.</summary>
+    HighRpm24000 = 14,
+
+    /// <summary>The legacy Pwned 1 plan, now represented by Core 1.</summary>
+    [Obsolete("Use Core1. The Pwned 1 plan name has been retired.")]
+    One = Core1,
+
+    /// <summary>The legacy Pwned 2 plan, now represented by Core 2.</summary>
+    [Obsolete("Use Core2. The Pwned 2 plan name has been retired.")]
+    Two = Core2,
+
+    /// <summary>The legacy Pwned 3 plan, now represented by Core 3.</summary>
+    [Obsolete("Use Core3. The Pwned 3 plan name has been retired.")]
+    Three = Core3,
+
+    /// <summary>The legacy Pwned 4 plan, now represented by Core 4.</summary>
+    [Obsolete("Use Core4. The Pwned 4 plan name has been retired.")]
+    Four = Core4
 }

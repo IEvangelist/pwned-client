@@ -4,6 +4,7 @@
 using BreachDetailsModel = HaveIBeenPwned.Client.Abstractions.BreachDetails;
 using BreachHeaderModel = HaveIBeenPwned.Client.Abstractions.BreachHeader;
 using DomainBreachesModel = HaveIBeenPwned.Client.Abstractions.DomainBreaches;
+using DomainVerificationDnsTokenModel = HaveIBeenPwned.Client.Abstractions.DomainVerificationDnsToken;
 using PastesModel = HaveIBeenPwned.Client.Abstractions.Pastes;
 using PwnedPasswordModel = HaveIBeenPwned.Client.Abstractions.PwnedPassword;
 using StealerLogsByEmailDomainModel = HaveIBeenPwned.Client.Abstractions.StealerLogsByEmailDomain;
@@ -25,6 +26,7 @@ namespace HaveIBeenPwned.Client.Abstractions.Serialization;
 [JsonSerializable(typeof(PastesModel[]))]
 [JsonSerializable(typeof(PwnedPasswordModel))]
 [JsonSerializable(typeof(DomainBreachesModel))]
+[JsonSerializable(typeof(DomainVerificationDnsTokenModel))]
 [JsonSerializable(typeof(SubscribedDomainModel))]
 [JsonSerializable(typeof(SubscribedDomainModel[]))]
 [JsonSerializable(typeof(StealerLogsByEmailDomainModel))]

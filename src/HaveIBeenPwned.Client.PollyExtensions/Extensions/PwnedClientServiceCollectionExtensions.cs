@@ -68,7 +68,8 @@ public static class PwnedClientServiceCollectionExtensions
         var builder = AddPwnedHttpClient(
             services,
             HttpClientNames.HibpClient,
-            HttpClientUrls.HibpApiUrl);
+            HttpClientUrls.HibpApiUrl,
+            includeApiKey: true);
 
         builder.ConfigureHttpResilience(configureResilienceOptions);
 
@@ -76,7 +77,8 @@ public static class PwnedClientServiceCollectionExtensions
             services,
             HttpClientNames.PasswordsClient,
             HttpClientUrls.PasswordsApiUrl,
-            isPlainText: true);
+            isPlainText: true,
+            includeApiKey: false);
 
         builder.ConfigureHttpResilience(configureResilienceOptions);
 
@@ -94,7 +96,8 @@ public static class PwnedClientServiceCollectionExtensions
         IServiceCollection services,
         string httpClientName,
         string baseAddress,
-        bool isPlainText = false) => services.AddHttpClient(
+        bool isPlainText = false,
+        bool includeApiKey = false) => services.AddHttpClient(
             httpClientName,
             (serviceProvider, client) =>
             {
@@ -104,7 +107,10 @@ public static class PwnedClientServiceCollectionExtensions
                         "The 'Have I Been Pwned' options object cannot be null.");
 
                 client.BaseAddress = new(baseAddress);
-                client.DefaultRequestHeaders.Add("hibp-api-key", apiKey);
+                if (includeApiKey && !string.IsNullOrWhiteSpace(apiKey))
+                {
+                    client.DefaultRequestHeaders.Add(HttpHeaderNames.HibpApiKey, apiKey);
+                }
                 client.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
 
                 if (isPlainText)

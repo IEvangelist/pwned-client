@@ -5,7 +5,7 @@ namespace HaveIBeenPwned.Client;
 
 /// <summary>
 /// The "pwned" stealer logs client for accessing stealer log data.
-/// All stealer log APIs require a Pwned 5 subscription or higher.
+/// All stealer log APIs require a Pro subscription or higher.
 /// </summary>
 public interface IPwnedStealerLogsClient
 {
@@ -19,7 +19,7 @@ public interface IPwnedStealerLogsClient
     /// <returns>An array of website domains where the email address was captured, sorted alphabetically, or null if not found.</returns>
     /// <remarks>
     /// This search is based on the full email address captured by an info stealer as the owner authenticated to a website.
-    /// Requires a Pwned 5 subscription or higher.
+    /// Requires a Pro subscription or higher.
     /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="emailAddress"/> is <see langword="null" />, empty or whitespace.
@@ -39,7 +39,7 @@ public interface IPwnedStealerLogsClient
     /// <remarks>
     /// This search is by the domain of the website URLs that appear in stealer logs.
     /// Typically performed by a website operator looking to identify which customers are likely subject to account takeover attacks.
-    /// Requires a Pwned 5 subscription or higher.
+    /// Requires a Pro subscription or higher.
     /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="domain"/> is <see langword="null" />, empty or whitespace.
@@ -59,7 +59,7 @@ public interface IPwnedStealerLogsClient
     /// <remarks>
     /// This search is by the domain of the email address, returning stealer log data.
     /// This API is normally used to identify individuals within an organization who've had credentials taken by an info stealer.
-    /// Requires a Pwned 5 subscription or higher.
+    /// Requires a Pro subscription or higher.
     /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="domain"/> is <see langword="null" />, empty or whitespace.

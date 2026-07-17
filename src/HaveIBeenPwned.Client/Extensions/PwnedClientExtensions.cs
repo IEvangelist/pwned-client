@@ -23,9 +23,6 @@ public static class PwnedClientExtensions
     /// <item>
     /// When the given <paramref name="plainTextPassword"/> <strong>isn't</strong> "pwned", this could return <c>(false, 0)</c>.
     /// </item>
-    /// <item>
-    /// When unable to determine, returns <c>(null, null)</c>.
-    /// </item>
     /// </list>
     /// </returns>
     public static async Task<(bool? IsPwned, long? Count)> IsPasswordPwnedAsync(
@@ -59,9 +56,6 @@ public static class PwnedClientExtensions
     /// <item>
     /// When the given <paramref name="account"/> <strong>isn't</strong> part of a breach, returns <c>(false, [])</c>.
     /// </item>
-    /// <item>
-    /// When unable to determine, returns <c>(null, null)</c>.
-    /// </item>
     /// </list>
     /// </returns>
     public static async Task<(bool? IsBreached, string[]? Breaches)> IsBreachedAccountAsync(
@@ -69,10 +63,8 @@ public static class PwnedClientExtensions
         string account,
         CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(account))
-        {
-            return (null, null);
-        }
+        ArgumentNullException.ThrowIfNull(pwnedBreachesClient);
+        ArgumentException.ThrowIfNullOrWhiteSpace(account);
 
         var breaches = await pwnedBreachesClient.GetBreachHeadersForAccountAsync(
             account, cancellationToken);

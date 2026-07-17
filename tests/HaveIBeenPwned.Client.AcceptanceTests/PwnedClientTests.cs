@@ -23,6 +23,6 @@ public class PwnedClientTests
         Assert.NotNull(status);
 
         var actual = status.GetSubscriptionLevel();
-        Assert.Equal(HibpSubscriptionLevel.One, actual);
+        Assert.Equal(HibpSubscriptionLevel.Core1, actual);
     }
 }

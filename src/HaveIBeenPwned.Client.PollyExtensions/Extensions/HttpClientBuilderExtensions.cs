@@ -77,7 +77,7 @@ internal static class HttpClientBuilderExtensions
                 // Set a reasonable overall timeout for API calls
                 options.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(30);
                 
-                // Note: Actual rate limits depend on subscription level (10-1000+ RPM)
+                // Actual rate limits depend on subscription level (10-24,000 RPM).
                 // The retry-after header handling ensures we respect the API's rate limit guidance
             });
         }

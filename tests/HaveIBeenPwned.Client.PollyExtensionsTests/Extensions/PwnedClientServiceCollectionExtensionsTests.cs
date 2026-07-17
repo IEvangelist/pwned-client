@@ -41,5 +41,7 @@ public class PwnedClientServiceCollectionExtensionsTests
         Assert.Equal(typeof(DefaultPwnedClient), services.GetRequiredService<IPwnedClient>().GetType());
         Assert.Equal(typeof(DefaultPwnedClient), services.GetRequiredService<IPwnedPasswordsClient>().GetType());
         Assert.Equal(typeof(DefaultPwnedClient), services.GetRequiredService<IPwnedPastesClient>().GetType());
+        Assert.Equal(typeof(DefaultPwnedClient), services.GetRequiredService<IPwnedDomainClient>().GetType());
+        Assert.Equal(typeof(DefaultPwnedClient), services.GetRequiredService<IPwnedStealerLogsClient>().GetType());
     }
 }

@@ -9,9 +9,39 @@ namespace HaveIBeenPwned.Client;
 public interface IPwnedDomainClient
 {
     /// <summary>
+    /// Generates the DNS TXT record used to verify control of a domain.
+    /// </summary>
+    /// <param name="domain">The domain to verify.</param>
+    /// <param name="cancellationToken">Used to signal cancellation.</param>
+    /// <returns>The DNS TXT record value to publish.</returns>
+    Task<DomainVerificationDnsToken> GenerateDomainVerificationDnsTokenAsync(
+        string domain,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Verifies the HIBP DNS TXT record published for a domain.
+    /// </summary>
+    /// <param name="domain">The domain to verify.</param>
+    /// <param name="cancellationToken">Used to signal cancellation.</param>
+    Task VerifyDomainViaDnsAsync(
+        string domain,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Sends a domain verification message to one of the supported email aliases.
+    /// </summary>
+    /// <param name="domain">The domain to verify.</param>
+    /// <param name="emailAlias">The email alias that should receive the verification message.</param>
+    /// <param name="cancellationToken">Used to signal cancellation.</param>
+    Task SendDomainVerificationEmailAsync(
+        string domain,
+        DomainVerificationEmailAlias emailAlias,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Gets all breached email addresses on a given domain and the breaches they've appeared in.
     /// Only domains that have been successfully added to the domain search dashboard after verifying control can be searched.
-    /// See <a href="https://haveibeenpwned.com/API/v3#BreachedDomain"></a>
+    /// See <a href="https://haveibeenpwned.com/API/v3#BreachesForDomain"></a>
     /// </summary>
     /// <param name="domain">The domain to search for breached email addresses.</param>
     /// <param name="cancellationToken">Used to signal cancellation.</param>

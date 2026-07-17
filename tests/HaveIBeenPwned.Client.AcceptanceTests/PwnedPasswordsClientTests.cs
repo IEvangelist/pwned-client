@@ -6,9 +6,7 @@ namespace HaveIBeenPwned.Client.AcceptanceTests;
 [Trait("Category", "AcceptanceTests")]
 public sealed class PwnedPasswordsClientTests
 {
-    private readonly IPwnedPasswordsClient _passwordsClient = new PwnedClient(
-            Environment.GetEnvironmentVariable("HibpOptions__ApiKey")
-            ?? "00000000000000000000000000000000");
+    private readonly IPwnedPasswordsClient _passwordsClient = new PwnedClient();
 
     [Fact]
     public async Task GetPwnedPasswordAsyncReturnsIsPwnedWithKnownPwnedPassword()

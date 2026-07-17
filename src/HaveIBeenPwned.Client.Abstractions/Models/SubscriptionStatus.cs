@@ -10,7 +10,7 @@ public sealed record class SubscriptionStatus
 {
     /// <summary>
     /// Gets the name representing the subscription being either
-    /// "Pwned 1", "Pwned 2", "Pwned 3" or "Pwned 4".
+    /// the current plan and level, for example "Pro 2".
     /// </summary>
     public string SubscriptionName { get; init; } = "";
 
@@ -38,7 +38,33 @@ public sealed record class SubscriptionStatus
     public int DomainSearchMaxBreachedAccounts { get; init; }
 
     /// <summary>
+    /// Gets the maximum number of breached domains the subscription can add.
+    /// A null value indicates that there is no domain limit.
+    /// </summary>
+    public int? MaxBreachedDomains { get; init; }
+
+    /// <summary>
     /// Indicates if the subscription includes access to the stealer logs APIs.
     /// </summary>
     public bool IncludesStealerLogs { get; init; }
+
+    /// <summary>
+    /// Indicates if the subscription includes the bulk domain verification APIs.
+    /// </summary>
+    public bool IncludesBulkDomainAdd { get; init; }
+
+    /// <summary>
+    /// Indicates if verified apex domains automatically verify their subdomains.
+    /// </summary>
+    public bool IncludesAutoSubdomainVerification { get; init; }
+
+    /// <summary>
+    /// Indicates if customer domains can be added to the subscription.
+    /// </summary>
+    public bool IncludesCustomerDomains { get; init; }
+
+    /// <summary>
+    /// Indicates if the subscription includes k-anonymity email address searches.
+    /// </summary>
+    public bool IncludesKAnon { get; init; }
 }

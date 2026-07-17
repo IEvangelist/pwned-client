@@ -5,79 +5,101 @@ namespace HaveIBeenPwned.Client;
 
 internal sealed partial class DefaultPwnedClient : IPwnedDomainClient
 {
-    /// <inheritdoc cref="IPwnedDomainClient.GetBreachedDomainAsync(string, CancellationToken)" />
+    async Task<DomainVerificationDnsToken> IPwnedDomainClient.GenerateDomainVerificationDnsTokenAsync(
+        string domain,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(domain);
+
+        return await PostJsonAsync(
+                "domainverification/generatednstoken",
+                new DomainVerificationRequest { DomainName = domain.Trim() },
+                InternalSourceGeneratorContext.Default.DomainVerificationRequest,
+                SourceGeneratorContext.Default.DomainVerificationDnsToken,
+                cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new JsonException(
+                "The HIBP API returned an empty DNS verification token response.");
+    }
+
+    async Task IPwnedDomainClient.VerifyDomainViaDnsAsync(
+        string domain,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(domain);
+
+        await PostJsonAsync(
+                "domainverification/verifydnstoken",
+                new DomainVerificationRequest { DomainName = domain.Trim() },
+                InternalSourceGeneratorContext.Default.DomainVerificationRequest,
+                cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    async Task IPwnedDomainClient.SendDomainVerificationEmailAsync(
+        string domain,
+        DomainVerificationEmailAlias emailAlias,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(domain);
+
+        await PostJsonAsync(
+                "domainverification/sendemail",
+                new DomainVerificationEmailRequest
+                {
+                    DomainName = domain.Trim(),
+                    EmailAlias = GetEmailAlias(emailAlias)
+                },
+                InternalSourceGeneratorContext.Default.DomainVerificationEmailRequest,
+                cancellationToken)
+            .ConfigureAwait(false);
+    }
+
     async Task<DomainBreaches?> IPwnedDomainClient.GetBreachedDomainAsync(
         string domain,
         CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(domain);
 
-        try
-        {
-            var client = httpClientFactory.CreateClient(HibpClient);
-
-            var domainBreaches =
-                await client.GetFromJsonAsync<DomainBreaches>(
-                        $"breacheddomain/{domain}",
-                        SourceGeneratorContext.Default.DomainBreaches,
-                        cancellationToken
-                    )
-                    .ConfigureAwait(false);
-
-            return domainBreaches;
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
-
-            return null!;
-        }
+        return await GetJsonAsync(
+                HibpClient,
+                $"breacheddomain/{EscapePathSegment(domain)}",
+                SourceGeneratorContext.Default.DomainBreaches,
+                notFoundIsEmpty: true,
+                cancellationToken)
+            .ConfigureAwait(false);
     }
 
-    /// <inheritdoc cref="IPwnedDomainClient.GetSubscribedDomainsAsync(CancellationToken)" />
     async Task<SubscribedDomain[]> IPwnedDomainClient.GetSubscribedDomainsAsync(
-        CancellationToken cancellationToken)
-    {
-        try
-        {
-            var client = httpClientFactory.CreateClient(HibpClient);
+        CancellationToken cancellationToken) =>
+        await GetJsonAsync(
+                HibpClient,
+                "subscribeddomains",
+                SourceGeneratorContext.Default.SubscribedDomainArray,
+                notFoundIsEmpty: false,
+                cancellationToken)
+            .ConfigureAwait(false) ?? [];
 
-            var subscribedDomains =
-                await client.GetFromJsonAsync<SubscribedDomain[]>(
-                        "subscribeddomains",
-                        SourceGeneratorContext.Default.SubscribedDomainArray,
-                        cancellationToken: cancellationToken
-                    )
-                    .ConfigureAwait(false);
-
-            return subscribedDomains ?? [];
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
-
-            return [];
-        }
-    }
-
-    /// <inheritdoc cref="IPwnedDomainClient.GetSubscribedDomainsAsAsyncEnumerable(CancellationToken)" />
     IAsyncEnumerable<SubscribedDomain?> IPwnedDomainClient.GetSubscribedDomainsAsAsyncEnumerable(
-        CancellationToken cancellationToken)
-    {
-        try
-        {
-            var client = httpClientFactory.CreateClient(HibpClient);
+        CancellationToken cancellationToken) =>
+        GetJsonArrayAsync(
+            HibpClient,
+            "subscribeddomains",
+            SourceGeneratorContext.Default.SubscribedDomain,
+            notFoundIsEmpty: false,
+            cancellationToken);
 
-            return client.GetFromJsonAsAsyncEnumerable<SubscribedDomain>(
-                    "subscribeddomains",
-                    SourceGeneratorContext.Default.SubscribedDomain,
-                    cancellationToken: cancellationToken);
-        }
-        catch (Exception ex)
+    private static string GetEmailAlias(DomainVerificationEmailAlias emailAlias) =>
+        emailAlias switch
         {
-            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
-
-            return Internals.AsyncEnumerable.Empty<SubscribedDomain?>();
-        }
-    }
+            DomainVerificationEmailAlias.Admin => "admin",
+            DomainVerificationEmailAlias.Hostmaster => "hostmaster",
+            DomainVerificationEmailAlias.Info => "info",
+            DomainVerificationEmailAlias.Security => "security",
+            DomainVerificationEmailAlias.Webmaster => "webmaster",
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(emailAlias),
+                emailAlias,
+                "The email alias is not supported by the HIBP API.")
+        };
 }

@@ -17,7 +17,7 @@ public interface IPwnedPasswordsClient
     /// <param name="cancellationToken">Used to signal cancellation.</param>
     /// <returns>A <see cref="PwnedPassword"/> object containing the password evaluation results.</returns>
     /// <exception cref="ArgumentNullException">
-    /// When the <paramref name="plainTextPassword"/> is <see langword="null" />, empty or whitespace.
+    /// When the <paramref name="plainTextPassword"/> is <see langword="null" /> or empty.
     /// </exception>
     Task<PwnedPassword> GetPwnedPasswordAsync(
         string plainTextPassword,
@@ -33,7 +33,7 @@ public interface IPwnedPasswordsClient
     /// <param name="cancellationToken">Used to signal cancellation.</param>
     /// <returns>A <see cref="PwnedPassword"/> object containing the password evaluation results using NTLM hashes.</returns>
     /// <exception cref="ArgumentNullException">
-    /// When the <paramref name="plainTextPassword"/> is <see langword="null" />, empty or whitespace.
+    /// When the <paramref name="plainTextPassword"/> is <see langword="null" /> or empty.
     /// </exception>
     Task<PwnedPassword> GetPwnedPasswordWithNtlmAsync(
         string plainTextPassword,

@@ -12,7 +12,7 @@ public sealed class PwnedPastesClientTests
         Environment.GetEnvironmentVariable("HibpOptions__ApiKey")
         ?? "00000000000000000000000000000000");
 
-    [Fact]
+    [Fact(Skip = "This endpoint requires an active API subscription key.")]
     public async Task GetPastesAsyncReturnsNoPastes()
     {
         var pastes =

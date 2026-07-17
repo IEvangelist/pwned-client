@@ -5,186 +5,67 @@ namespace HaveIBeenPwned.Client;
 
 internal sealed partial class DefaultPwnedClient
 {
-    /// <inheritdoc cref="IPwnedBreachesClient.GetBreachAsync(string, CancellationToken)" />
     async Task<BreachDetails?> IPwnedBreachesClient.GetBreachAsync(
         string breachName,
         CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(breachName);
 
-        try
-        {
-            var client = httpClientFactory.CreateClient(HibpClient);
-
-            var breachDetails =
-                await client.GetFromJsonAsync<BreachDetails>(
-                        $"breach/{breachName}",
-                        SourceGeneratorContext.Default.BreachDetails,
-                        cancellationToken
-                    )
-                    .ConfigureAwait(false);
-
-            return breachDetails;
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
-
-            return null!;
-        }
+        return await GetJsonAsync(
+                HibpClient,
+                $"breach/{EscapePathSegment(breachName)}",
+                SourceGeneratorContext.Default.BreachDetails,
+                notFoundIsEmpty: true,
+                cancellationToken)
+            .ConfigureAwait(false);
     }
 
-    /// <inheritdoc cref="IPwnedBreachesClient.GetBreachesAsync(string?, bool?, CancellationToken)" />
     async Task<BreachHeader[]> IPwnedBreachesClient.GetBreachesAsync(
         string? domain,
         bool? isSpamList,
-        CancellationToken cancellationToken)
-    {
-        try
-        {
-            var client = httpClientFactory.CreateClient(HibpClient);
+        CancellationToken cancellationToken) =>
+        await GetJsonAsync(
+                HibpClient,
+                BuildBreachCatalogueUri(domain, isSpamList),
+                SourceGeneratorContext.Default.BreachHeaderArray,
+                notFoundIsEmpty: false,
+                cancellationToken)
+            .ConfigureAwait(false) ?? [];
 
-            var queryParams = new List<string>();
-            if (!string.IsNullOrWhiteSpace(domain))
-            {
-                queryParams.Add($"domain={domain}");
-            }
-            if (isSpamList.HasValue)
-            {
-                queryParams.Add($"isSpamList={isSpamList.Value.ToString().ToLowerInvariant()}");
-            }
-
-            var queryString = queryParams.Count > 0 ? $"?{string.Join("&", queryParams)}" : "";
-
-            var breachHeaders =
-                await client.GetFromJsonAsync<BreachHeader[]>(
-                        $"breaches{queryString}",
-                        SourceGeneratorContext.Default.BreachHeaderArray,
-                        cancellationToken
-                    )
-                    .ConfigureAwait(false);
-
-            return breachHeaders ?? [];
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
-
-            return [];
-        }
-    }
-
-    /// <inheritdoc path="IPwnedBreachesClient.GetBreachesAsAsyncEnumerable(string?, bool?, CancellationToken)" />
     IAsyncEnumerable<BreachHeader?> IPwnedBreachesClient.GetBreachesAsAsyncEnumerable(
         string? domain,
         bool? isSpamList,
-        CancellationToken cancellationToken)
-    {
-        try
-        {
-            var client = httpClientFactory.CreateClient(HibpClient);
+        CancellationToken cancellationToken) =>
+        GetJsonArrayAsync(
+            HibpClient,
+            BuildBreachCatalogueUri(domain, isSpamList),
+            SourceGeneratorContext.Default.BreachHeader,
+            notFoundIsEmpty: false,
+            cancellationToken);
 
-            var queryParams = new List<string>();
-            if (!string.IsNullOrWhiteSpace(domain))
-            {
-                queryParams.Add($"domain={domain}");
-            }
-            if (isSpamList.HasValue)
-            {
-                queryParams.Add($"isSpamList={isSpamList.Value.ToString().ToLowerInvariant()}");
-            }
-
-            var queryString = queryParams.Count > 0 ? $"?{string.Join("&", queryParams)}" : "";
-
-            return client.GetFromJsonAsAsyncEnumerable<BreachHeader>(
-                    $"breaches{queryString}",
-                    SourceGeneratorContext.Default.BreachHeader,
-                    cancellationToken: cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
-
-            return Internals.AsyncEnumerable.Empty<BreachHeader?>();
-        }
-    }
-
-    /// <inheritdoc cref="IPwnedBreachesClient.GetAllBreachDetailsAsync(string?, bool?, CancellationToken)" />
     async Task<BreachDetails[]> IPwnedBreachesClient.GetAllBreachDetailsAsync(
         string? domain,
         bool? isSpamList,
-        CancellationToken cancellationToken)
-    {
-        try
-        {
-            var client = httpClientFactory.CreateClient(HibpClient);
+        CancellationToken cancellationToken) =>
+        await GetJsonAsync(
+                HibpClient,
+                BuildBreachCatalogueUri(domain, isSpamList),
+                SourceGeneratorContext.Default.BreachDetailsArray,
+                notFoundIsEmpty: false,
+                cancellationToken)
+            .ConfigureAwait(false) ?? [];
 
-            var queryParams = new List<string>();
-            if (!string.IsNullOrWhiteSpace(domain))
-            {
-                queryParams.Add($"domain={domain}");
-            }
-            if (isSpamList.HasValue)
-            {
-                queryParams.Add($"isSpamList={isSpamList.Value.ToString().ToLowerInvariant()}");
-            }
-
-            var queryString = queryParams.Count > 0 ? $"?{string.Join("&", queryParams)}" : "";
-
-            var breachDetails =
-                await client.GetFromJsonAsync<BreachDetails[]>(
-                        $"breaches{queryString}",
-                        SourceGeneratorContext.Default.BreachDetailsArray,
-                        cancellationToken
-                    )
-                    .ConfigureAwait(false);
-
-            return breachDetails ?? [];
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
-
-            return [];
-        }
-    }
-
-    /// <inheritdoc path="IPwnedBreachesClient.GetAllBreachDetailsAsAsyncEnumerable(string?, bool?, CancellationToken)" />
     IAsyncEnumerable<BreachDetails?> IPwnedBreachesClient.GetAllBreachDetailsAsAsyncEnumerable(
         string? domain,
         bool? isSpamList,
-        CancellationToken cancellationToken)
-    {
-        try
-        {
-            var client = httpClientFactory.CreateClient(HibpClient);
+        CancellationToken cancellationToken) =>
+        GetJsonArrayAsync(
+            HibpClient,
+            BuildBreachCatalogueUri(domain, isSpamList),
+            SourceGeneratorContext.Default.BreachDetails,
+            notFoundIsEmpty: false,
+            cancellationToken);
 
-            var queryParams = new List<string>();
-            if (!string.IsNullOrWhiteSpace(domain))
-            {
-                queryParams.Add($"domain={domain}");
-            }
-            if (isSpamList.HasValue)
-            {
-                queryParams.Add($"isSpamList={isSpamList.Value.ToString().ToLowerInvariant()}");
-            }
-
-            var queryString = queryParams.Count > 0 ? $"?{string.Join("&", queryParams)}" : "";
-
-            return client.GetFromJsonAsAsyncEnumerable<BreachDetails>(
-                    $"breaches{queryString}",
-                    SourceGeneratorContext.Default.BreachDetails,
-                    cancellationToken: cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
-
-            return Internals.AsyncEnumerable.Empty<BreachDetails?>();
-        }
-    }
-
-    /// <inheritdoc cref="IPwnedBreachesClient.GetBreachesForAccountAsync(string, bool, string?, CancellationToken)" />
     async Task<BreachDetails[]> IPwnedBreachesClient.GetBreachesForAccountAsync(
         string account,
         bool includeUnverified,
@@ -193,191 +74,192 @@ internal sealed partial class DefaultPwnedClient
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(account);
 
-        try
-        {
-            var client = httpClientFactory.CreateClient(HibpClient);
-
-            var queryParams = new List<string> { "truncateResponse=false" };
-            if (!includeUnverified)
-            {
-                queryParams.Add("includeUnverified=false");
-            }
-            if (!string.IsNullOrWhiteSpace(domain))
-            {
-                queryParams.Add($"domain={domain}");
-            }
-
-            var queryString = string.Join("&", queryParams);
-
-            var breachDetails =
-                await client.GetFromJsonAsync<BreachDetails[]>(
-                        $"breachedaccount/{HttpUtility.UrlEncode(account)}?{queryString}",
-                        SourceGeneratorContext.Default.BreachDetailsArray,
-                        cancellationToken
-                    )
-                    .ConfigureAwait(false);
-
-            return breachDetails ?? [];
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
-
-            return [];
-        }
+        return await GetJsonAsync(
+                HibpClient,
+                BuildBreachedAccountUri(
+                    account,
+                    truncateResponse: false,
+                    includeUnverified,
+                    domain),
+                SourceGeneratorContext.Default.BreachDetailsArray,
+                notFoundIsEmpty: true,
+                cancellationToken)
+            .ConfigureAwait(false) ?? [];
     }
 
-    /// <inheritdoc path="IPwnedBreachesClient.GetBreachesForAccountAsAsyncEnumerable(string, bool, string?, CancellationToken)" />
     IAsyncEnumerable<BreachDetails?> IPwnedBreachesClient.GetBreachesForAccountAsAsyncEnumerable(
         string account,
         bool includeUnverified,
         string? domain,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            var client = httpClientFactory.CreateClient(HibpClient);
+        ArgumentException.ThrowIfNullOrWhiteSpace(account);
 
-            var queryParams = new List<string> { "truncateResponse=false" };
-            if (!includeUnverified)
-            {
-                queryParams.Add("includeUnverified=false");
-            }
-            if (!string.IsNullOrWhiteSpace(domain))
-            {
-                queryParams.Add($"domain={domain}");
-            }
+        return GetJsonArrayAsync(
+            HibpClient,
+            BuildBreachedAccountUri(
+                account,
+                truncateResponse: false,
+                includeUnverified,
+                domain),
+            SourceGeneratorContext.Default.BreachDetails,
+            notFoundIsEmpty: true,
+            cancellationToken);
+    }
 
-            var queryString = string.Join("&", queryParams);
+    Task<BreachHeader[]> IPwnedBreachesClient.GetBreachHeadersForAccountAsync(
+        string account,
+        CancellationToken cancellationToken) =>
+        ((IPwnedBreachesClient)this).GetBreachHeadersForAccountAsync(
+            account,
+            includeUnverified: true,
+            domain: null,
+            cancellationToken);
 
-            return client.GetFromJsonAsAsyncEnumerable<BreachDetails>(
-                    $"breachedaccount/{HttpUtility.UrlEncode(account)}?{queryString}",
-                    SourceGeneratorContext.Default.BreachDetails,
-                    cancellationToken: cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
-
-            return Internals.AsyncEnumerable.Empty<BreachDetails?>();
-        }
-    }    /// <inheritdoc cref="IPwnedBreachesClient.GetBreachHeadersForAccountAsync(string, CancellationToken)" />
     async Task<BreachHeader[]> IPwnedBreachesClient.GetBreachHeadersForAccountAsync(
         string account,
+        bool includeUnverified,
+        string? domain,
         CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(account);
 
-        try
-        {
-            var client = httpClientFactory.CreateClient(HibpClient);
-
-            var breachHeaders = await client.GetFromJsonAsync<BreachHeader[]>(
-                $"breachedaccount/{HttpUtility.UrlEncode(account)}?truncateResponse=true",
+        return await GetJsonAsync(
+                HibpClient,
+                BuildBreachedAccountUri(
+                    account,
+                    truncateResponse: true,
+                    includeUnverified,
+                    domain),
                 SourceGeneratorContext.Default.BreachHeaderArray,
-                cancellationToken);
-
-            return breachHeaders ?? [];
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
-
-            return [];
-        }
+                notFoundIsEmpty: true,
+                cancellationToken)
+            .ConfigureAwait(false) ?? [];
     }
 
-    /// <inheritdoc path="IPwnedBreachesClient.GetBreachHeadersForAccountAsAsyncEnumerable(string, CancellationToken)" />
     IAsyncEnumerable<BreachHeader?> IPwnedBreachesClient.GetBreachHeadersForAccountAsAsyncEnumerable(
+        string account,
+        CancellationToken cancellationToken) =>
+        ((IPwnedBreachesClient)this).GetBreachHeadersForAccountAsAsyncEnumerable(
+            account,
+            includeUnverified: true,
+            domain: null,
+            cancellationToken);
+
+    IAsyncEnumerable<BreachHeader?> IPwnedBreachesClient.GetBreachHeadersForAccountAsAsyncEnumerable(
+        string account,
+        bool includeUnverified,
+        string? domain,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(account);
+
+        return GetJsonArrayAsync(
+            HibpClient,
+            BuildBreachedAccountUri(
+                account,
+                truncateResponse: true,
+                includeUnverified,
+                domain),
+            SourceGeneratorContext.Default.BreachHeader,
+            notFoundIsEmpty: true,
+            cancellationToken);
+    }
+
+    async Task<BreachHeader[]> IPwnedBreachesClient.GetBreachHeadersForAccountUsingKAnonymityAsync(
         string account,
         CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(account);
 
-        try
-        {
-            var client = httpClientFactory.CreateClient(HibpClient);
+        var normalizedAccount = account.Trim().ToLowerInvariant();
+        var accountHash = normalizedAccount.ToSha1Hash()!;
+        var hashPrefix = accountHash[..6];
+        var hashSuffix = accountHash[6..];
 
-            return client.GetFromJsonAsAsyncEnumerable<BreachHeader>(
-                $"breachedaccount/{HttpUtility.UrlEncode(account)}?truncateResponse=true",
-                SourceGeneratorContext.Default.BreachHeader,
-                cancellationToken: cancellationToken);
-        }
-        catch (Exception ex)
+        await foreach (var candidate in GetJsonArrayAsync(
+            HibpClient,
+            $"breachedaccount/range/{hashPrefix}",
+            InternalSourceGeneratorContext.Default.BreachedAccountHashRange,
+            notFoundIsEmpty: false,
+            cancellationToken).ConfigureAwait(false))
         {
-            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
-
-            return Internals.AsyncEnumerable.Empty<BreachHeader?>();
+            if (candidate is not null &&
+                string.Equals(
+                    candidate.HashSuffix,
+                    hashSuffix,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                return candidate.Websites
+                    .Select(static website => new BreachHeader { Name = website })
+                    .ToArray();
+            }
         }
+
+        return [];
     }
 
-    /// <inheritdoc cref="IPwnedBreachesClient.GetDataClassesAsync(CancellationToken)" />
-    async Task<string[]> IPwnedBreachesClient.GetDataClassesAsync(CancellationToken cancellationToken)
+    async IAsyncEnumerable<BreachHeader?>
+        IPwnedBreachesClient.GetBreachHeadersForAccountUsingKAnonymityAsAsyncEnumerable(
+            string account,
+            [System.Runtime.CompilerServices.EnumeratorCancellation]
+            CancellationToken cancellationToken)
     {
-        try
+        var breaches = await ((IPwnedBreachesClient)this)
+            .GetBreachHeadersForAccountUsingKAnonymityAsync(account, cancellationToken)
+            .ConfigureAwait(false);
+
+        foreach (var breach in breaches)
         {
-            var client = httpClientFactory.CreateClient(HibpClient);
-
-            var dataClasses =
-                await client.GetFromJsonAsync<string[]>(
-                        "dataclasses",
-                        SourceGeneratorContext.Default.StringArray,
-                        cancellationToken: cancellationToken
-                    )
-                    .ConfigureAwait(false);
-
-            return dataClasses ?? [];
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
-
-            return [];
+            yield return breach;
         }
     }
 
-    /// <inheritdoc path="IPwnedBreachesClient.GetDataClassesAsAsyncEnumerable(CancellationToken)" />
-    IAsyncEnumerable<string?> IPwnedBreachesClient.GetDataClassesAsAsyncEnumerable(CancellationToken cancellationToken)
-    {
-        try
-        {
-            var client = httpClientFactory.CreateClient(HibpClient);
+    async Task<string[]> IPwnedBreachesClient.GetDataClassesAsync(
+        CancellationToken cancellationToken) =>
+        await GetJsonAsync(
+                HibpClient,
+                "dataclasses",
+                SourceGeneratorContext.Default.StringArray,
+                notFoundIsEmpty: false,
+                cancellationToken)
+            .ConfigureAwait(false) ?? [];
 
-            return client.GetFromJsonAsAsyncEnumerable<string>(
-                    "dataclasses",
-                    SourceGeneratorContext.Default.String,
-                    cancellationToken: cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
+    IAsyncEnumerable<string?> IPwnedBreachesClient.GetDataClassesAsAsyncEnumerable(
+        CancellationToken cancellationToken) =>
+        GetJsonArrayAsync(
+            HibpClient,
+            "dataclasses",
+            SourceGeneratorContext.Default.String,
+            notFoundIsEmpty: false,
+            cancellationToken);
 
-            return Internals.AsyncEnumerable.Empty<string?>();
-        }
-    }
+    async Task<BreachDetails?> IPwnedBreachesClient.GetLatestBreachAsync(
+        CancellationToken cancellationToken) =>
+        await GetJsonAsync(
+                HibpClient,
+                "latestbreach",
+                SourceGeneratorContext.Default.BreachDetails,
+                notFoundIsEmpty: true,
+                cancellationToken)
+            .ConfigureAwait(false);
 
-    /// <inheritdoc cref="IPwnedBreachesClient.GetLatestBreachAsync(CancellationToken)" />
-    async Task<BreachDetails?> IPwnedBreachesClient.GetLatestBreachAsync(CancellationToken cancellationToken)
-    {
-        try
-        {
-            var client = httpClientFactory.CreateClient(HibpClient);
+    private static string BuildBreachCatalogueUri(
+        string? domain,
+        bool? isSpamList) =>
+        BuildRequestUri(
+            "breaches",
+            ("domain", string.IsNullOrWhiteSpace(domain) ? null : domain.Trim()),
+            ("isSpamList", isSpamList?.ToString().ToLowerInvariant()));
 
-            var breachDetails =
-                await client.GetFromJsonAsync<BreachDetails>(
-                        "latestbreach",
-                        SourceGeneratorContext.Default.BreachDetails,
-                        cancellationToken: cancellationToken
-                    )
-                    .ConfigureAwait(false);
-
-            return breachDetails;
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "{ExceptionMessage}", ex.Message);
-
-            return null!;
-        }
-    }
+    private static string BuildBreachedAccountUri(
+        string account,
+        bool truncateResponse,
+        bool includeUnverified,
+        string? domain) =>
+        BuildRequestUri(
+            $"breachedaccount/{EscapePathSegment(account)}",
+            ("truncateResponse", truncateResponse.ToString().ToLowerInvariant()),
+            ("includeUnverified", includeUnverified.ToString().ToLowerInvariant()),
+            ("domain", string.IsNullOrWhiteSpace(domain) ? null : domain.Trim()));
 }

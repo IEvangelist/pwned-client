@@ -6,6 +6,7 @@ on:
     paths:
     - '**.cs'
     - '**.csproj'
+    - '**.props'
 
 env:
   DOTNET_VERSION: '10.0.x' # set this to the dot net version to use
