@@ -1,0 +1,91 @@
+---
+interface Props {
+  method: "GET" | "POST";
+  url: string;
+  docsUrl: string;
+  auth: string;
+  responseFormat?: "json" | "text";
+}
+
+const {
+  method,
+  url,
+  docsUrl,
+  auth,
+  responseFormat = "json",
+} = Astro.props;
+
+const parsedUrl = new URL(url);
+const requestTarget = url.slice(parsedUrl.origin.length) || "/";
+const requiresApiKey = auth !== "None";
+const accept = responseFormat === "text" ? "text/plain" : "application/json";
+---
+
+<details class="http-details" open>
+  <summary>
+    <span class="http-method">{method}</span>
+    <span class="http-summary-url">
+      <strong>{parsedUrl.host}</strong>
+      <code>{requestTarget}</code>
+    </span>
+    <span class="http-details-toggle">
+      <span class="http-details-show">Request details</span>
+      <span class="http-details-hide">Hide details</span>
+      <i class="ph ph-caret-down" aria-hidden="true"></i>
+    </span>
+  </summary>
+
+  <div class="http-details-body">
+    <div class="http-wire" aria-label="HTTP request">
+      <div class="http-wire-bar">
+        <span class="http-wire-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>HTTP request</span>
+        <span class="http-version">HTTP/1.1</span>
+      </div>
+      <div class="http-wire-code">
+        <div class="http-wire-line">
+          <span class="http-line-number" aria-hidden="true">1</span>
+          <code><strong>{method}</strong> <span>{requestTarget}</span> <em>HTTP/1.1</em></code>
+        </div>
+        <div class="http-wire-line">
+          <span class="http-line-number" aria-hidden="true">2</span>
+          <code><b>Host:</b> <span>{parsedUrl.host}</span></code>
+        </div>
+        <div class="http-wire-line">
+          <span class="http-line-number" aria-hidden="true">3</span>
+          <code><b>Accept:</b> <span>{accept}</span></code>
+        </div>
+        {requiresApiKey && (
+          <div class="http-wire-line">
+            <span class="http-line-number" aria-hidden="true">4</span>
+            <code><b>hibp-api-key:</b> <span class="http-secret">••••••••••••</span></code>
+          </div>
+        )}
+      </div>
+    </div>
+
+    <div class="http-request-facts">
+      <div>
+        <span>Authentication</span>
+        <strong>{auth}</strong>
+        <p>
+          {requiresApiKey
+            ? "The SDK reads the configured key and adds the hibp-api-key header for this request."
+            : "This public endpoint is called without an API key or authorization header."}
+        </p>
+      </div>
+      <div>
+        <span>Response body</span>
+        <strong>{responseFormat === "text" ? "Plain-text hash range" : "JSON"}</strong>
+        <p>
+          {responseFormat === "text"
+            ? "The SDK parses the suffix/count rows in memory and returns only the local match."
+            : "The SDK deserializes the response into the documented .NET return type."}
+        </p>
+      </div>
+      <a href={docsUrl} target="_blank" rel="noopener">
+        Official HIBP reference <i class="ph ph-arrow-up-right" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+</details>

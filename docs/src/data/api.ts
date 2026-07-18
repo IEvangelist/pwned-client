@@ -394,7 +394,6 @@ if (adobe is not null)
           method: "GET",
           url: "https://haveibeenpwned.com/api/v3/dataclasses",
           docsUrl: "https://haveibeenpwned.com/API/v3#AllDataClasses",
-          testInputs: [],
         },
         params: [{ name: "ct", type: "CancellationToken", desc: "Signals cancellation." }],
         returns: { type: "Task<string[]>", desc: "All known data classes, or an empty array." },

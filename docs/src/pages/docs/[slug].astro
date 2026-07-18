@@ -2,7 +2,8 @@
 import Layout from "../../layouts/Layout.astro";
 import DocsSidebar from "../../components/DocsSidebar.astro";
 import CodeBlock from "../../components/CodeBlock.astro";
-import { apiDocs } from "../../data/api";
+import HttpRequestDetails from "../../components/HttpRequestDetails.astro";
+import { apiDocs, type ApiOperation } from "../../data/api";
 
 export function getStaticPaths() {
   return Object.entries(apiDocs).map(([slug, doc]) => ({
@@ -53,6 +54,10 @@ function outputNote(op: { outputNote?: string; outputLang?: string }): string {
   return op.outputLang === "json"
     ? "Calling the snippet above yields the following payload:"
     : "Running the snippet above prints:";
+}
+
+function passwordHashType(op: ApiOperation): "sha1" | "ntlm" | undefined {
+  return op.endpoint.testInputs?.find((input) => input.hashType)?.hashType;
 }
 ---
 
@@ -113,17 +118,17 @@ function outputNote(op: { outputNote?: string; outputLang?: string }): string {
           </h3>
           <p class="op-summary">{op.summary}</p>
 
-          <div class="op-endpoint">
-            <span class="http-method">{op.endpoint.method}</span>
-            <code>{op.endpoint.url}</code>
-            <a href={op.endpoint.docsUrl} target="_blank" rel="noopener">
-              HIBP API reference <i class="ph ph-arrow-up-right" aria-hidden="true"></i>
-            </a>
-          </div>
+          <HttpRequestDetails
+            method={op.endpoint.method}
+            url={op.endpoint.url}
+            docsUrl={op.endpoint.docsUrl}
+            auth={op.auth}
+            responseFormat={passwordHashType(op) ? "text" : "json"}
+          />
 
           {op.endpoint.testInputs && (
             <form
-              class="api-tester"
+              class={`api-tester${passwordHashType(op) ? " password-tester" : ""}`}
               data-api-tester
               data-endpoint={op.endpoint.url}
               data-method={op.endpoint.method}
@@ -131,10 +136,15 @@ function outputNote(op: { outputNote?: string; outputLang?: string }): string {
               <div class="api-tester-head">
                 <div>
                   <strong>Try this endpoint</strong>
-                  <span>No API key required. Requests go directly from your browser to HIBP.</span>
+                  <span>
+                    {passwordHashType(op)
+                      ? "Watch the same privacy-preserving work the SDK performs inside your process."
+                      : "No API key required. Requests go directly from your browser to HIBP."}
+                  </span>
                 </div>
                 <button class="button button-secondary" type="submit">
-                  <i class="ph ph-play" aria-hidden="true"></i> Send request
+                  <i class="ph ph-play" aria-hidden="true"></i>
+                  <span data-submit-label>{passwordHashType(op) ? "Run private check" : "Send request"}</span>
                 </button>
               </div>
               {op.endpoint.testInputs.length > 0 && (
@@ -164,10 +174,137 @@ function outputNote(op: { outputNote?: string; outputLang?: string }): string {
                   ))}
                 </div>
               )}
-              {op.endpoint.testInputs.some((input) => input.hashType) && (
-                <p class="api-tester-note">Your password is hashed in the browser — only the five-character prefix is sent. Nothing leaves your device in plaintext.</p>
+              {passwordHashType(op) ? (
+                <>
+                  <p class="api-tester-note">
+                    The demo mirrors <code>pwned.client</code>: your password stays in this browser tab and only a five-character hash prefix is sent.
+                  </p>
+                  <div class="password-flow" data-password-flow hidden aria-busy="false">
+                    <div class="password-flow-head">
+                      <div>
+                        <span class="password-flow-eyebrow">What the SDK does for you</span>
+                        <h4>One call, four privacy-preserving steps</h4>
+                      </div>
+                      <span class="password-local-badge">
+                        <i class="ph ph-lock-key" aria-hidden="true"></i>
+                        Plaintext never transmitted
+                      </span>
+                    </div>
+
+                    <div class="password-flow-status" data-password-status aria-live="polite">
+                      <span aria-hidden="true"></span>
+                      <p>Ready to run the private check.</p>
+                    </div>
+
+                    <ol class="password-steps" aria-label="Password check sequence">
+                      <li class="password-step" data-password-step="hash" data-state="pending">
+                        <span class="password-step-marker" aria-hidden="true">
+                          <span>01</span>
+                          <i class="ph ph-check"></i>
+                        </span>
+                        <div class="password-step-copy">
+                          <span>Inside your process</span>
+                          <h5>Compute the {passwordHashType(op) === "ntlm" ? "NTLM" : "SHA-1"} hash</h5>
+                          <p>
+                            The SDK hashes the input in memory. The plaintext is never placed in the URL, request body, or headers.
+                          </p>
+                        </div>
+                        <div class="password-step-visual password-hash-visual">
+                          <span>local hash</span>
+                          <code>
+                            <mark data-hash-prefix>FIRST 5</mark><b data-hash-suffix>remaining hash stays local</b>
+                          </code>
+                        </div>
+                      </li>
+
+                      <li class="password-step" data-password-step="prefix" data-state="pending">
+                        <span class="password-step-marker" aria-hidden="true">
+                          <span>02</span>
+                          <i class="ph ph-check"></i>
+                        </span>
+                        <div class="password-step-copy">
+                          <span>Across the network</span>
+                          <h5>Send only the first five characters</h5>
+                          <p>
+                            The SDK slices <code>passwordHash[..5]</code> and uses that prefix to request one anonymous range.
+                          </p>
+                        </div>
+                        <div class="password-step-visual password-request-visual">
+                          <span>request to HIBP</span>
+                          <code><b>GET /range/</b><mark data-request-prefix>-----</mark><b data-request-query></b></code>
+                          <small><i class="ph ph-shield-check" aria-hidden="true"></i> Only five hash characters leave your device</small>
+                        </div>
+                      </li>
+
+                      <li class="password-step" data-password-step="range" data-state="pending">
+                        <span class="password-step-marker" aria-hidden="true">
+                          <span>03</span>
+                          <i class="ph ph-check"></i>
+                        </span>
+                        <div class="password-step-copy">
+                          <span>Anonymous range</span>
+                          <h5>Receive the prefix bucket</h5>
+                          <p>
+                            HIBP treats the prefix as an index and returns every suffix and breach count in that range—not which one is yours.
+                          </p>
+                        </div>
+                        <div class="password-step-visual password-range-visual">
+                          <div class="password-range-stack" aria-hidden="true">
+                            <span></span><span></span><span></span>
+                          </div>
+                          <p><strong data-range-count>—</strong> candidate suffixes received</p>
+                          <small>The raw range remains in memory and is not shown or retained.</small>
+                        </div>
+                      </li>
+
+                      <li class="password-step" data-password-step="compare" data-state="pending">
+                        <span class="password-step-marker" aria-hidden="true">
+                          <span>04</span>
+                          <i class="ph ph-check"></i>
+                        </span>
+                        <div class="password-step-copy">
+                          <span>Back inside your process</span>
+                          <h5>Compare the suffix locally</h5>
+                          <p>
+                            The SDK compares <code>passwordHash[5..]</code> with each returned suffix and keeps only the matching count.
+                          </p>
+                        </div>
+                        <div class="password-step-visual password-compare-visual">
+                          <span>local suffix</span>
+                          <code data-local-suffix>waiting for local hash</code>
+                          <small>
+                            <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+                            <span data-compare-label>Waiting to scan the range</span>
+                          </small>
+                        </div>
+                      </li>
+                    </ol>
+
+                    <div class="password-result" data-password-result hidden>
+                      <span class="password-result-icon" aria-hidden="true">
+                        <i class="ph ph-shield-check" data-result-icon></i>
+                      </span>
+                      <div class="password-result-copy">
+                        <span>SDK result</span>
+                        <strong data-result-title>Check complete</strong>
+                        <p data-result-copy></p>
+                      </div>
+                      <dl>
+                        <div>
+                          <dt>IsPwned</dt>
+                          <dd data-result-pwned>—</dd>
+                        </div>
+                        <div>
+                          <dt>PwnedCount</dt>
+                          <dd data-result-count>—</dd>
+                        </div>
+                      </dl>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <pre class="api-tester-output" data-api-output aria-live="polite" hidden></pre>
               )}
-              <pre class="api-tester-output" data-api-output aria-live="polite" hidden></pre>
             </form>
           )}
 
@@ -321,20 +458,21 @@ function outputNote(op: { outputNote?: string; outputLang?: string }): string {
 
 <script>
   const maxOutputLength = 20_000;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const numberFormatter = new Intl.NumberFormat("en-US");
+  type StepState = "pending" | "active" | "complete" | "error";
 
-  // SHA-1 prefix via Web Crypto (5 uppercase hex chars).
-  async function sha1Prefix(password: string): Promise<string> {
+  async function sha1Hash(password: string): Promise<string> {
     const data = new TextEncoder().encode(password);
     const buf = await crypto.subtle.digest("SHA-1", data);
     return Array.from(new Uint8Array(buf))
       .map((b) => b.toString(16).padStart(2, "0"))
       .join("")
-      .toUpperCase()
-      .slice(0, 5);
+      .toUpperCase();
   }
 
-  // NTLM prefix = first 5 chars of MD4(UTF-16LE(password)), pure JS (Web Crypto has no MD4).
-  function ntlmPrefix(password: string): string {
+  // NTLM is MD4 over UTF-16LE; Web Crypto does not expose MD4.
+  function ntlmHash(password: string): string {
     // Encode as UTF-16 little-endian.
     const utf16 = new Uint8Array(password.length * 2);
     for (let i = 0; i < password.length; i++) {
@@ -386,8 +524,242 @@ function outputNote(op: { outputNote?: string; outputLang?: string }): string {
       .flatMap((v) => [v & 0xff, (v >> 8) & 0xff, (v >> 16) & 0xff, (v >> 24) & 0xff])
       .map((b) => b.toString(16).padStart(2, "0"))
       .join("")
-      .toUpperCase()
-      .slice(0, 5);
+      .toUpperCase();
+  }
+
+  function setText(root: ParentNode, selector: string, value: string): void {
+    const element = root.querySelector<HTMLElement>(selector);
+    if (element) element.textContent = value;
+  }
+
+  function setStepState(flow: HTMLElement, name: string, state: StepState): void {
+    flow.querySelector<HTMLElement>(`[data-password-step="${name}"]`)?.setAttribute("data-state", state);
+  }
+
+  function setFlowStatus(flow: HTMLElement, message: string): void {
+    setText(flow, "[data-password-status] p", message);
+  }
+
+  function waitForStep(milliseconds: number): Promise<void> {
+    return reducedMotion
+      ? Promise.resolve()
+      : new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+  }
+
+  function expandEndpoint(endpoint: string, values: FormData): URL {
+    const expanded = endpoint.replace(/\{(\w+)\}/g, (_, name: string) =>
+      encodeURIComponent(String(values.get(name) ?? "")));
+    const requestUrl = new URL(expanded);
+    for (const [name, value] of requestUrl.searchParams) {
+      if (!value) requestUrl.searchParams.delete(name);
+    }
+    return requestUrl;
+  }
+
+  function parsePasswordRange(responseText: string, expectedSuffix: string) {
+    let candidateCount = 0;
+    let matchedSuffix = false;
+    let pwnedCount = 0;
+
+    for (const rawLine of responseText.split(/\r?\n/)) {
+      const line = rawLine.trim();
+      const separatorIndex = line.indexOf(":");
+      if (!line || separatorIndex <= 0 || separatorIndex === line.length - 1) continue;
+
+      const suffix = line.slice(0, separatorIndex);
+      const rawCount = line.slice(separatorIndex + 1);
+      if (!/^\d+$/.test(rawCount)) continue;
+
+      candidateCount++;
+      if (suffix.toUpperCase() === expectedSuffix.toUpperCase()) {
+        const count = Number.parseInt(rawCount, 10);
+        if (Number.isSafeInteger(count)) {
+          matchedSuffix = true;
+          pwnedCount = count;
+        }
+      }
+    }
+
+    return { candidateCount, matchedSuffix, pwnedCount };
+  }
+
+  function resetPasswordFlow(flow: HTMLElement): void {
+    flow.hidden = false;
+    flow.setAttribute("aria-busy", "true");
+    flow.querySelectorAll<HTMLElement>("[data-password-step]").forEach((step) => {
+      step.dataset.state = "pending";
+    });
+    const result = flow.querySelector<HTMLElement>("[data-password-result]");
+    if (result) {
+      result.hidden = true;
+      delete result.dataset.result;
+    }
+    setText(flow, "[data-hash-prefix]", "FIRST 5");
+    setText(flow, "[data-hash-suffix]", "remaining hash stays local");
+    setText(flow, "[data-request-prefix]", "-----");
+    setText(flow, "[data-request-query]", "");
+    setText(flow, "[data-range-count]", "—");
+    setText(flow, "[data-local-suffix]", "waiting for local hash");
+    setText(flow, "[data-compare-label]", "Waiting to scan the range");
+  }
+
+  function showPasswordResult(
+    flow: HTMLElement,
+    state: "pwned" | "clear" | "error",
+    title: string,
+    copy: string,
+    isPwned?: boolean,
+    count?: number,
+  ): void {
+    const result = flow.querySelector<HTMLElement>("[data-password-result]");
+    const icon = flow.querySelector<HTMLElement>("[data-result-icon]");
+    if (!result || !icon) return;
+
+    result.hidden = false;
+    result.dataset.result = state;
+    icon.className = state === "error"
+      ? "ph ph-warning"
+      : state === "pwned"
+        ? "ph ph-warning-circle"
+        : "ph ph-shield-check";
+    setText(flow, "[data-result-title]", title);
+    setText(flow, "[data-result-copy]", copy);
+    setText(flow, "[data-result-pwned]", isPwned === undefined ? "—" : String(isPwned));
+    setText(flow, "[data-result-count]", count === undefined ? "—" : numberFormatter.format(count));
+  }
+
+  async function runPasswordTester(
+    form: HTMLFormElement,
+    input: HTMLInputElement,
+    flow: HTMLElement,
+    endpoint: string,
+  ): Promise<void> {
+    resetPasswordFlow(flow);
+    setStepState(flow, "hash", "active");
+    setFlowStatus(flow, "Hashing the password locally. No network request has been made.");
+
+    try {
+      const hashType = input.dataset.hashType;
+      if (hashType !== "sha1" && hashType !== "ntlm") {
+        throw new Error("The password hash algorithm is not supported.");
+      }
+      const passwordHash = hashType === "ntlm"
+        ? ntlmHash(input.value)
+        : await sha1Hash(input.value);
+      const prefix = passwordHash.slice(0, 5);
+      const suffix = passwordHash.slice(5);
+
+      setText(flow, "[data-hash-prefix]", prefix);
+      setText(flow, "[data-hash-suffix]", suffix);
+      setText(flow, "[data-local-suffix]", suffix);
+      await waitForStep(320);
+
+      setStepState(flow, "hash", "complete");
+      setStepState(flow, "prefix", "active");
+      setFlowStatus(flow, `The local hash is split. Only the prefix ${prefix} will be requested.`);
+      setText(flow, "[data-request-prefix]", prefix);
+      setText(flow, "[data-request-query]", hashType === "ntlm" ? "?mode=ntlm" : "");
+
+      const values = new FormData(form);
+      values.set(input.name, prefix);
+      const requestUrl = expandEndpoint(endpoint, values);
+      await waitForStep(360);
+
+      setStepState(flow, "prefix", "complete");
+      setStepState(flow, "range", "active");
+      setFlowStatus(flow, `Requesting the anonymous ${prefix} range from HIBP.`);
+
+      const response = await fetch(requestUrl, {
+        method: form.dataset.method || "GET",
+        headers: { Accept: "text/plain" },
+      });
+      if (!response.ok) {
+        throw new Error(`HIBP returned ${response.status} ${response.statusText}.`);
+      }
+
+      const responseText = await response.text();
+      const range = parsePasswordRange(responseText, suffix);
+      setText(flow, "[data-range-count]", numberFormatter.format(range.candidateCount));
+      await waitForStep(360);
+
+      setStepState(flow, "range", "complete");
+      setStepState(flow, "compare", "active");
+      setFlowStatus(flow, `Comparing the local suffix with ${numberFormatter.format(range.candidateCount)} candidates in memory.`);
+      setText(
+        flow,
+        "[data-compare-label]",
+        range.matchedSuffix
+          ? "Matching suffix found locally"
+          : "No matching suffix in this range",
+      );
+      await waitForStep(420);
+
+      const isPwned = range.matchedSuffix && range.pwnedCount > 0;
+      setStepState(flow, "compare", "complete");
+      setFlowStatus(
+        flow,
+        isPwned
+          ? "Private check complete. The matching count is ready."
+          : "Private check complete. No breached-password match was found.",
+      );
+      showPasswordResult(
+        flow,
+        isPwned ? "pwned" : "clear",
+        isPwned ? "Matching suffix found" : "No matching suffix",
+        isPwned
+          ? "The SDK returns only the local match result; the password and full hash were never sent."
+          : "The SDK scanned the returned range locally and found no match for the retained suffix.",
+        isPwned,
+        range.pwnedCount,
+      );
+    } catch (error) {
+      flow.querySelector<HTMLElement>('[data-state="active"]')?.setAttribute("data-state", "error");
+      const message = error instanceof Error ? error.message : "Unknown error";
+      setFlowStatus(flow, `The private check failed: ${message}`);
+      showPasswordResult(
+        flow,
+        "error",
+        "Check could not be completed",
+        message,
+      );
+    } finally {
+      flow.setAttribute("aria-busy", "false");
+    }
+  }
+
+  async function runGenericTester(
+    form: HTMLFormElement,
+    output: HTMLElement,
+    endpoint: string,
+  ): Promise<void> {
+    const values = new FormData(form);
+    const requestUrl = expandEndpoint(endpoint, values);
+
+    output.hidden = false;
+    output.textContent = "Sending request…";
+
+    try {
+      const response = await fetch(requestUrl, {
+        method: form.dataset.method || "GET",
+        headers: { Accept: "application/json, text/plain" },
+      });
+      const responseText = await response.text();
+      let formatted = responseText;
+      try {
+        formatted = JSON.stringify(JSON.parse(responseText), null, 2);
+      } catch {
+        // Some public HIBP endpoints return plain text.
+      }
+
+      const truncated = formatted.length > maxOutputLength;
+      output.textContent =
+        `${response.status} ${response.statusText}\n\n` +
+        formatted.slice(0, maxOutputLength) +
+        (truncated ? "\n\n…output truncated" : "");
+    } catch (error) {
+      output.textContent =
+        `Request failed: ${error instanceof Error ? error.message : "Unknown error"}`;
+    }
   }
 
   document.querySelectorAll<HTMLFormElement>("[data-api-tester]").forEach((form) => {
@@ -395,56 +767,26 @@ function outputNote(op: { outputNote?: string; outputLang?: string }): string {
       event.preventDefault();
 
       const output = form.querySelector<HTMLElement>("[data-api-output]");
+      const passwordInput = form.querySelector<HTMLInputElement>("[data-hash-type]");
+      const passwordFlow = form.querySelector<HTMLElement>("[data-password-flow]");
       const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+      const buttonLabel = button?.querySelector<HTMLElement>("[data-submit-label]");
       const endpoint = form.dataset.endpoint;
-      if (!output || !button || !endpoint) return;
+      if (!button || !endpoint || (!output && (!passwordInput || !passwordFlow))) return;
 
-      const values = new FormData(form);
-
-      // Hash any password fields in-place before URL substitution.
-      for (const input of Array.from(form.querySelectorAll<HTMLInputElement>("[data-hash-type]"))) {
-        const password = input.value;
-        if (!password) continue;
-        const prefix = input.dataset.hashType === "ntlm"
-          ? ntlmPrefix(password)
-          : await sha1Prefix(password);
-        values.set(input.name, prefix);
-      }
-
-      const expanded = endpoint.replace(/\{(\w+)\}/g, (_, name: string) =>
-        encodeURIComponent(String(values.get(name) ?? "")));
-      const requestUrl = new URL(expanded);
-      for (const [name, value] of requestUrl.searchParams) {
-        if (!value) requestUrl.searchParams.delete(name);
-      }
-
-      output.hidden = false;
-      output.textContent = "Sending request…";
+      const originalLabel = buttonLabel?.textContent || "";
       button.disabled = true;
+      if (buttonLabel) buttonLabel.textContent = passwordInput ? "Checking…" : "Sending…";
 
       try {
-        const response = await fetch(requestUrl, {
-          method: form.dataset.method || "GET",
-          headers: { Accept: "application/json, text/plain" },
-        });
-        const responseText = await response.text();
-        let formatted = responseText;
-        try {
-          formatted = JSON.stringify(JSON.parse(responseText), null, 2);
-        } catch {
-          // Pwned Passwords range responses are plain text.
+        if (passwordInput && passwordFlow) {
+          await runPasswordTester(form, passwordInput, passwordFlow, endpoint);
+        } else if (output) {
+          await runGenericTester(form, output, endpoint);
         }
-
-        const truncated = formatted.length > maxOutputLength;
-        output.textContent =
-          `${response.status} ${response.statusText}\n\n` +
-          formatted.slice(0, maxOutputLength) +
-          (truncated ? "\n\n…output truncated" : "");
-      } catch (error) {
-        output.textContent =
-          `Request failed: ${error instanceof Error ? error.message : "Unknown error"}`;
       } finally {
         button.disabled = false;
+        if (buttonLabel) buttonLabel.textContent = originalLabel;
       }
     });
   });
