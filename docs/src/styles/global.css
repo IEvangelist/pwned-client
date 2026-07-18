@@ -1570,6 +1570,120 @@ code, kbd, pre {
   max-width: 68ch;
 }
 
+.op-endpoint {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-code);
+  background: var(--surface-inset);
+  overflow-x: auto;
+}
+
+.op-endpoint code {
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.op-endpoint a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: auto;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.http-method {
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  color: var(--accent-strong);
+  background: var(--accent-tint);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.api-tester {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--line));
+  border-radius: var(--r-card);
+  background: var(--surface);
+}
+
+.api-tester-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.api-tester-head strong,
+.api-tester-head span {
+  display: block;
+}
+
+.api-tester-head span,
+.api-tester-note {
+  margin-top: 0.25rem;
+  color: var(--ink-muted);
+  font-size: 0.8rem;
+}
+
+.api-tester-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.api-tester-fields label > span {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.35rem;
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.api-tester-fields label b {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+}
+
+.api-tester-fields input,
+.api-tester-fields select {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  color: var(--ink);
+  background: var(--surface-inset);
+  font: 0.85rem var(--font-mono);
+}
+
+.api-tester-output {
+  max-height: 24rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: var(--r-code);
+  color: var(--code-ink);
+  background: var(--code-bg);
+  font: 0.75rem/1.55 var(--font-mono);
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
 .op-signature {
   margin-top: 1.25rem;
 }

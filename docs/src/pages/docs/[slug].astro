@@ -113,6 +113,62 @@ function outputNote(op: { outputNote?: string; outputLang?: string }): string {
           </h3>
           <p class="op-summary">{op.summary}</p>
 
+          <div class="op-endpoint">
+            <span class="http-method">{op.endpoint.method}</span>
+            <code>{op.endpoint.url}</code>
+            <a href={op.endpoint.docsUrl} target="_blank" rel="noopener">
+              HIBP API reference <i class="ph ph-arrow-up-right" aria-hidden="true"></i>
+            </a>
+          </div>
+
+          {op.endpoint.testInputs && (
+            <form
+              class="api-tester"
+              data-api-tester
+              data-endpoint={op.endpoint.url}
+              data-method={op.endpoint.method}
+            >
+              <div class="api-tester-head">
+                <div>
+                  <strong>Try this endpoint</strong>
+                  <span>No API key required. Requests go directly from your browser to HIBP.</span>
+                </div>
+                <button class="button button-secondary" type="submit">
+                  <i class="ph ph-play" aria-hidden="true"></i> Send request
+                </button>
+              </div>
+              {op.endpoint.testInputs.length > 0 && (
+                <div class="api-tester-fields">
+                  {op.endpoint.testInputs.map((input) => (
+                    <label>
+                      <span>{input.label}{input.required && <b>required</b>}</span>
+                      {input.options ? (
+                        <select name={input.name} required={input.required}>
+                          {input.options.map((option) => (
+                            <option value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          name={input.name}
+                          placeholder={input.placeholder}
+                          required={input.required}
+                          pattern={input.name === "hashPrefix" ? "[A-Fa-f0-9]{5}" : undefined}
+                          maxlength={input.name === "hashPrefix" ? 5 : undefined}
+                          autocomplete="off"
+                        />
+                      )}
+                    </label>
+                  ))}
+                </div>
+              )}
+              {op.endpoint.testInputs.some((input) => input.name === "hashPrefix") && (
+                <p class="api-tester-note">Enter only the first five hexadecimal characters of a locally computed hash—never a plaintext password.</p>
+              )}
+              <pre class="api-tester-output" data-api-output aria-live="polite" hidden></pre>
+            </form>
+          )}
+
           <div class="op-signature">
             <CodeBlock bare code={formatSignature(op.signature)} />
           </div>
@@ -260,3 +316,55 @@ function outputNote(op: { outputNote?: string; outputLang?: string }): string {
     </article>
   </div>
 </Layout>
+
+<script>
+  const maxOutputLength = 20_000;
+
+  document.querySelectorAll<HTMLFormElement>("[data-api-tester]").forEach((form) => {
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const output = form.querySelector<HTMLElement>("[data-api-output]");
+      const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+      const endpoint = form.dataset.endpoint;
+      if (!output || !button || !endpoint) return;
+
+      const values = new FormData(form);
+      const expanded = endpoint.replace(/\{(\w+)\}/g, (_, name: string) =>
+        encodeURIComponent(String(values.get(name) ?? "")));
+      const requestUrl = new URL(expanded);
+      for (const [name, value] of requestUrl.searchParams) {
+        if (!value) requestUrl.searchParams.delete(name);
+      }
+
+      output.hidden = false;
+      output.textContent = "Sending request…";
+      button.disabled = true;
+
+      try {
+        const response = await fetch(requestUrl, {
+          method: form.dataset.method || "GET",
+          headers: { Accept: "application/json, text/plain" },
+        });
+        const responseText = await response.text();
+        let formatted = responseText;
+        try {
+          formatted = JSON.stringify(JSON.parse(responseText), null, 2);
+        } catch {
+          // Pwned Passwords range responses are plain text.
+        }
+
+        const truncated = formatted.length > maxOutputLength;
+        output.textContent =
+          `${response.status} ${response.statusText}\n\n` +
+          formatted.slice(0, maxOutputLength) +
+          (truncated ? "\n\n…output truncated" : "");
+      } catch (error) {
+        output.textContent =
+          `Request failed: ${error instanceof Error ? error.message : "Unknown error"}`;
+      } finally {
+        button.disabled = false;
+      }
+    });
+  });
+</script>

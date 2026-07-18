@@ -20,12 +20,28 @@ export interface ApiStatus {
   meaning: string;
 }
 
+export interface ApiTestInput {
+  name: string;
+  label: string;
+  placeholder?: string;
+  required?: boolean;
+  options?: { label: string; value: string }[];
+}
+
+export interface ApiEndpoint {
+  method: "GET" | "POST";
+  url: string;
+  docsUrl: string;
+  testInputs?: ApiTestInput[];
+}
+
 export interface ApiOperation {
   id: string;
   name: string;
   signature: string;
   summary: string;
   auth: string;
+  endpoint: ApiEndpoint;
   params: ApiParam[];
   returns: ApiReturn;
   streaming?: string;
@@ -110,6 +126,11 @@ var app = builder.Build();`,
         summary:
           "Returns the full breach details for every breach an account has appeared in. This is the untruncated search, so each result carries the complete BreachDetails payload.",
         auth: "API key",
+        endpoint: {
+          method: "GET",
+          url: "https://haveibeenpwned.com/api/v3/breachedaccount/{account}?truncateResponse=false&includeUnverified={includeUnverified}&domain={domain}",
+          docsUrl: "https://haveibeenpwned.com/API/v3#BreachesForAccount",
+        },
         params: [
           { name: "account", type: "string", required: true, desc: "Email address or username to search. Trimmed and URL encoded for you." },
           { name: "includeUnverified", type: "bool", desc: "Include unverified breaches. Defaults to true." },
@@ -160,6 +181,11 @@ LinkedIn (2012-05-05) exposed 164,611,595 accounts.`,
         summary:
           "The truncated account search. Returns only breach names, which is the lightest way to answer \"has this account been in a breach?\".",
         auth: "API key",
+        endpoint: {
+          method: "GET",
+          url: "https://haveibeenpwned.com/api/v3/breachedaccount/{account}?truncateResponse=true&includeUnverified={includeUnverified}&domain={domain}",
+          docsUrl: "https://haveibeenpwned.com/API/v3#BreachesForAccount",
+        },
         params: [
           { name: "account", type: "string", required: true, desc: "Email address or username to search." },
           { name: "includeUnverified", type: "bool", desc: "Include unverified breaches." },
@@ -196,6 +222,11 @@ Console.WriteLine($"{headers.Length} breaches on record.");`,
         summary:
           "Searches breaches by sending only the first six characters of the SHA-1 hash of the normalized address. The client filters the returned range locally so the full address never leaves your process.",
         auth: "API key",
+        endpoint: {
+          method: "GET",
+          url: "https://haveibeenpwned.com/api/v3/breachedaccount/range/{hashPrefix}",
+          docsUrl: "https://haveibeenpwned.com/API/v3#BreachedAccountRange",
+        },
         params: [
           { name: "account", type: "string", required: true, desc: "Email address to search. Only a six-character hash prefix is sent." },
           { name: "ct", type: "CancellationToken", desc: "Signals cancellation." },
@@ -233,6 +264,23 @@ Dropbox`,
           "Task<BreachHeader[]> GetBreachesAsync(string? domain = default, bool? isSpamList = null, CancellationToken ct = default)",
         summary: "Lists breach headers from the public catalogue, with optional domain and spam-list filters. No API key required.",
         auth: "None",
+        endpoint: {
+          method: "GET",
+          url: "https://haveibeenpwned.com/api/v3/breaches?domain={domain}&isSpamList={isSpamList}",
+          docsUrl: "https://haveibeenpwned.com/API/v3#AllBreaches",
+          testInputs: [
+            { name: "domain", label: "Domain", placeholder: "adobe.com" },
+            {
+              name: "isSpamList",
+              label: "Spam list",
+              options: [
+                { label: "Any", value: "" },
+                { label: "Only spam lists", value: "true" },
+                { label: "Exclude spam lists", value: "false" },
+              ],
+            },
+          ],
+        },
         params: [
           { name: "domain", type: "string?", desc: "Filter to breaches for a single domain." },
           { name: "isSpamList", type: "bool?", desc: "Filter to breaches that are, or are not, spam lists." },
@@ -259,6 +307,23 @@ Console.WriteLine($"{all.Length} breaches in the catalogue.");`,
           "Task<BreachDetails[]> GetAllBreachDetailsAsync(string? domain = default, bool? isSpamList = null, CancellationToken ct = default)",
         summary: "Like GetBreachesAsync, but returns the full BreachDetails for every breach. Useful for building a local mirror of the catalogue.",
         auth: "None",
+        endpoint: {
+          method: "GET",
+          url: "https://haveibeenpwned.com/api/v3/breaches?domain={domain}&isSpamList={isSpamList}",
+          docsUrl: "https://haveibeenpwned.com/API/v3#AllBreaches",
+          testInputs: [
+            { name: "domain", label: "Domain", placeholder: "adobe.com" },
+            {
+              name: "isSpamList",
+              label: "Spam list",
+              options: [
+                { label: "Any", value: "" },
+                { label: "Only spam lists", value: "true" },
+                { label: "Exclude spam lists", value: "false" },
+              ],
+            },
+          ],
+        },
         params: [
           { name: "domain", type: "string?", desc: "Filter to breaches for a single domain." },
           { name: "isSpamList", type: "bool?", desc: "Filter on the spam-list flag." },
@@ -286,6 +351,14 @@ Console.WriteLine($"Largest: {largest?.Title} ({largest?.PwnCount:N0}).");`,
         signature: "Task<BreachDetails?> GetBreachAsync(string breachName, CancellationToken ct = default)",
         summary: "Fetches a single breach by its stable Name. Returns null when no breach matches.",
         auth: "None",
+        endpoint: {
+          method: "GET",
+          url: "https://haveibeenpwned.com/api/v3/breach/{breachName}",
+          docsUrl: "https://haveibeenpwned.com/API/v3#SingleBreach",
+          testInputs: [
+            { name: "breachName", label: "Breach name", placeholder: "Adobe", required: true },
+          ],
+        },
         params: [
           { name: "breachName", type: "string", required: true, desc: "The stable breach name, for example \"Adobe\"." },
           { name: "ct", type: "CancellationToken", desc: "Signals cancellation." },
@@ -316,6 +389,12 @@ if (adobe is not null)
         signature: "Task<string[]> GetDataClassesAsync(CancellationToken ct = default)",
         summary: "Lists every data class the system tracks, for example \"Email addresses\" or \"Phone numbers\". Handy for building filter UIs.",
         auth: "None",
+        endpoint: {
+          method: "GET",
+          url: "https://haveibeenpwned.com/api/v3/dataclasses",
+          docsUrl: "https://haveibeenpwned.com/API/v3#AllDataClasses",
+          testInputs: [],
+        },
         params: [{ name: "ct", type: "CancellationToken", desc: "Signals cancellation." }],
         returns: { type: "Task<string[]>", desc: "All known data classes, or an empty array." },
         streaming: "GetDataClassesAsAsyncEnumerable",
@@ -337,6 +416,12 @@ Console.WriteLine($"{classes.Length} data classes tracked.");`,
         signature: "Task<BreachDetails?> GetLatestBreachAsync(CancellationToken ct = default)",
         summary: "Returns the most recently added breach, ordered by AddedDate. Returns null when the catalogue is empty.",
         auth: "None",
+        endpoint: {
+          method: "GET",
+          url: "https://haveibeenpwned.com/api/v3/latestbreach",
+          docsUrl: "https://haveibeenpwned.com/API/v3#LatestBreach",
+          testInputs: [],
+        },
         params: [{ name: "ct", type: "CancellationToken", desc: "Signals cancellation." }],
         returns: { type: "Task<BreachDetails?>", desc: "The newest breach, or null." },
         example: `BreachDetails? latest = await breaches.GetLatestBreachAsync();
@@ -386,6 +471,14 @@ var app = builder.Build();`,
         summary:
           "Hashes the password with SHA-1, sends the first five hash characters, and evaluates the returned range locally. IsPwned is false when no suffix matches.",
         auth: "None",
+        endpoint: {
+          method: "GET",
+          url: "https://api.pwnedpasswords.com/range/{hashPrefix}",
+          docsUrl: "https://haveibeenpwned.com/API/v3#PwnedPasswords",
+          testInputs: [
+            { name: "hashPrefix", label: "SHA-1 hash prefix", placeholder: "21BD1", required: true },
+          ],
+        },
         params: [
           { name: "plainTextPassword", type: "string", required: true, desc: "The candidate password. Hashed locally; never transmitted." },
           { name: "addPadding", type: "bool", desc: "Pad the response to 800-1000 records for extra privacy on the wire. Defaults to false." },
@@ -429,6 +522,14 @@ var app = builder.Build();`,
         signature: "Task<PwnedPassword> GetPwnedPasswordWithNtlmAsync(string plainTextPassword, bool addPadding = false, CancellationToken ct = default)",
         summary: "Identical flow to GetPwnedPasswordAsync but hashes with NTLM. Use it when validating against Active Directory style hashes.",
         auth: "None",
+        endpoint: {
+          method: "GET",
+          url: "https://api.pwnedpasswords.com/range/{hashPrefix}?mode=ntlm",
+          docsUrl: "https://haveibeenpwned.com/API/v3#PwnedPasswords",
+          testInputs: [
+            { name: "hashPrefix", label: "NTLM hash prefix", placeholder: "8846F", required: true },
+          ],
+        },
         params: [
           { name: "plainTextPassword", type: "string", required: true, desc: "The candidate password. Hashed with NTLM locally." },
           { name: "addPadding", type: "bool", desc: "Pad the response for extra privacy. Defaults to false." },
@@ -460,6 +561,14 @@ Console.WriteLine(result.IsPwned is true
         summary:
           "A convenience extension on IPwnedPasswordsClient that returns a simple tuple when you only care about the yes/no answer and the count.",
         auth: "None",
+        endpoint: {
+          method: "GET",
+          url: "https://api.pwnedpasswords.com/range/{hashPrefix}",
+          docsUrl: "https://haveibeenpwned.com/API/v3#PwnedPasswords",
+          testInputs: [
+            { name: "hashPrefix", label: "SHA-1 hash prefix", placeholder: "21BD1", required: true },
+          ],
+        },
         params: [
           { name: "password", type: "string", required: true, desc: "The candidate password." },
           { name: "ct", type: "CancellationToken", desc: "Signals cancellation." },
@@ -510,6 +619,11 @@ var app = builder.Build();`,
         signature: "Task<Pastes[]> GetPastesAsync(string account, CancellationToken ct = default)",
         summary: "Returns every paste that includes the given email address, most recent first. Returns an empty array when none are found.",
         auth: "API key",
+        endpoint: {
+          method: "GET",
+          url: "https://haveibeenpwned.com/api/v3/pasteaccount/{account}",
+          docsUrl: "https://haveibeenpwned.com/API/v3#PastesForAccount",
+        },
         params: [
           { name: "account", type: "string", required: true, desc: "Email address to search. Trimmed and URL encoded for you." },
           { name: "ct", type: "CancellationToken", desc: "Signals cancellation." },
@@ -570,6 +684,11 @@ var app = builder.Build();`,
         signature: "Task<DomainVerificationDnsToken> GenerateDomainVerificationDnsTokenAsync(string domain, CancellationToken ct = default)",
         summary: "Requests the DNS TXT value you publish to prove control of a domain before it can be searched.",
         auth: "API key",
+        endpoint: {
+          method: "POST",
+          url: "https://haveibeenpwned.com/api/v3/domainverification/generatednstoken",
+          docsUrl: "https://haveibeenpwned.com/API/v3",
+        },
         params: [
           { name: "domain", type: "string", required: true, desc: "The apex domain to verify." },
           { name: "ct", type: "CancellationToken", desc: "Signals cancellation." },
@@ -598,6 +717,11 @@ Console.WriteLine($"Publish TXT: {token.TxtRecordValue}");`,
         signature: "Task VerifyDomainViaDnsAsync(string domain, CancellationToken ct = default)",
         summary: "Asks HIBP to check for the published TXT record and complete verification. Completes without a value on success.",
         auth: "API key",
+        endpoint: {
+          method: "POST",
+          url: "https://haveibeenpwned.com/api/v3/domainverification/verifydnstoken",
+          docsUrl: "https://haveibeenpwned.com/API/v3",
+        },
         params: [
           { name: "domain", type: "string", required: true, desc: "The domain whose TXT record is ready to be checked." },
           { name: "ct", type: "CancellationToken", desc: "Signals cancellation." },
@@ -625,6 +749,11 @@ Console.WriteLine("Domain verified.");`,
         signature: "Task SendDomainVerificationEmailAsync(string domain, DomainVerificationEmailAlias emailAlias, CancellationToken ct = default)",
         summary: "Sends a verification message to a standard administrative alias when DNS verification is not an option.",
         auth: "API key",
+        endpoint: {
+          method: "POST",
+          url: "https://haveibeenpwned.com/api/v3/domainverification/sendemail",
+          docsUrl: "https://haveibeenpwned.com/API/v3",
+        },
         params: [
           { name: "domain", type: "string", required: true, desc: "The domain to verify." },
           { name: "emailAlias", type: "DomainVerificationEmailAlias", required: true, desc: "One of Admin, Hostmaster, Info, Security, or Webmaster." },
@@ -656,6 +785,11 @@ Console.WriteLine("Verification email sent to security@contoso.com.");`,
         summary:
           "Returns every breached alias on a verified domain, mapped to the breaches each appeared in. Because control is proven, sensitive breaches are included.",
         auth: "API key + verified domain",
+        endpoint: {
+          method: "GET",
+          url: "https://haveibeenpwned.com/api/v3/breacheddomain/{domain}",
+          docsUrl: "https://haveibeenpwned.com/API/v3#BreachesForDomain",
+        },
         params: [
           { name: "domain", type: "string", required: true, desc: "A domain already verified on your dashboard." },
           { name: "ct", type: "CancellationToken", desc: "Signals cancellation." },
@@ -690,6 +824,11 @@ mvargas@contoso.com: Dropbox`,
         signature: "Task<SubscribedDomain[]> GetSubscribedDomainsAsync(CancellationToken ct = default)",
         summary: "Lists the domains associated with your API key, along with their last-known breach counts and renewal dates.",
         auth: "API key",
+        endpoint: {
+          method: "GET",
+          url: "https://haveibeenpwned.com/api/v3/subscribeddomains",
+          docsUrl: "https://haveibeenpwned.com/API/v3#SubscribedDomains",
+        },
         params: [{ name: "ct", type: "CancellationToken", desc: "Signals cancellation." }],
         returns: { type: "Task<SubscribedDomain[]>", desc: "Verified domains on the account, or an empty array." },
         streaming: "GetSubscribedDomainsAsAsyncEnumerable",
@@ -716,6 +855,11 @@ fabrikam.com: 0 pwned.`,
         signature: "Task<string[]?> GetStealerLogsByEmailAsync(string emailAddress, CancellationToken ct = default)",
         summary: "Returns the website domains where an email address was captured by an info stealer. The address must live on a verified domain.",
         auth: "API key + Pro subscription",
+        endpoint: {
+          method: "GET",
+          url: "https://haveibeenpwned.com/api/v3/stealerlogsbyemail/{emailAddress}",
+          docsUrl: "https://haveibeenpwned.com/API/v3#StealerLogsByEmail",
+        },
         params: [
           { name: "emailAddress", type: "string", required: true, desc: "The email address to search. Must be on a verified domain." },
           { name: "ct", type: "CancellationToken", desc: "Signals cancellation." },
@@ -749,6 +893,11 @@ Console.WriteLine(sites is { Length: > 0 }
         signature: "Task<string[]?> GetStealerLogsByWebsiteDomainAsync(string domain, CancellationToken ct = default)",
         summary: "Returns the email addresses captured against a website domain in stealer logs. Useful for operators triaging account-takeover risk.",
         auth: "API key + Pro subscription",
+        endpoint: {
+          method: "GET",
+          url: "https://haveibeenpwned.com/api/v3/stealerlogsbywebsitedomain/{domain}",
+          docsUrl: "https://haveibeenpwned.com/API/v3#StealerLogsByWebsiteDomain",
+        },
         params: [
           { name: "domain", type: "string", required: true, desc: "The website domain that appears in stealer-log URLs." },
           { name: "ct", type: "CancellationToken", desc: "Signals cancellation." },
@@ -779,6 +928,11 @@ Console.WriteLine($"{accounts?.Length ?? 0} accounts at risk.");`,
         signature: "Task<StealerLogsByEmailDomain?> GetStealerLogsByEmailDomainAsync(string domain, CancellationToken ct = default)",
         summary: "Maps each email alias on a verified domain to the website domains found in stealer logs. Ideal for organization-wide exposure reports.",
         auth: "API key + Pro subscription",
+        endpoint: {
+          method: "GET",
+          url: "https://haveibeenpwned.com/api/v3/stealerlogsbyemaildomain/{domain}",
+          docsUrl: "https://haveibeenpwned.com/API/v3#StealerLogsByEmailDomain",
+        },
         params: [
           { name: "domain", type: "string", required: true, desc: "The email domain to search. Must be verified on your dashboard." },
           { name: "ct", type: "CancellationToken", desc: "Signals cancellation." },
