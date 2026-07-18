@@ -25,6 +25,7 @@ export interface ApiTestInput {
   label: string;
   placeholder?: string;
   required?: boolean;
+  hashType?: "sha1" | "ntlm";
   options?: { label: string; value: string }[];
 }
 
@@ -476,7 +477,7 @@ var app = builder.Build();`,
           url: "https://api.pwnedpasswords.com/range/{hashPrefix}",
           docsUrl: "https://haveibeenpwned.com/API/v3#PwnedPasswords",
           testInputs: [
-            { name: "hashPrefix", label: "SHA-1 hash prefix", placeholder: "21BD1", required: true },
+            { name: "hashPrefix", label: "Password", placeholder: "Enter a password to check", required: true, hashType: "sha1" },
           ],
         },
         params: [
@@ -527,7 +528,7 @@ var app = builder.Build();`,
           url: "https://api.pwnedpasswords.com/range/{hashPrefix}?mode=ntlm",
           docsUrl: "https://haveibeenpwned.com/API/v3#PwnedPasswords",
           testInputs: [
-            { name: "hashPrefix", label: "NTLM hash prefix", placeholder: "8846F", required: true },
+            { name: "hashPrefix", label: "Password", placeholder: "Enter a password to check", required: true, hashType: "ntlm" },
           ],
         },
         params: [
@@ -566,7 +567,7 @@ Console.WriteLine(result.IsPwned is true
           url: "https://api.pwnedpasswords.com/range/{hashPrefix}",
           docsUrl: "https://haveibeenpwned.com/API/v3#PwnedPasswords",
           testInputs: [
-            { name: "hashPrefix", label: "SHA-1 hash prefix", placeholder: "21BD1", required: true },
+            { name: "hashPrefix", label: "Password", placeholder: "Enter a password to check", required: true, hashType: "sha1" },
           ],
         },
         params: [

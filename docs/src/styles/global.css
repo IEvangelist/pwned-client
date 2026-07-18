@@ -2211,8 +2211,8 @@ code, kbd, pre {
     align-items: center;
     gap: 0.55rem;
   }
-  .docs-menu-label .ph { font-size: 1.25rem; }
-  .docs-menu-caret { transition: transform 160ms ease; }
+  .docs-hamburger { flex-shrink: 0; }
+  .docs-menu-caret { flex-shrink: 0; transition: transform 160ms ease; }
   .docs-menu[open] .docs-menu-caret { transform: rotate(180deg); }
   .docs-menu:not([open]) > .docs-nav { display: none; }
   .docs-nav {

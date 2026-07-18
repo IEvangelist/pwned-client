@@ -151,10 +151,12 @@ function outputNote(op: { outputNote?: string; outputLang?: string }): string {
                       ) : (
                         <input
                           name={input.name}
+                          type={input.hashType ? "password" : "text"}
                           placeholder={input.placeholder}
                           required={input.required}
-                          pattern={input.name === "hashPrefix" ? "[A-Fa-f0-9]{5}" : undefined}
-                          maxlength={input.name === "hashPrefix" ? 5 : undefined}
+                          pattern={!input.hashType && input.name === "hashPrefix" ? "[A-Fa-f0-9]{5}" : undefined}
+                          maxlength={!input.hashType && input.name === "hashPrefix" ? 5 : undefined}
+                          data-hash-type={input.hashType}
                           autocomplete="off"
                         />
                       )}
@@ -162,8 +164,8 @@ function outputNote(op: { outputNote?: string; outputLang?: string }): string {
                   ))}
                 </div>
               )}
-              {op.endpoint.testInputs.some((input) => input.name === "hashPrefix") && (
-                <p class="api-tester-note">Enter only the first five hexadecimal characters of a locally computed hash—never a plaintext password.</p>
+              {op.endpoint.testInputs.some((input) => input.hashType) && (
+                <p class="api-tester-note">Your password is hashed in the browser — only the five-character prefix is sent. Nothing leaves your device in plaintext.</p>
               )}
               <pre class="api-tester-output" data-api-output aria-live="polite" hidden></pre>
             </form>
@@ -320,6 +322,74 @@ function outputNote(op: { outputNote?: string; outputLang?: string }): string {
 <script>
   const maxOutputLength = 20_000;
 
+  // SHA-1 prefix via Web Crypto (5 uppercase hex chars).
+  async function sha1Prefix(password: string): Promise<string> {
+    const data = new TextEncoder().encode(password);
+    const buf = await crypto.subtle.digest("SHA-1", data);
+    return Array.from(new Uint8Array(buf))
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("")
+      .toUpperCase()
+      .slice(0, 5);
+  }
+
+  // NTLM prefix = first 5 chars of MD4(UTF-16LE(password)), pure JS (Web Crypto has no MD4).
+  function ntlmPrefix(password: string): string {
+    // Encode as UTF-16 little-endian.
+    const utf16 = new Uint8Array(password.length * 2);
+    for (let i = 0; i < password.length; i++) {
+      const c = password.charCodeAt(i);
+      utf16[i * 2]     = c & 0xff;
+      utf16[i * 2 + 1] = (c >> 8) & 0xff;
+    }
+
+    // MD4 (RFC 1320).
+    const bytes: number[] = Array.from(utf16);
+    const bitLen = bytes.length * 8;
+    bytes.push(0x80);
+    while ((bytes.length % 64) !== 56) bytes.push(0);
+    bytes.push(bitLen & 0xff, (bitLen >> 8) & 0xff, (bitLen >> 16) & 0xff, (bitLen >> 24) & 0xff, 0, 0, 0, 0);
+
+    const rol = (x: number, n: number) => ((x << n) | (x >>> (32 - n))) >>> 0;
+    const F = (x: number, y: number, z: number) => ((x & y) | (~x & z)) >>> 0;
+    const G = (x: number, y: number, z: number) => ((x & y) | (x & z) | (y & z)) >>> 0;
+    const H = (x: number, y: number, z: number) => (x ^ y ^ z) >>> 0;
+
+    const r1i = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+    const r2i = [0,4,8,12,1,5,9,13,2,6,10,14,3,7,11,15];
+    const r3i = [0,8,4,12,2,10,6,14,1,9,5,13,3,11,7,15];
+    const r1s = [3,7,11,19], r2s = [3,5,9,13], r3s = [3,9,11,15];
+
+    let a = 0x67452301, b = 0xefcdab89, c = 0x98badcfe, d = 0x10325476;
+
+    for (let i = 0; i < bytes.length; i += 64) {
+      const X = Array.from({length: 16}, (_, j) =>
+        (bytes[i+j*4] | (bytes[i+j*4+1]<<8) | (bytes[i+j*4+2]<<16) | (bytes[i+j*4+3]<<24)) >>> 0
+      );
+      let [A, B, C, D] = [a, b, c, d];
+      for (let j = 0; j < 16; j++) {
+        const t = rol((A + F(B,C,D) + X[r1i[j]]) >>> 0, r1s[j%4]);
+        [A, B, C, D] = [D, t, B, C];
+      }
+      for (let j = 0; j < 16; j++) {
+        const t = rol((A + G(B,C,D) + X[r2i[j]] + 0x5a827999) >>> 0, r2s[j%4]);
+        [A, B, C, D] = [D, t, B, C];
+      }
+      for (let j = 0; j < 16; j++) {
+        const t = rol((A + H(B,C,D) + X[r3i[j]] + 0x6ed9eba1) >>> 0, r3s[j%4]);
+        [A, B, C, D] = [D, t, B, C];
+      }
+      a = (a + A) >>> 0; b = (b + B) >>> 0; c = (c + C) >>> 0; d = (d + D) >>> 0;
+    }
+
+    return [a, b, c, d]
+      .flatMap((v) => [v & 0xff, (v >> 8) & 0xff, (v >> 16) & 0xff, (v >> 24) & 0xff])
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("")
+      .toUpperCase()
+      .slice(0, 5);
+  }
+
   document.querySelectorAll<HTMLFormElement>("[data-api-tester]").forEach((form) => {
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -330,6 +400,17 @@ function outputNote(op: { outputNote?: string; outputLang?: string }): string {
       if (!output || !button || !endpoint) return;
 
       const values = new FormData(form);
+
+      // Hash any password fields in-place before URL substitution.
+      for (const input of Array.from(form.querySelectorAll<HTMLInputElement>("[data-hash-type]"))) {
+        const password = input.value;
+        if (!password) continue;
+        const prefix = input.dataset.hashType === "ntlm"
+          ? ntlmPrefix(password)
+          : await sha1Prefix(password);
+        values.set(input.name, prefix);
+      }
+
       const expanded = endpoint.replace(/\{(\w+)\}/g, (_, name: string) =>
         encodeURIComponent(String(values.get(name) ?? "")));
       const requestUrl = new URL(expanded);

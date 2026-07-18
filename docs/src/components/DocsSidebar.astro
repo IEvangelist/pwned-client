@@ -17,10 +17,14 @@ const activeItem = items.find((item) => currentPath.endsWith(item.path)) ?? item
   <details class="docs-menu">
     <summary>
       <span class="docs-menu-label">
-        <i class="ph ph-list" aria-hidden="true"></i>
+        <svg class="docs-hamburger" width="16" height="12" viewBox="0 0 16 12" fill="currentColor" aria-hidden="true" focusable="false">
+          <path d="M0 0h16v2H0zM0 5h16v2H0zM0 10h16v2H0z"/>
+        </svg>
         <span>{activeItem.label}</span>
       </span>
-      <i class="ph ph-caret-down docs-menu-caret" aria-hidden="true"></i>
+      <svg class="docs-menu-caret" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true" focusable="false">
+        <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </summary>
     <nav class="docs-nav" aria-label="Documentation">
       {items.map((item) => (
