@@ -23,6 +23,7 @@ public interface IPwnedBreachesClient
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="account"/> is either <see langword="null" />, empty or whitespace.
     /// </exception>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/breaches/#get-breach-headers-for-account-async">Client API documentation</seealso>
     Task<BreachHeader[]> GetBreachHeadersForAccountAsync(
         string account,
         CancellationToken cancellationToken = default);
@@ -35,6 +36,7 @@ public interface IPwnedBreachesClient
     /// <param name="domain">An optional breach-domain filter.</param>
     /// <param name="cancellationToken">Used to signal cancellation.</param>
     /// <returns>An array of breach headers if found, or an empty array.</returns>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/breaches/#get-breach-headers-for-account-async">Client API documentation</seealso>
     Task<BreachHeader[]> GetBreachHeadersForAccountAsync(
         string account,
         bool includeUnverified,
@@ -56,6 +58,7 @@ public interface IPwnedBreachesClient
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="account"/> is either <see langword="null" />, empty or whitespace.
     /// </exception>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/breaches/#get-breach-headers-for-account-async">Client API documentation</seealso>
     IAsyncEnumerable<BreachHeader?> GetBreachHeadersForAccountAsAsyncEnumerable(
         string account,
         CancellationToken cancellationToken = default);
@@ -68,6 +71,7 @@ public interface IPwnedBreachesClient
     /// <param name="domain">An optional breach-domain filter.</param>
     /// <param name="cancellationToken">Used to signal cancellation.</param>
     /// <returns>An asynchronous stream of breach headers.</returns>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/breaches/#get-breach-headers-for-account-async">Client API documentation</seealso>
     IAsyncEnumerable<BreachHeader?> GetBreachHeadersForAccountAsAsyncEnumerable(
         string account,
         bool includeUnverified,
@@ -81,6 +85,7 @@ public interface IPwnedBreachesClient
     /// <param name="account">The email address to search for breaches.</param>
     /// <param name="cancellationToken">Used to signal cancellation.</param>
     /// <returns>An array of matching breach headers, or an empty array.</returns>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/breaches/#get-breach-headers-for-account-using-k-anonymity-async">Client API documentation</seealso>
     Task<BreachHeader[]> GetBreachHeadersForAccountUsingKAnonymityAsync(
         string account,
         CancellationToken cancellationToken = default);
@@ -91,6 +96,7 @@ public interface IPwnedBreachesClient
     /// <param name="account">The email address to search for breaches.</param>
     /// <param name="cancellationToken">Used to signal cancellation.</param>
     /// <returns>An asynchronous stream containing only locally matched breach headers.</returns>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/breaches/#get-breach-headers-for-account-using-k-anonymity-async">Client API documentation</seealso>
     IAsyncEnumerable<BreachHeader?> GetBreachHeadersForAccountUsingKAnonymityAsAsyncEnumerable(
         string account,
         CancellationToken cancellationToken = default);
@@ -112,6 +118,7 @@ public interface IPwnedBreachesClient
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="account"/> is <see langword="null" />, empty or whitespace.
     /// </exception>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/breaches/#get-breaches-for-account-async">Client API documentation</seealso>
     Task<BreachDetails[]> GetBreachesForAccountAsync(
         string account,
         bool includeUnverified = true,
@@ -135,6 +142,7 @@ public interface IPwnedBreachesClient
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="account"/> is <see langword="null" />, empty or whitespace.
     /// </exception>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/breaches/#get-breaches-for-account-async">Client API documentation</seealso>
     IAsyncEnumerable<BreachDetails?> GetBreachesForAccountAsAsyncEnumerable(
         string account,
         bool includeUnverified = true,
@@ -151,6 +159,7 @@ public interface IPwnedBreachesClient
     /// <remarks>
     /// Example JSON payload: <a href="https://haveibeenpwned.com/api/v3/breaches"></a>
     /// </remarks>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/breaches/#get-breaches-async">Client API documentation</seealso>
     Task<BreachHeader[]> GetBreachesAsync(
         string? domain = default,
         bool? isSpamList = null,
@@ -166,6 +175,7 @@ public interface IPwnedBreachesClient
     /// <remarks>
     /// Example JSON payload: <a href="https://haveibeenpwned.com/api/v3/breaches"></a>
     /// </remarks>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/breaches/#get-breaches-async">Client API documentation</seealso>
     IAsyncEnumerable<BreachHeader?> GetBreachesAsAsyncEnumerable(
         string? domain = default,
         bool? isSpamList = null,
@@ -181,6 +191,7 @@ public interface IPwnedBreachesClient
     /// <remarks>
     /// Example JSON payload: <a href="https://haveibeenpwned.com/api/v3/breaches"></a>
     /// </remarks>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/breaches/#get-all-breach-details-async">Client API documentation</seealso>
     Task<BreachDetails[]> GetAllBreachDetailsAsync(
         string? domain = default,
         bool? isSpamList = null,
@@ -196,6 +207,7 @@ public interface IPwnedBreachesClient
     /// <remarks>
     /// Example JSON payload: <a href="https://haveibeenpwned.com/api/v3/breaches"></a>
     /// </remarks>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/breaches/#get-all-breach-details-async">Client API documentation</seealso>
     IAsyncEnumerable<BreachDetails?> GetAllBreachDetailsAsAsyncEnumerable(
         string? domain = default,
         bool? isSpamList = null,
@@ -213,6 +225,7 @@ public interface IPwnedBreachesClient
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="breachName"/> is <see langword="null" />, empty or whitespace.
     /// </exception>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/breaches/#get-breach-async">Client API documentation</seealso>
     Task<BreachDetails?> GetBreachAsync(
         string breachName,
         CancellationToken cancellationToken = default);
@@ -225,6 +238,7 @@ public interface IPwnedBreachesClient
     /// <remarks>
     /// Example JSON payload: <a href="https://haveibeenpwned.com/api/v3/dataclasses"></a>
     /// </remarks>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/breaches/#get-data-classes-async">Client API documentation</seealso>
     Task<string[]> GetDataClassesAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -235,6 +249,7 @@ public interface IPwnedBreachesClient
     /// <remarks>
     /// Example JSON payload: <a href="https://haveibeenpwned.com/api/v3/dataclasses"></a>
     /// </remarks>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/breaches/#get-data-classes-async">Client API documentation</seealso>
     IAsyncEnumerable<string?> GetDataClassesAsAsyncEnumerable(CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -246,5 +261,6 @@ public interface IPwnedBreachesClient
     /// <remarks>
     /// Example JSON payload: <a href="https://haveibeenpwned.com/api/v3/latestbreach"></a>
     /// </remarks>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/breaches/#get-latest-breach-async">Client API documentation</seealso>
     Task<BreachDetails?> GetLatestBreachAsync(CancellationToken cancellationToken = default);
 }

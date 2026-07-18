@@ -21,6 +21,7 @@ public interface IPwnedPastesClient
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="account"/> is <see langword="null" />, empty or whitespace.
     /// </exception>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/pastes/#get-pastes-async">Client API documentation</seealso>
     Task<Pastes[]> GetPastesAsync(
         string account,
         CancellationToken cancellationToken = default);
@@ -38,6 +39,7 @@ public interface IPwnedPastesClient
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="account"/> is <see langword="null" />, empty or whitespace.
     /// </exception>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/pastes/#get-pastes-async">Client API documentation</seealso>
     IAsyncEnumerable<Pastes?> GetPastesAsAsyncEnumerable(
         string account,
         CancellationToken cancellationToken = default);

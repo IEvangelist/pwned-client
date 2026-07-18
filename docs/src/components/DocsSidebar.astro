@@ -9,19 +9,33 @@ const items = [
 ];
 const currentPath = Astro.url.pathname;
 const base = import.meta.env.BASE_URL;
+const activeItem = items.find((item) => currentPath.endsWith(item.path)) ?? items[0];
 ---
 
 <aside class="docs-side">
   <div class="docs-side-label">API surface</div>
-  <nav class="docs-nav" aria-label="Documentation">
-    {items.map((item) => (
-      <a
-        href={`${base}${item.path.replace(/^\//, "")}`}
-        aria-current={currentPath.endsWith(item.path) ? "page" : undefined}
-        class:list={["docs-nav-link", { "is-active": currentPath.endsWith(item.path) }]}
-      >
-        <i class={`ph ${item.icon}`} aria-hidden="true"></i>{item.label}
-      </a>
-    ))}
-  </nav>
+  <details class="docs-menu">
+    <summary>
+      <span class="docs-menu-label">
+        <svg class="docs-hamburger" width="16" height="12" viewBox="0 0 16 12" fill="currentColor" aria-hidden="true" focusable="false">
+          <path d="M0 0h16v2H0zM0 5h16v2H0zM0 10h16v2H0z"/>
+        </svg>
+        <span>{activeItem.label}</span>
+      </span>
+      <svg class="docs-menu-caret" width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true" focusable="false">
+        <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </summary>
+    <nav class="docs-nav" aria-label="Documentation">
+      {items.map((item) => (
+        <a
+          href={`${base}${item.path.replace(/^\//, "")}`}
+          aria-current={currentPath.endsWith(item.path) ? "page" : undefined}
+          class:list={["docs-nav-link", { "is-active": currentPath.endsWith(item.path) }]}
+        >
+          <i class={`ph ${item.icon}`} aria-hidden="true"></i>{item.label}
+        </a>
+      ))}
+    </nav>
+  </details>
 </aside>

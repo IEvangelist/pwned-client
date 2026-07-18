@@ -26,6 +26,7 @@ public interface IPwnedClient : IPwnedBreachesClient,
     /// See <a href="https://haveibeenpwned.com/API/v3#SubscriptionStatus"></a>
     /// </summary>
     /// <param name="cancellationToken">Used to signal cancellation.</param>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/#subscription-levels-and-limits">Client API documentation</seealso>
     Task<SubscriptionStatus?> GetSubscriptionStatusAsync(
         CancellationToken cancellationToken = default);
 }

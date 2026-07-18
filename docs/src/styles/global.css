@@ -1278,6 +1278,14 @@ code, kbd, pre {
   margin-bottom: 0.9rem;
 }
 
+.docs-menu > summary {
+  display: none;
+}
+
+.docs-menu:not([open]) > .docs-nav {
+  display: grid;
+}
+
 .docs-nav {
   display: grid;
   gap: 0.15rem;
@@ -1568,6 +1576,120 @@ code, kbd, pre {
   font-size: 1rem;
   line-height: 1.65;
   max-width: 68ch;
+}
+
+.op-endpoint {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-code);
+  background: var(--surface-inset);
+  overflow-x: auto;
+}
+
+.op-endpoint code {
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.op-endpoint a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: auto;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.http-method {
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  color: var(--accent-strong);
+  background: var(--accent-tint);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.api-tester {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--line));
+  border-radius: var(--r-card);
+  background: var(--surface);
+}
+
+.api-tester-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.api-tester-head strong,
+.api-tester-head span {
+  display: block;
+}
+
+.api-tester-head span,
+.api-tester-note {
+  margin-top: 0.25rem;
+  color: var(--ink-muted);
+  font-size: 0.8rem;
+}
+
+.api-tester-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.api-tester-fields label > span {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.35rem;
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.api-tester-fields label b {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+}
+
+.api-tester-fields input,
+.api-tester-fields select {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  color: var(--ink);
+  background: var(--surface-inset);
+  font: 0.85rem var(--font-mono);
+}
+
+.api-tester-output {
+  max-height: 24rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: var(--r-code);
+  color: var(--code-ink);
+  background: var(--code-bg);
+  font: 0.75rem/1.55 var(--font-mono);
+  overflow: auto;
+  white-space: pre-wrap;
 }
 
 .op-signature {
@@ -2058,24 +2180,60 @@ code, kbd, pre {
     position: static;
     min-width: 0;
     max-width: 100%;
-    overflow-x: auto;
   }
+  .docs-side-label { display: none; }
+  .docs-menu { position: relative; }
+  .docs-menu > summary {
+    display: flex;
+    min-height: 3rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0.7rem 0.9rem;
+    color: var(--ink);
+    background: var(--surface-raised);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    list-style: none;
+  }
+  .docs-menu > summary::-webkit-details-marker { display: none; }
+  .docs-menu > summary:hover,
+  .docs-menu > summary:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .docs-menu-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+  .docs-hamburger { flex-shrink: 0; }
+  .docs-menu-caret { flex-shrink: 0; transition: transform 160ms ease; }
+  .docs-menu[open] .docs-menu-caret { transform: rotate(180deg); }
+  .docs-menu:not([open]) > .docs-nav { display: none; }
   .docs-nav {
-    grid-auto-flow: column;
-    justify-content: start;
-    gap: 0.4rem;
-    min-width: max-content;
-    padding-bottom: 0.35rem;
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 0.45rem);
+    left: 0;
+    width: 100%;
+    gap: 0.15rem;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0.45rem;
+    background: var(--surface-raised);
+    box-shadow: var(--shadow-md);
   }
   .docs-nav-link {
-    border-left: 0;
-    border-bottom: 2px solid transparent;
-    border-radius: 8px 8px 0 0;
-    white-space: nowrap;
+    border-left: 2px solid transparent;
+    border-radius: 7px;
   }
   .docs-nav-link.is-active {
-    border-left-color: transparent;
-    border-bottom-color: var(--accent);
+    border-left-color: var(--accent);
   }
 }
 

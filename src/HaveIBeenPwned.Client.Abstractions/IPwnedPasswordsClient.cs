@@ -19,6 +19,7 @@ public interface IPwnedPasswordsClient
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="plainTextPassword"/> is <see langword="null" /> or empty.
     /// </exception>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/passwords/#get-pwned-password-async">Client API documentation</seealso>
     Task<PwnedPassword> GetPwnedPasswordAsync(
         string plainTextPassword,
         bool addPadding = false,
@@ -35,6 +36,7 @@ public interface IPwnedPasswordsClient
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="plainTextPassword"/> is <see langword="null" /> or empty.
     /// </exception>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/passwords/#get-pwned-password-with-ntlm-async">Client API documentation</seealso>
     Task<PwnedPassword> GetPwnedPasswordWithNtlmAsync(
         string plainTextPassword,
         bool addPadding = false,

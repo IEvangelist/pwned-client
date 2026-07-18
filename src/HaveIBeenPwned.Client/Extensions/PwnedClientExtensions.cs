@@ -25,6 +25,7 @@ public static class PwnedClientExtensions
     /// </item>
     /// </list>
     /// </returns>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/passwords/#is-password-pwned-async">Client API documentation</seealso>
     public static async Task<(bool? IsPwned, long? Count)> IsPasswordPwnedAsync(
         this IPwnedPasswordsClient pwnedPasswordsClient,
         string plainTextPassword,
@@ -58,6 +59,7 @@ public static class PwnedClientExtensions
     /// </item>
     /// </list>
     /// </returns>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/breaches/#get-breach-headers-for-account-async">Client API documentation</seealso>
     public static async Task<(bool? IsBreached, string[]? Breaches)> IsBreachedAccountAsync(
         this IPwnedBreachesClient pwnedBreachesClient,
         string account,
