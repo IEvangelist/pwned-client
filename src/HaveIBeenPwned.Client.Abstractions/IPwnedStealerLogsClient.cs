@@ -24,6 +24,7 @@ public interface IPwnedStealerLogsClient
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="emailAddress"/> is <see langword="null" />, empty or whitespace.
     /// </exception>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/domains/#get-stealer-logs-by-email-async">Client API documentation</seealso>
     Task<string[]?> GetStealerLogsByEmailAsync(
         string emailAddress,
         CancellationToken cancellationToken = default);
@@ -44,6 +45,7 @@ public interface IPwnedStealerLogsClient
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="domain"/> is <see langword="null" />, empty or whitespace.
     /// </exception>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/domains/#get-stealer-logs-by-website-domain-async">Client API documentation</seealso>
     Task<string[]?> GetStealerLogsByWebsiteDomainAsync(
         string domain,
         CancellationToken cancellationToken = default);
@@ -64,6 +66,7 @@ public interface IPwnedStealerLogsClient
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="domain"/> is <see langword="null" />, empty or whitespace.
     /// </exception>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/domains/#get-stealer-logs-by-email-domain-async">Client API documentation</seealso>
     Task<StealerLogsByEmailDomain?> GetStealerLogsByEmailDomainAsync(
         string domain,
         CancellationToken cancellationToken = default);

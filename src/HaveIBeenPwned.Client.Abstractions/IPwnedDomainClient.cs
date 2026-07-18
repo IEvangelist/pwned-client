@@ -14,6 +14,7 @@ public interface IPwnedDomainClient
     /// <param name="domain">The domain to verify.</param>
     /// <param name="cancellationToken">Used to signal cancellation.</param>
     /// <returns>The DNS TXT record value to publish.</returns>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/domains/#generate-domain-verification-dns-token-async">Client API documentation</seealso>
     Task<DomainVerificationDnsToken> GenerateDomainVerificationDnsTokenAsync(
         string domain,
         CancellationToken cancellationToken = default);
@@ -23,6 +24,7 @@ public interface IPwnedDomainClient
     /// </summary>
     /// <param name="domain">The domain to verify.</param>
     /// <param name="cancellationToken">Used to signal cancellation.</param>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/domains/#verify-domain-via-dns-async">Client API documentation</seealso>
     Task VerifyDomainViaDnsAsync(
         string domain,
         CancellationToken cancellationToken = default);
@@ -33,6 +35,7 @@ public interface IPwnedDomainClient
     /// <param name="domain">The domain to verify.</param>
     /// <param name="emailAlias">The email alias that should receive the verification message.</param>
     /// <param name="cancellationToken">Used to signal cancellation.</param>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/domains/#send-domain-verification-email-async">Client API documentation</seealso>
     Task SendDomainVerificationEmailAsync(
         string domain,
         DomainVerificationEmailAlias emailAlias,
@@ -53,6 +56,7 @@ public interface IPwnedDomainClient
     /// <exception cref="ArgumentNullException">
     /// When the <paramref name="domain"/> is <see langword="null" />, empty or whitespace.
     /// </exception>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/domains/#get-breached-domain-async">Client API documentation</seealso>
     Task<DomainBreaches?> GetBreachedDomainAsync(
         string domain,
         CancellationToken cancellationToken = default);
@@ -66,6 +70,7 @@ public interface IPwnedDomainClient
     /// <remarks>
     /// This is an authenticated API requiring an HIBP API key which will then return all domains associated with that key.
     /// </remarks>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/domains/#get-subscribed-domains-async">Client API documentation</seealso>
     Task<SubscribedDomain[]> GetSubscribedDomainsAsync(
         CancellationToken cancellationToken = default);
 
@@ -78,6 +83,7 @@ public interface IPwnedDomainClient
     /// <remarks>
     /// This is an authenticated API requiring an HIBP API key which will then return all domains associated with that key.
     /// </remarks>
+    /// <seealso href="https://ievangelist.github.io/pwned-client/docs/domains/#get-subscribed-domains-async">Client API documentation</seealso>
     IAsyncEnumerable<SubscribedDomain?> GetSubscribedDomainsAsAsyncEnumerable(
         CancellationToken cancellationToken = default);
 }
