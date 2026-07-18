@@ -132,6 +132,7 @@ function passwordHashType(op: ApiOperation): "sha1" | "ntlm" | undefined {
               data-api-tester
               data-endpoint={op.endpoint.url}
               data-method={op.endpoint.method}
+              autocomplete={passwordHashType(op) ? "off" : undefined}
             >
               <div class="api-tester-head">
                 <div>
@@ -167,7 +168,7 @@ function passwordHashType(op: ApiOperation): "sha1" | "ntlm" | undefined {
                           pattern={!input.hashType && input.name === "hashPrefix" ? "[A-Fa-f0-9]{5}" : undefined}
                           maxlength={!input.hashType && input.name === "hashPrefix" ? 5 : undefined}
                           data-hash-type={input.hashType}
-                          autocomplete="off"
+                          autocomplete={input.hashType ? "new-password" : "off"}
                         />
                       )}
                     </label>
