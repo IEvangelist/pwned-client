@@ -14,6 +14,17 @@ const activeItem = items.find((item) => currentPath.endsWith(item.path)) ?? item
 
 <aside class="docs-side">
   <div class="docs-side-label">API surface</div>
+  <nav class="docs-nav docs-nav-desktop" aria-label="Documentation">
+    {items.map((item) => (
+      <a
+        href={`${base}${item.path.replace(/^\//, "")}`}
+        aria-current={currentPath.endsWith(item.path) ? "page" : undefined}
+        class:list={["docs-nav-link", { "is-active": currentPath.endsWith(item.path) }]}
+      >
+        <i class={`ph ${item.icon}`} aria-hidden="true"></i>{item.label}
+      </a>
+    ))}
+  </nav>
   <details class="docs-menu">
     <summary>
       <span class="docs-menu-label">
@@ -26,7 +37,7 @@ const activeItem = items.find((item) => currentPath.endsWith(item.path)) ?? item
         <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </summary>
-    <nav class="docs-nav" aria-label="Documentation">
+    <nav class="docs-nav" aria-label="Mobile documentation">
       {items.map((item) => (
         <a
           href={`${base}${item.path.replace(/^\//, "")}`}

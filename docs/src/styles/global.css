@@ -1278,12 +1278,8 @@ code, kbd, pre {
   margin-bottom: 0.9rem;
 }
 
-.docs-menu > summary {
+.docs-menu {
   display: none;
-}
-
-.docs-menu:not([open]) > .docs-nav {
-  display: grid;
 }
 
 .docs-nav {
@@ -2182,7 +2178,11 @@ code, kbd, pre {
     max-width: 100%;
   }
   .docs-side-label { display: none; }
-  .docs-menu { position: relative; }
+  .docs-nav-desktop { display: none; }
+  .docs-menu {
+    display: block;
+    position: relative;
+  }
   .docs-menu > summary {
     display: flex;
     min-height: 3rem;
