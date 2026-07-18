@@ -1846,7 +1846,7 @@ code, kbd, pre {
     linear-gradient(135deg, var(--accent-tint), transparent 54%),
     var(--surface);
   box-shadow: 0 10px 26px color-mix(in srgb, var(--accent-glow) 60%, transparent);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .api-tester::before {
@@ -1942,16 +1942,15 @@ code, kbd, pre {
 
 .api-select {
   position: relative;
-  display: inline-block;
-  width: fit-content;
-  min-width: 9.5rem;
-  max-width: 100%;
+  display: block;
+  width: 100%;
 }
 
 .api-select > summary {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
+  width: 100%;
   min-height: 2.6rem;
   padding: 0.6rem 0.7rem;
   border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--line-strong));
@@ -1991,7 +1990,8 @@ code, kbd, pre {
   top: calc(100% + 0.45rem);
   left: 0;
   display: grid;
-  min-width: max(100%, 12.5rem);
+  width: 100%;
+  min-width: 100%;
   padding: 0.35rem;
   border: 1px solid color-mix(in srgb, var(--accent) 36%, var(--line));
   border-radius: 10px;
