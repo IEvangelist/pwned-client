@@ -1278,6 +1278,14 @@ code, kbd, pre {
   margin-bottom: 0.9rem;
 }
 
+.docs-menu > summary {
+  display: none;
+}
+
+.docs-menu:not([open]) > .docs-nav {
+  display: grid;
+}
+
 .docs-nav {
   display: grid;
   gap: 0.15rem;
@@ -2172,24 +2180,60 @@ code, kbd, pre {
     position: static;
     min-width: 0;
     max-width: 100%;
-    overflow-x: auto;
   }
+  .docs-side-label { display: none; }
+  .docs-menu { position: relative; }
+  .docs-menu > summary {
+    display: flex;
+    min-height: 3rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0.7rem 0.9rem;
+    color: var(--ink);
+    background: var(--surface-raised);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    list-style: none;
+  }
+  .docs-menu > summary::-webkit-details-marker { display: none; }
+  .docs-menu > summary:hover,
+  .docs-menu > summary:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .docs-menu-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+  .docs-menu-label .ph { font-size: 1.25rem; }
+  .docs-menu-caret { transition: transform 160ms ease; }
+  .docs-menu[open] .docs-menu-caret { transform: rotate(180deg); }
+  .docs-menu:not([open]) > .docs-nav { display: none; }
   .docs-nav {
-    grid-auto-flow: column;
-    justify-content: start;
-    gap: 0.4rem;
-    min-width: max-content;
-    padding-bottom: 0.35rem;
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 0.45rem);
+    left: 0;
+    width: 100%;
+    gap: 0.15rem;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0.45rem;
+    background: var(--surface-raised);
+    box-shadow: var(--shadow-md);
   }
   .docs-nav-link {
-    border-left: 0;
-    border-bottom: 2px solid transparent;
-    border-radius: 8px 8px 0 0;
-    white-space: nowrap;
+    border-left: 2px solid transparent;
+    border-radius: 7px;
   }
   .docs-nav-link.is-active {
-    border-left-color: transparent;
-    border-bottom-color: var(--accent);
+    border-left-color: var(--accent);
   }
 }
 

@@ -9,19 +9,29 @@ const items = [
 ];
 const currentPath = Astro.url.pathname;
 const base = import.meta.env.BASE_URL;
+const activeItem = items.find((item) => currentPath.endsWith(item.path)) ?? items[0];
 ---
 
 <aside class="docs-side">
   <div class="docs-side-label">API surface</div>
-  <nav class="docs-nav" aria-label="Documentation">
-    {items.map((item) => (
-      <a
-        href={`${base}${item.path.replace(/^\//, "")}`}
-        aria-current={currentPath.endsWith(item.path) ? "page" : undefined}
-        class:list={["docs-nav-link", { "is-active": currentPath.endsWith(item.path) }]}
-      >
-        <i class={`ph ${item.icon}`} aria-hidden="true"></i>{item.label}
-      </a>
-    ))}
-  </nav>
+  <details class="docs-menu">
+    <summary>
+      <span class="docs-menu-label">
+        <i class="ph ph-list" aria-hidden="true"></i>
+        <span>{activeItem.label}</span>
+      </span>
+      <i class="ph ph-caret-down docs-menu-caret" aria-hidden="true"></i>
+    </summary>
+    <nav class="docs-nav" aria-label="Documentation">
+      {items.map((item) => (
+        <a
+          href={`${base}${item.path.replace(/^\//, "")}`}
+          aria-current={currentPath.endsWith(item.path) ? "page" : undefined}
+          class:list={["docs-nav-link", { "is-active": currentPath.endsWith(item.path) }]}
+        >
+          <i class={`ph ${item.icon}`} aria-hidden="true"></i>{item.label}
+        </a>
+      ))}
+    </nav>
+  </details>
 </aside>
