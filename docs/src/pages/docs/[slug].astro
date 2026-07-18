@@ -152,13 +152,39 @@ function passwordHashType(op: ApiOperation): "sha1" | "ntlm" | undefined {
                 <div class="api-tester-fields">
                   {op.endpoint.testInputs.map((input) => (
                     <label>
-                      <span>{input.label}{input.required && <b>required</b>}</span>
+                      <span id={`input-${op.id}-${input.name}-label`}>{input.label}{input.required && <b>required</b>}</span>
                       {input.options ? (
-                        <select name={input.name} required={input.required}>
+                        <details class="api-select" data-api-select>
+                          <summary
+                          aria-haspopup="listbox"
+                          aria-labelledby={`input-${op.id}-${input.name}-label`}
+                          >
+                          <span data-api-select-label>{input.options[0].label}</span>
+                          <i class="ph ph-caret-down" aria-hidden="true"></i>
+                          </summary>
+                          <div
+                          class="api-select-options"
+                          role="listbox"
+                          aria-labelledby={`input-${op.id}-${input.name}-label`}
+                          >
                           {input.options.map((option) => (
-                            <option value={option.value}>{option.label}</option>
+                            <button
+                              type="button"
+                              role="option"
+                              aria-selected={option === input.options![0] ? "true" : "false"}
+                              data-api-select-option
+                              data-value={option.value}
+                            >
+                              {option.label}
+                            </button>
                           ))}
-                        </select>
+                          </div>
+                          <input
+                          name={input.name}
+                          type="hidden"
+                          value={input.options[0].value}
+                          />
+                        </details>
                       ) : (
                         <input
                           name={input.name}
@@ -762,6 +788,29 @@ function passwordHashType(op: ApiOperation): "sha1" | "ntlm" | undefined {
         `Request failed: ${error instanceof Error ? error.message : "Unknown error"}`;
     }
   }
+
+  document.querySelectorAll<HTMLDetailsElement>("[data-api-select]").forEach((select) => {
+    const summary = select.querySelector<HTMLElement>("summary");
+    const label = select.querySelector<HTMLElement>("[data-api-select-label]");
+    const input = select.querySelector<HTMLInputElement>('input[type="hidden"]');
+    if (!summary || !label || !input) return;
+
+    select.addEventListener("toggle", () => {
+      summary.setAttribute("aria-expanded", String(select.open));
+    });
+
+    select.querySelectorAll<HTMLButtonElement>("[data-api-select-option]").forEach((option) => {
+      option.addEventListener("click", () => {
+        input.value = option.dataset.value || "";
+        label.textContent = option.textContent || "";
+        select.querySelectorAll<HTMLButtonElement>("[data-api-select-option]").forEach((item) => {
+          item.setAttribute("aria-selected", String(item === option));
+        });
+        select.open = false;
+        summary.focus();
+      });
+    });
+  });
 
   document.querySelectorAll<HTMLFormElement>("[data-api-tester]").forEach((form) => {
     form.addEventListener("submit", async (event) => {
