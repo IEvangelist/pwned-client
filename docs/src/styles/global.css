@@ -987,7 +987,7 @@ code, kbd, pre {
   justify-content: space-between;
   gap: 1rem;
   color: var(--accent-strong);
-  font: 600 0.7rem/1 var(--font-mono);
+  font: 600 0.82rem/1 var(--font-mono);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -1002,12 +1002,12 @@ code, kbd, pre {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.4rem 0.55rem;
+  padding: 0.5rem 0.7rem;
   border: 1px solid var(--line);
   border-radius: 7px;
   color: var(--ink-soft);
   background: var(--surface);
-  font: 600 0.68rem/1 var(--font-mono);
+  font: 600 0.76rem/1 var(--font-mono);
   cursor: pointer;
 }
 
@@ -1019,7 +1019,7 @@ code, kbd, pre {
 .password-preview-input {
   gap: 0.7rem;
   margin-top: 1rem;
-  padding: 0.75rem 0.85rem;
+  padding: 0.9rem 1rem;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--surface-inset);
@@ -1028,27 +1028,27 @@ code, kbd, pre {
 .password-preview-input span,
 .password-preview-input i {
   color: var(--ink-muted);
-  font-size: 0.72rem;
+  font-size: 0.82rem;
 }
 
 .password-preview-input code {
   flex: 1;
   color: var(--ink);
-  font: 600 0.85rem/1 var(--font-mono);
+  font: 600 1rem/1 var(--font-mono);
   letter-spacing: 0.13em;
 }
 
 .password-preview-status {
   gap: 0.5rem;
-  min-height: 2.4rem;
-  margin: 0.8rem 0 0;
+  min-height: 2.8rem;
+  margin: 1rem 0 0;
   color: var(--ink-soft);
-  font-size: 0.76rem;
+  font-size: 0.88rem;
 }
 
 .password-preview-status > span:first-child {
-  width: 0.45rem;
-  height: 0.45rem;
+  width: 0.55rem;
+  height: 0.55rem;
   flex: 0 0 auto;
   border-radius: 999px;
   background: var(--accent);
@@ -1064,9 +1064,9 @@ code, kbd, pre {
 
 .password-preview-steps li {
   position: relative;
-  gap: 0.75rem;
-  min-height: 4.7rem;
-  padding: 0.7rem 0;
+  gap: 1rem;
+  min-height: 5.5rem;
+  padding: 0.85rem 0;
   opacity: 0.4;
   transition: opacity 250ms ease;
 }
@@ -1079,9 +1079,9 @@ code, kbd, pre {
 .password-preview-steps li:not(:last-child)::after {
   content: "";
   position: absolute;
-  top: 3.35rem;
-  bottom: -0.6rem;
-  left: 1.25rem;
+  top: 4rem;
+  bottom: -0.85rem;
+  left: 1.5rem;
   width: 2px;
   background: var(--line-strong);
 }
@@ -1095,15 +1095,15 @@ code, kbd, pre {
   position: relative;
   z-index: 1;
   display: grid;
-  width: 2.8rem;
-  height: 2.8rem;
+  width: 3.2rem;
+  height: 3.2rem;
   flex: 0 0 auto;
   place-items: center;
   border: 1px solid var(--line-strong);
   border-radius: 999px;
   color: var(--ink-muted);
   background: var(--surface-raised);
-  font: 600 0.62rem/1 var(--font-mono);
+  font: 600 0.72rem/1 var(--font-mono);
   transition: all 220ms ease;
 }
 
@@ -1121,14 +1121,14 @@ code, kbd, pre {
 }
 
 .password-preview-steps li > div:not(.password-preview-range) {
-  min-width: 9.5rem;
+  min-width: 12rem;
 }
 
 .password-preview-steps li > div > span,
 .password-preview-result span {
   display: block;
   color: var(--ink-muted);
-  font: 600 0.57rem/1.2 var(--font-mono);
+  font: 600 0.68rem/1.2 var(--font-mono);
   letter-spacing: 0.09em;
   text-transform: uppercase;
 }
@@ -1138,17 +1138,17 @@ code, kbd, pre {
   display: block;
   margin-top: 0.15rem;
   color: var(--ink);
-  font: 700 0.82rem/1.2 var(--font-display);
+  font: 700 1rem/1.2 var(--font-display);
 }
 
 .password-preview-steps code {
   min-width: 0;
   margin-left: auto;
-  padding: 0.45rem 0.55rem;
+  padding: 0.6rem 0.75rem;
   border-radius: 6px;
   color: var(--ink-soft);
   background: var(--code-bg);
-  font: 600 0.63rem/1.4 var(--font-mono);
+  font: 600 0.78rem/1.4 var(--font-mono);
   overflow-wrap: anywhere;
 }
 
@@ -1171,7 +1171,7 @@ code, kbd, pre {
 
 .password-preview-range {
   display: grid;
-  width: 8.5rem;
+  width: 11rem;
   grid-template-columns: 1fr;
   gap: 0.2rem;
   margin-left: auto;
@@ -1179,7 +1179,7 @@ code, kbd, pre {
 
 .password-preview-range i {
   display: block;
-  height: 0.28rem;
+  height: 0.36rem;
   border-radius: 999px;
   background: linear-gradient(90deg, var(--accent), var(--accent-bright));
   opacity: 0.22;
@@ -1204,13 +1204,13 @@ code, kbd, pre {
 .password-preview-range small {
   margin-top: 0.1rem;
   color: var(--ink-muted);
-  font: 0.58rem/1.2 var(--font-mono);
+  font: 0.68rem/1.2 var(--font-mono);
 }
 
 .password-preview-result {
-  gap: 0.65rem;
-  margin-top: 0.7rem;
-  padding: 0.7rem 0.8rem;
+  gap: 0.8rem;
+  margin-top: 0.9rem;
+  padding: 0.9rem 1rem;
   border: 1px solid color-mix(in srgb, var(--accent) 42%, var(--line));
   border-radius: 10px;
   color: var(--accent-strong);
@@ -1218,7 +1218,7 @@ code, kbd, pre {
 }
 
 .password-preview-result > i {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
 
 .password-preview-result[data-state="pending"] > i {
