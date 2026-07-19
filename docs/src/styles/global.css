@@ -950,7 +950,7 @@ code, kbd, pre {
 
 .password-preview-grid {
   display: grid;
-  grid-template-columns: minmax(16rem, 0.8fr) minmax(28rem, 1.2fr);
+  grid-template-columns: minmax(18rem, 0.72fr) minmax(33rem, 1.28fr);
   align-items: center;
   gap: clamp(2.5rem, 7vw, 6rem);
 }
@@ -967,7 +967,8 @@ code, kbd, pre {
 
 .password-preview-flow {
   --preview-success: #0b6849;
-  padding: clamp(1rem, 2.6vw, 1.5rem);
+  min-height: 31rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
   border: 1px solid var(--line);
   border-radius: 18px;
   background: var(--surface-raised);
@@ -1065,19 +1066,15 @@ code, kbd, pre {
 .password-preview-steps li {
   position: relative;
   gap: 0.75rem;
-  min-height: 4.25rem;
-  padding: 0.6rem 0;
+  min-height: 4.7rem;
+  padding: 0.7rem 0;
   opacity: 0.4;
-  transition: opacity 250ms ease, transform 250ms ease;
+  transition: opacity 250ms ease;
 }
 
 .password-preview-steps li[data-state="active"],
 .password-preview-steps li[data-state="complete"] {
   opacity: 1;
-}
-
-.password-preview-steps li[data-state="active"] {
-  transform: translateX(0.2rem);
 }
 
 .password-preview-steps li:not(:last-child)::after {
@@ -1099,8 +1096,8 @@ code, kbd, pre {
   position: relative;
   z-index: 1;
   display: grid;
-  width: 2.55rem;
-  height: 2.55rem;
+  width: 2.8rem;
+  height: 2.8rem;
   flex: 0 0 auto;
   place-items: center;
   border: 1px solid var(--line-strong);
@@ -1219,7 +1216,7 @@ code, kbd, pre {
   border-radius: 10px;
   color: var(--preview-success);
   background: color-mix(in srgb, var(--preview-success) 8%, var(--surface-raised));
-  animation: password-result-enter 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition: opacity 220ms ease;
 }
 
 .password-preview-result > i {
@@ -1227,7 +1224,10 @@ code, kbd, pre {
 }
 
 .password-preview-result[hidden] {
-  display: none;
+  display: flex;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 
 [data-theme="dark"] .password-preview-flow {
@@ -1241,6 +1241,10 @@ code, kbd, pre {
 
   .password-preview-copy {
     max-width: 42rem;
+  }
+
+  .password-preview-flow {
+    min-height: 0;
   }
 }
 
