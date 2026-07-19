@@ -1553,6 +1553,16 @@ code, kbd, pre {
   font-weight: 500;
 }
 
+.footer-copy {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+}
+
+.footer-separator {
+  color: var(--line-strong);
+}
+
 .footer-copy a:hover {
   text-decoration: underline;
 }
