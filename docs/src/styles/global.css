@@ -1212,26 +1212,32 @@ code, kbd, pre {
   gap: 0.65rem;
   margin-top: 0.7rem;
   padding: 0.7rem 0.8rem;
-  border: 1px solid color-mix(in srgb, var(--preview-success) 42%, var(--line));
+  border: 1px solid color-mix(in srgb, var(--accent) 42%, var(--line));
   border-radius: 10px;
-  color: var(--preview-success);
-  background: color-mix(in srgb, var(--preview-success) 8%, var(--surface-raised));
-  transition: opacity 220ms ease;
+  color: var(--accent-strong);
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface-raised));
 }
 
 .password-preview-result > i {
   font-size: 1.2rem;
 }
 
-.password-preview-result[hidden] {
-  display: flex;
-  visibility: hidden;
-  opacity: 0;
-  pointer-events: none;
+.password-preview-result[data-state="pending"] > i {
+  animation: password-preview-spin 1.1s linear infinite;
+}
+
+.password-preview-result[data-state="complete"] {
+  border-color: color-mix(in srgb, var(--preview-success) 42%, var(--line));
+  color: var(--preview-success);
+  background: color-mix(in srgb, var(--preview-success) 8%, var(--surface-raised));
 }
 
 [data-theme="dark"] .password-preview-flow {
   --preview-success: #65d7a6;
+}
+
+@keyframes password-preview-spin {
+  to { transform: rotate(360deg); }
 }
 
 @media (max-width: 860px) {

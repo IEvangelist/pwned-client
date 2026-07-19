@@ -202,9 +202,9 @@ const packages = [
             <code><i class="ph ph-magnifying-glass" aria-hidden="true"></i> suffix match</code>
           </li>
         </ol>
-        <div class="password-preview-result" data-password-result hidden>
-          <i class="ph ph-shield-check" aria-hidden="true"></i>
-          <div><span>SDK result</span><strong>Only the local match is returned.</strong></div>
+        <div class="password-preview-result" data-password-result data-state="pending">
+          <i class="ph ph-spinner-gap" data-password-result-icon aria-hidden="true"></i>
+          <div><span>SDK result</span><strong data-password-result-copy>Comparing locally...</strong></div>
         </div>
       </div>
     </div>
@@ -274,6 +274,8 @@ const packages = [
       const steps = [...preview.querySelectorAll("[data-preview-step]")];
       const message = preview.querySelector("[data-password-message]");
       const result = preview.querySelector("[data-password-result]");
+      const resultCopy = preview.querySelector("[data-password-result-copy]");
+      const resultIcon = preview.querySelector("[data-password-result-icon]");
       const replay = preview.querySelector("[data-password-replay]");
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       let timers = [];
@@ -288,13 +290,17 @@ const packages = [
       const complete = () => {
         steps.forEach((step) => step.dataset.state = "complete");
         message.textContent = "The password and full hash never left your process.";
-        result.hidden = false;
+        result.dataset.state = "complete";
+        resultCopy.textContent = "Only the local match is returned.";
+        resultIcon.className = "ph ph-shield-check";
       };
 
       const play = () => {
         timers.forEach((timer) => window.clearTimeout(timer));
         timers = [];
-        result.hidden = true;
+        result.dataset.state = "pending";
+        resultCopy.textContent = "Comparing locally...";
+        resultIcon.className = "ph ph-spinner-gap";
         steps.forEach((step) => step.dataset.state = "pending");
 
         if (reducedMotion) {
