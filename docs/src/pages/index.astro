@@ -138,31 +138,73 @@ const packages = [
     </div>
   </section>
 
-  <!-- 4. K-ANONYMITY: process flow (the privacy USP) -->
-  <section class="section" style="background: var(--surface-soft); border-block: 1px solid var(--line);">
-    <div class="container">
-      <div class="sec-head">
+  <!-- 4. K-ANONYMITY: animated SDK walkthrough -->
+  <section class="section password-preview-section" data-password-preview>
+    <div class="container password-preview-grid">
+      <div class="password-preview-copy">
+        <div class="eyebrow">Privacy, made visible</div>
         <h2 class="display">The password check that <span class="accent-word">never sends</span> the password.</h2>
-        <p>K-anonymity means only the first five characters of a SHA-1 hash ever leave your process. The match happens on your device.</p>
+        <p>K-anonymity means the SDK hashes the password in your process, sends only five SHA-1 characters, then finds the match locally.</p>
+        <a class="button button-secondary" href={`${base}docs/passwords/`}>
+          <i class="ph ph-key" aria-hidden="true"></i> Explore password checks
+        </a>
       </div>
-      <div class="flow">
-        <div class="flow-node" data-reveal>
-          <div class="flow-kicker"><i class="ph ph-fingerprint" aria-hidden="true"></i> Hash locally</div>
-          <h3>SHA-1 on device</h3>
-          <p>The client hashes the plaintext in your process. Nothing has left the machine yet.</p>
-          <div class="hash"><b>21BD1</b><span class="dim">2DC183F740EE76F27B78EB39C8AD972A757</span></div>
+
+      <div class="password-preview-flow" aria-label="Animated password check walkthrough">
+        <div class="password-preview-topline">
+          <span><i class="ph ph-lock-key" aria-hidden="true"></i> Plaintext stays local</span>
+          <button class="password-preview-replay" type="button" data-password-replay>
+            <i class="ph ph-arrow-clockwise" aria-hidden="true"></i> Replay
+          </button>
         </div>
-        <div class="flow-node" data-reveal>
-          <div class="flow-kicker"><i class="ph ph-arrows-out-line-horizontal" aria-hidden="true"></i> Send five chars</div>
-          <h3>Only the prefix</h3>
-          <p>A single request carries the five-character prefix. The API cannot reconstruct your password.</p>
-          <div class="hash"><span class="dim">GET /range/</span><b>21BD1</b></div>
+        <div class="password-preview-input">
+          <span>Password entered</span>
+          <code>••••••••••••</code>
+          <i class="ph ph-eye-slash" aria-hidden="true"></i>
         </div>
-        <div class="flow-node" data-reveal>
-          <div class="flow-kicker"><i class="ph ph-shield-check" aria-hidden="true"></i> Match on device</div>
-          <h3>Compare locally</h3>
-          <p>The API returns every matching suffix. The client finds yours without revealing which one.</p>
-          <div class="hash"><span class="dim">suffix </span><b>2DC183F...A757</b><span class="dim"> : 12,948</span></div>
+        <p class="password-preview-status" data-password-status aria-live="polite">
+          <span aria-hidden="true"></span>
+          <span data-password-message>Ready to protect the password.</span>
+        </p>
+        <ol class="password-preview-steps">
+          <li data-preview-step="hash" data-state="pending">
+            <span class="password-preview-marker" aria-hidden="true">01</span>
+            <div>
+              <span>Inside your process</span>
+              <strong>Hash the password</strong>
+            </div>
+            <code><mark>21BD1</mark><b>2DC183F...A757</b></code>
+          </li>
+          <li data-preview-step="prefix" data-state="pending">
+            <span class="password-preview-marker" aria-hidden="true">02</span>
+            <div>
+              <span>Across the network</span>
+              <strong>Request the range</strong>
+            </div>
+            <code><b>GET /range/</b><mark>21BD1</mark></code>
+          </li>
+          <li data-preview-step="range" data-state="pending">
+            <span class="password-preview-marker" aria-hidden="true">03</span>
+            <div>
+              <span>Anonymous response</span>
+              <strong>Receive a suffix bucket</strong>
+            </div>
+            <div class="password-preview-range" aria-label="Range response">
+              <i></i><i></i><i></i><small>800+ suffixes</small>
+            </div>
+          </li>
+          <li data-preview-step="compare" data-state="pending">
+            <span class="password-preview-marker" aria-hidden="true">04</span>
+            <div>
+              <span>Back inside your process</span>
+              <strong>Compare locally</strong>
+            </div>
+            <code><i class="ph ph-magnifying-glass" aria-hidden="true"></i> suffix match</code>
+          </li>
+        </ol>
+        <div class="password-preview-result" data-password-result hidden>
+          <i class="ph ph-shield-check" aria-hidden="true"></i>
+          <div><span>SDK result</span><strong>Only the local match is returned.</strong></div>
         </div>
       </div>
     </div>
@@ -225,4 +267,64 @@ const packages = [
       </div>
     </div>
   </section>
+
+  <script is:inline>
+    const preview = document.querySelector("[data-password-preview]");
+    if (preview) {
+      const steps = [...preview.querySelectorAll("[data-preview-step]")];
+      const message = preview.querySelector("[data-password-message]");
+      const result = preview.querySelector("[data-password-result]");
+      const replay = preview.querySelector("[data-password-replay]");
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let timers = [];
+
+      const messages = [
+        "Hashing the password locally. No network request has been made.",
+        "Only the first five hash characters leave the device.",
+        "HIBP returns every suffix in the anonymous prefix bucket.",
+        "The SDK compares the suffix in memory and returns the local match.",
+      ];
+
+      const complete = () => {
+        steps.forEach((step) => step.dataset.state = "complete");
+        message.textContent = "The password and full hash never left your process.";
+        result.hidden = false;
+      };
+
+      const play = () => {
+        timers.forEach((timer) => window.clearTimeout(timer));
+        timers = [];
+        result.hidden = true;
+        steps.forEach((step) => step.dataset.state = "pending");
+
+        if (reducedMotion) {
+          complete();
+          return;
+        }
+
+        steps.forEach((step, index) => {
+          timers.push(window.setTimeout(() => {
+            if (index > 0) steps[index - 1].dataset.state = "complete";
+            step.dataset.state = "active";
+            message.textContent = messages[index];
+          }, index * 1050));
+        });
+        timers.push(window.setTimeout(complete, steps.length * 1050));
+      };
+
+      replay.addEventListener("click", play);
+
+      if (reducedMotion || !("IntersectionObserver" in window)) {
+        play();
+      } else {
+        const observer = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting) {
+            play();
+            observer.disconnect();
+          }
+        }, { threshold: 0.35 });
+        observer.observe(preview);
+      }
+    }
+  </script>
 </Layout>
