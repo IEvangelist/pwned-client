@@ -950,13 +950,12 @@ code, kbd, pre {
 
 .password-preview-grid {
   display: grid;
-  grid-template-columns: minmax(18rem, 0.72fr) minmax(33rem, 1.28fr);
-  align-items: center;
-  gap: clamp(2.5rem, 7vw, 6rem);
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2rem, 4vw, 3rem);
 }
 
 .password-preview-copy p {
-  max-width: 42ch;
+  max-width: 58ch;
   margin-top: 1rem;
   color: var(--ink-muted);
 }
@@ -967,7 +966,7 @@ code, kbd, pre {
 
 .password-preview-flow {
   --preview-success: #0b6849;
-  min-height: 31rem;
+  min-height: 27rem;
   padding: clamp(1.25rem, 3vw, 2rem);
   border: 1px solid var(--line);
   border-radius: 18px;
@@ -1241,10 +1240,6 @@ code, kbd, pre {
 }
 
 @media (max-width: 860px) {
-  .password-preview-grid {
-    grid-template-columns: 1fr;
-  }
-
   .password-preview-copy {
     max-width: 42rem;
   }
