@@ -1,0 +1,1149 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const repo = "https://github.com/IEvangelist/pwned-client";
+const commit = (sha: string) => `${repo}/commit/${sha}`;
+const pull = (number: number) => `${repo}/pull/${number}`;
+const release = (tag: string) => `${repo}/releases/tag/${tag}`;
+const tag = (name: string) => `${repo}/tree/${name}`;
+const compare = (from: string, to: string) => `${repo}/compare/${from}...${to}`;
+
+interface Reference {
+  label: string;
+  href: string;
+  kind: "commit" | "pull" | "issue" | "release" | "compare";
+}
+
+interface Change {
+  title: string;
+  description: string;
+  references: Reference[];
+}
+
+interface Period {
+  id: string;
+  version: string;
+  date: string;
+  status: "current" | "preview" | "release";
+  summary: string;
+  href?: string;
+  changes: Change[];
+}
+
+const c = (sha: string): Reference => ({
+  label: sha.slice(0, 7),
+  href: commit(sha),
+  kind: "commit",
+});
+const pr = (number: number): Reference => ({
+  label: `PR #${number}`,
+  href: pull(number),
+  kind: "pull",
+});
+const rel = (name: string, href = release(name)): Reference => ({
+  label: name,
+  href,
+  kind: "release",
+});
+const diff = (from: string, to: string): Reference => ({
+  label: `${from}...${to}`,
+  href: compare(from, to),
+  kind: "compare",
+});
+
+const periods: Period[] = [
+  {
+    id: "current",
+    version: "Current main",
+    date: "January-July 2026",
+    status: "current",
+    summary:
+      "The client completed its HIBP API v3 surface, added first-class observability, and launched the documentation site with privacy-focused interactive examples.",
+    href: `${repo}/commits/main`,
+    changes: [
+      {
+        title: "Completed the HIBP API v3 contract",
+        description:
+          "The client now covers the remaining breach, domain-verification, password, and stealer-log operations while providing typed API failures, subscription-level helpers, centralized HTTP behavior, and focused contract tests.",
+        references: [pr(85), c("85c0ea31eed8ca89bc71765dd07717550f8aef22")],
+      },
+      {
+        title: "Added OpenTelemetry-ready diagnostics",
+        description:
+          "A stable ActivitySource and Meter now expose request duration, failures, retries, and rate-limit behavior without requiring consumers to adopt a proprietary telemetry stack.",
+        references: [pr(85), c("85c0ea31eed8ca89bc71765dd07717550f8aef22")],
+      },
+      {
+        title: "Launched the Astro documentation site",
+        description:
+          "The project gained a GitHub Pages site with API reference content, self-hosted fonts, responsive layouts, code examples, and an automated deployment workflow.",
+        references: [c("e5e726e76fd04a2c3a03dea89144c2d61f384217")],
+      },
+      {
+        title: "Made documentation navigation work across screen sizes",
+        description:
+          "Mobile readers received an accessible section dropdown and desktop navigation was corrected so the active API section remains easy to discover.",
+        references: [
+          pr(86),
+          c("e4611ba20d4af0597039d823a379a27d3f1d2297"),
+          c("ebba41c65413ebb63e0e8d5a7202efade85768a9"),
+        ],
+      },
+      {
+        title: "Added safe, interactive API demonstrations",
+        description:
+          "The documentation can exercise public API routes, hash passwords locally with SHA-1 or NTLM, avoid browser password storage, and visualize exactly how k-anonymity protects plaintext credentials.",
+        references: [
+          c("317923c0fa0011555375efcb850288c22bb2afb5"),
+          c("d9920f8190c38fc40ab520180558967e119ea9c6"),
+          c("2cd3dbaeb7c11626a785fa75725c5375f782ccd8"),
+        ],
+      },
+      {
+        title: "Brought the password privacy walkthrough to the landing page",
+        description:
+          "A staged animation now explains local hashing, five-character range requests, anonymous suffix results, and local comparison, with follow-up refinements keeping the presentation stable and legible.",
+        references: [
+          c("3b2b7a4ddb8ac697ae72c8da18498720c61af70b"),
+          c("f9c706afb97379c460273d771634b70e5e917c8e"),
+          c("d970af286fa7a9c3ca3add0e491728a5ba5255a2"),
+        ],
+      },
+      {
+        title: "Refreshed dependencies and acceptance-test configuration",
+        description:
+          "Two grouped dependency updates kept the .NET stack current, while acceptance tests became tolerant of an absent API-key environment value and breach-detail retrieval was aligned with the current service contract.",
+        references: [
+          pr(61),
+          c("b7ce9e7c7bc9ef2d5f309df1f86fb44c998c2e5e"),
+          pr(62),
+          c("fd9d685dc6fa09deca12ace7dff5bd8ababbf12b"),
+          c("7e7d9fbbef056f66bf440632268375586412e7c7"),
+          c("58db973bf9fa7e4fd39cf12eeabc99a91f5afc22"),
+        ],
+      },
+    ],
+  },
+  {
+    id: "10-0-2-preview-1",
+    version: "10.0.2-preview.1",
+    date: "December 15, 2025",
+    status: "preview",
+    summary:
+      "This preview substantially expanded the API surface before the complete v3 work landed on main.",
+    href: release("10.0.2-preview.1"),
+    changes: [
+      {
+        title: "Introduced domain and stealer-log clients",
+        description:
+          "New focused interfaces and models added domain subscriptions, domain breach searches, stealer-log searches, additional password modes, and resilience registration for the expanded client set.",
+        references: [
+          rel("10.0.2-preview.1"),
+          c("810a522683d53638281880726ceb9471d369cead"),
+          diff("10.0.1", "10.0.2-preview.1"),
+        ],
+      },
+    ],
+  },
+  {
+    id: "10-0-1",
+    version: "10.0.1",
+    date: "December 15, 2025",
+    status: "release",
+    summary:
+      "A publishing-focused patch made package creation and upload reliable with the modern .NET toolchain.",
+    href: release("10.0.1"),
+    changes: [
+      {
+        title: "Replaced the legacy NuGet upload command",
+        description:
+          "The release workflow moved to dotnet nuget push so package publishing uses the SDK already installed by the build.",
+        references: [pr(57), c("a2c33f475068b7fe4d8cd3c17084360cf37b806c")],
+      },
+      {
+        title: "Restored version history for MinVer",
+        description:
+          "Checkout now fetches complete history without downloading unnecessary file blobs, giving MinVer the tags it needs while keeping CI efficient.",
+        references: [pr(58), c("51ca45b75ebc131357c1dfd3b0933775bc9fcb10")],
+      },
+      {
+        title: "Simplified the final package upload",
+        description:
+          "Redundant version-extraction steps were removed so the workflow publishes the package artifacts produced by the build directly.",
+        references: [
+          rel("10.0.1"),
+          c("fd4510680a21774c2d2469dafbc4c7f502cf4916"),
+          diff("10.0", "10.0.1"),
+        ],
+      },
+    ],
+  },
+  {
+    id: "10-0",
+    version: "10.0",
+    date: "December 10, 2025",
+    status: "release",
+    summary:
+      "The library moved to .NET 10 and refreshed its build, package, sample, and test foundations.",
+    href: release("10.0"),
+    changes: [
+      {
+        title: "Upgraded the solution to .NET 10",
+        description:
+          "The primary framework migration updated target frameworks, package versions, CI SDK selection, samples, and an AsyncEnumerable ambiguity exposed by the new runtime.",
+        references: [
+          pr(49),
+          c("2bde336d7b958c93f8f99c6ea3715a0081019769"),
+          pr(54),
+          c("a136db1e677028b7535d10bab655672b8756c611"),
+        ],
+      },
+      {
+        title: "Kept the .NET 9 line current before migration",
+        description:
+          "Grouped dependency updates covered the test SDK and core Microsoft extensions so the eventual runtime upgrade started from supported package versions.",
+        references: [
+          pr(26),
+          c("76624975c122e0d2c7d6707cd95cd0eb9290b1c3"),
+          pr(31),
+          c("62b1ec4eebb57b1fb68fd4fe3cb1ba8ccb6d78c6"),
+          pr(36),
+          c("ea9b97ed25f615edf9262fba6824c1ae43aad35c"),
+        ],
+      },
+      {
+        title: "Published the .NET 10 release line",
+        description:
+          "The 10.0 release records the complete transition from 9.0.0, including all merged maintenance work that preceded the runtime upgrade.",
+        references: [rel("10.0"), diff("9.0.0", "10.0")],
+      },
+    ],
+  },
+  {
+    id: "9-0-0",
+    version: "9.0.0",
+    date: "November 14, 2024",
+    status: "release",
+    summary:
+      "The project adopted .NET 9 after a broad refresh of dependencies, versioning, and GitHub Actions.",
+    href: release("9.0.0"),
+    changes: [
+      {
+        title: "Upgraded the client and samples to .NET 9",
+        description:
+          "Target frameworks, build settings, CI, and package references moved together to the .NET 9 release line.",
+        references: [pr(25), c("9b843a5bb7fe8b815b3a4318b59b8f02610328db")],
+      },
+      {
+        title: "Modernized GitHub Actions",
+        description:
+          "Setup .NET, CodeQL, and checkout actions advanced to supported major versions before the runtime migration.",
+        references: [
+          pr(10),
+          c("8a2461d5f23c7b0ea0df4edfa149ce4bf052b977"),
+          pr(11),
+          c("057acef23554ee8ff93205ef9b6d12514d35ab22"),
+          pr(12),
+          c("901d95a77c35662697d217c45af4cf80e6d46cd0"),
+        ],
+      },
+      {
+        title: "Updated package and versioning infrastructure",
+        description:
+          "Dependabot grouping, MinVer 6, and five grouped dependency refreshes reduced update noise while keeping runtime and test dependencies patched.",
+        references: [
+          pr(13),
+          c("9de3422b3ecd5dec2080e10f9e63780e01f56736"),
+          pr(14),
+          c("f5f9c90664165fdd6f06c3a77b4c43bef42a6a9c"),
+          pr(15),
+          c("8868ba9d33c0e8850e9991f562614356429a3da1"),
+          pr(16),
+          c("630adec8ea115219cf7018fe50540cebb183abdd"),
+          pr(18),
+          c("e478226fa71054526f26af635e72a0c00ed821ba"),
+          pr(19),
+          c("a64cbf10ea46931bdac32ae6d31aea049580028a"),
+          pr(21),
+          c("c616aee618b58c1dc39f36e5277756ed0bb9241e"),
+        ],
+      },
+      {
+        title: "Published the .NET 9 release",
+        description:
+          "The 9.0.0 release captures the runtime migration and all maintenance merged since 8.0.3.",
+        references: [rel("9.0.0"), diff("8.0.3", "9.0.0")],
+      },
+    ],
+  },
+  {
+    id: "8-0-3",
+    version: "8.0.3",
+    date: "August 15, 2024",
+    status: "release",
+    summary:
+      "This patch aligned shared configuration keys and refreshed dependencies without changing the public API.",
+    href: release("8.0.3"),
+    changes: [
+      {
+        title: "Consolidated configuration and package upkeep",
+        description:
+          "Shared option names replaced duplicated values while routine package and code cleanup kept the .NET 8 implementation maintainable.",
+        references: [
+          c("bebf8309cb5255e3a717530c97b732a4113f1e89"),
+          c("5f58c6421be50c85241a4e1c514cb66af092cd77"),
+          rel("8.0.3"),
+          diff("8.0.2", "8.0.3"),
+        ],
+      },
+    ],
+  },
+  {
+    id: "8-0-2",
+    version: "8.0.2",
+    date: "May 1, 2024",
+    status: "release",
+    summary:
+      "The client tightened implementation boundaries and completed its subscription API behavior.",
+    href: release("8.0.2"),
+    changes: [
+      {
+        title: "Completed subscription-status support",
+        description:
+          "The missing subscription operation and convenience extension were added, with tests covering the new service response and its public behavior.",
+        references: [
+          c("06ea710f3fc596de3931b7740566f318ce5f87bb"),
+          c("4f8444e427527d09048da2e7817c86a3715771c6"),
+          c("e6e5748d02e49a44140f708288a1f4ace136f11f"),
+        ],
+      },
+      {
+        title: "Improved asynchronous API consistency",
+        description:
+          "Cancellation tokens now flow through client operations, awaits avoid capturing context, and exception paths are simpler and more predictable.",
+        references: [c("9f755a61bba8d83ae01d54e5bd1dfcb93af653e7")],
+      },
+      {
+        title: "Reduced exposed implementation surface",
+        description:
+          "Version updates and internal visibility changes kept implementation details out of the supported public contract.",
+        references: [
+          c("73cf1f36342100dc96c0eca6e014490dfb8982cc"),
+          c("c01b4ff9da89157bea9b3c04863a57bf222f10da"),
+          rel("8.0.2"),
+          diff("8.0.1", "8.0.2"),
+        ],
+      },
+    ],
+  },
+  {
+    id: "8-0-1",
+    version: "8.0.1",
+    date: "February 8, 2024",
+    status: "release",
+    summary:
+      "Native AOT and trimming became supported deployment modes for all three packages.",
+    href: release("8.0.1"),
+    changes: [
+      {
+        title: "Added Native AOT and trimming support",
+        description:
+          "Source-generated JSON metadata, trim annotations, and AOT-safe client internals allow consumers to publish smaller native applications without reflection-dependent serialization.",
+        references: [
+          c("01717e88e5dc5fb8e64e6641e48d6619102576db"),
+          rel("8.0.1"),
+          diff("8.0.0", "8.0.1"),
+        ],
+      },
+      {
+        title: "Hardened the AOT release",
+        description:
+          "Follow-up cleanup corrected accessibility and isolated inconsistent external acceptance tests so package validation remained deterministic.",
+        references: [
+          c("657fc4712cb4ebe7652477e65953a8165449ccdf"),
+          c("1ab675c2fcbdd10574b6287483432af6fcfc85a8"),
+        ],
+      },
+    ],
+  },
+  {
+    id: "8-0-0",
+    version: "8.0.0",
+    date: "November 16, 2023",
+    status: "release",
+    summary:
+      "The solution moved to .NET 8 and adopted the current Microsoft HTTP resilience stack.",
+    href: release("8.0.0"),
+    changes: [
+      {
+        title: "Moved to .NET 8 and modern resilience APIs",
+        description:
+          "The main packages and samples adopted .NET 8, while PollyExtensions switched to Microsoft.Extensions.Http.Resilience, making this a breaking resilience configuration change.",
+        references: [
+          c("e9100ba5135d0dcb6ec31157eafb7c4feba9ce2a"),
+          rel("8.0.0"),
+          diff("7.0.0", "8.0.0"),
+        ],
+      },
+      {
+        title: "Added route-group integration for Minimal APIs",
+        description:
+          "Community work added a MapGroup-based pattern for organizing HIBP routes and was followed by factory and acceptance-test refinements on main.",
+        references: [
+          pr(9),
+          c("af609dae7f67f9484b84d5622130d10253ca19da"),
+          c("78973fe9b0a2a72d4b55a131e20621a11eb64583"),
+        ],
+      },
+      {
+        title: "Improved test categorization and repeatability",
+        description:
+          "Unit and acceptance tests received explicit traits and filters so local and CI runs can select the intended network boundary consistently.",
+        references: [
+          c("0adb0851d96ad0415374b04173ea410f989d19cf"),
+          c("7bb51ccf4e598326c8fe8aecc61c6bacabe7c90d"),
+        ],
+      },
+    ],
+  },
+  {
+    id: "7-0-0",
+    version: "7.0.0",
+    date: "January 18, 2023",
+    status: "release",
+    summary:
+      "The .NET 7 generation made client creation more flexible and expanded the sample integration patterns.",
+    href: release("7.0.0"),
+    changes: [
+      {
+        title: "Upgraded to .NET 7",
+        description:
+          "The solution adopted the .NET 7 target framework and corrected a nullable-reference warning discovered during the migration.",
+        references: [
+          c("1237f5292ae5ace2058a0d9e1c6407780d0c433e"),
+          c("cb43033336ab7df39155116b94caa7daab417f77"),
+          rel("7.0.0"),
+          diff("2.0.2", "7.0.0"),
+        ],
+      },
+      {
+        title: "Added direct and factory-based client creation",
+        description:
+          "Consumers gained a PwnedClient factory, non-DI construction, and Minimal API route-group examples for applications that do not want the default service-registration pattern.",
+        references: [c("140c60b0f5b78da3f2780a881f3141f6e9d74bab")],
+      },
+    ],
+  },
+  {
+    id: "2-0-2",
+    version: "2.0.2",
+    date: "March 10, 2022",
+    status: "release",
+    summary:
+      "A focused serialization fix restored reliable downstream password-model deserialization.",
+    href: release("2.0.2"),
+    changes: [
+      {
+        title: "Corrected JSON model mutability",
+        description:
+          "PwnedPassword properties changed from init-only setters where necessary so System.Text.Json could populate the model correctly for consuming applications.",
+        references: [
+          c("2707571a0268aa0d07c7035f01299d73fdd15984"),
+          rel("2.0.2"),
+          diff("2.0.1", "2.0.2"),
+        ],
+      },
+      {
+        title: "Refreshed dependencies and documentation",
+        description:
+          "Routine package cleanup and clearer README guidance accompanied the serialization correction.",
+        references: [
+          c("510f25354f074b5d88db900bb120441d12f45c12"),
+          c("ddbec0df89264dbf422596cbf3717278d630d857"),
+        ],
+      },
+    ],
+  },
+  {
+    id: "2-0-1",
+    version: "2.0.1",
+    date: "March 5, 2022",
+    status: "release",
+    summary:
+      "This patch reorganized the client for maintainability and removed obsolete compatibility code.",
+    href: release("2.0.1"),
+    changes: [
+      {
+        title: "Split the client into partial implementations",
+        description:
+          "Endpoint families moved into partial-class files, making breaches, passwords, and pastes easier to evolve independently without changing the public client.",
+        references: [c("237295560c3af3099cfb13d545c75cea1fb4c471")],
+      },
+      {
+        title: "Removed the IsExternalInit compatibility shim",
+        description:
+          "The project no longer carried a compiler shim that supported older targets after .NET 6 became the baseline.",
+        references: [pr(6), c("51550e9581e09e5f7319859425dba098a1dc1a93")],
+      },
+      {
+        title: "Expanded tests and reduced repository asset size",
+        description:
+          "Dedicated test projects improved coverage boundaries, while automated image optimization reduced the size of sample and documentation assets.",
+        references: [
+          pr(7),
+          c("78b24444e028fceefb5c0ace59540a1a1078d236"),
+          c("d9e0e956f10b1c318e4f6678c8cc09c5bee7502d"),
+          rel("2.0.1"),
+          diff("2.0.0", "2.0.1"),
+        ],
+      },
+    ],
+  },
+  {
+    id: "2-0-0",
+    version: "2.0.0",
+    date: "November 24, 2021",
+    status: "release",
+    summary:
+      "The first major rewrite adopted .NET 6 and C# 10, introduced resilience extensions, and revised abstractions namespaces.",
+    href: release("2.0.0"),
+    changes: [
+      {
+        title: "Adopted .NET 6 and C# 10",
+        description:
+          "All packages, samples, tests, and workflows moved to the new runtime and language, including global usings and broad source cleanup.",
+        references: [
+          c("2e2cdd66a897b49fa1ed011a87c4b05643e7a57f"),
+          rel("2.0.0"),
+          diff("1.0.4", "2.0.0"),
+        ],
+      },
+      {
+        title: "Introduced Polly resilience extensions",
+        description:
+          "A separate package added retry and resilience registration without forcing Polly dependencies onto every core-client consumer.",
+        references: [c("45d6d46114ef70e9a1afa799e55e5c1590a10d51")],
+      },
+      {
+        title: "Added and then refined the Blazor sample",
+        description:
+          "Client and server sample projects demonstrated browser-hosted integration before later repository cleanup focused the maintained sample set.",
+        references: [
+          c("4069c8abfdf6227e03979b8bb4facd0ab505ec8c"),
+          c("5891b214d763c587239e1eb57b944793498e7334"),
+        ],
+      },
+      {
+        title: "Optimized project imagery",
+        description:
+          "Automated image compression reduced the footprint of repository artwork included in documentation and samples.",
+        references: [pr(4), c("1a41eabf63126e5589ca9a82f27992f93f30c3e3"), pr(5), c("d85f4a29f2992d14e4d3317e7158cd47521bd1e9")],
+      },
+    ],
+  },
+  {
+    id: "1-0-4",
+    version: "1.0.4",
+    date: "September 1, 2021",
+    status: "release",
+    summary:
+      "The 1.x line separated reusable contracts from the HTTP implementation and stabilized NuGet publishing.",
+    href: tag("1.0.4"),
+    changes: [
+      {
+        title: "Created the abstractions package",
+        description:
+          "Models and interfaces became independently consumable so applications could share HIBP contracts without taking a dependency on the concrete HTTP client.",
+        references: [
+          c("d9cc5ce7980d8a5686ea47058c22d304ed48e26b"),
+          c("782a8cb5464fcf113bd363fac32afad99fbd384"),
+          rel("1.0.4 tag", tag("1.0.4")),
+        ],
+      },
+      {
+        title: "Worked around NuGet dependency metadata generation",
+        description:
+          "Publishing temporarily adjusted package metadata to avoid an upstream NuGet bug that could produce invalid dependency version ranges.",
+        references: [
+          {
+            label: "NuGet/Home #10791",
+            href: "https://github.com/NuGet/Home/issues/10791",
+            kind: "issue",
+          },
+          c("8fe9e69f3cf4ae000dd1f0900e31f33f038b48f2"),
+        ],
+      },
+      {
+        title: "Stabilized the first release workflow",
+        description:
+          "A sequence of preview tags and workflow corrections established repeatable version calculation and publication for both client packages.",
+        references: [
+          c("06e0f3fc88bbbe109bdbab72313c8e0ec2774cbb"),
+          c("dc3e11a5bffe8602225d0d9516948f3c835013d0"),
+        ],
+      },
+      {
+        title: "Simplified the initial API design",
+        description:
+          "The first external contribution reduced unnecessary complexity before the stable 1.x surface was finalized.",
+        references: [pr(2), c("f3db20ac959d1b0089ff9a5db724e00ce5c58882")],
+      },
+    ],
+  },
+  {
+    id: "1-0-0",
+    version: "1.0.0",
+    date: "September 1, 2021",
+    status: "release",
+    summary:
+      "The first stable package delivered typed access to the core HIBP APIs and a functioning automated release pipeline.",
+    href: release("1.0.0"),
+    changes: [
+      {
+        title: "Published the first stable client",
+        description:
+          "The initial API, options, dependency-injection extensions, models, tests, and samples matured from the 0.0.x builds into the 1.0 contract.",
+        references: [
+          rel("1.0.0"),
+          c("f52e1b09f61cea05a8fd4ee85bb287942d91f257"),
+        ],
+      },
+      {
+        title: "Proved the package pipeline through early previews",
+        description:
+          "The 0.0.x sequence repeatedly exercised MinVer, packing, NuGet upload behavior, and asset optimization so stable releases could be generated from repository tags.",
+        references: [
+          pr(1),
+          c("b08e71de65de0ac165d317b5c28ac99fec7f305b"),
+          pr(3),
+          c("35b45c286a9476c441216da33deee419d256d393"),
+          c("5438d5e001cc5b586932f6407b356966187e1b1b"),
+          c("80392cd0e814af5cd66d40ef899719e0f352d8e3"),
+        ],
+      },
+      {
+        title: "Established build, PR, and security validation",
+        description:
+          "Dedicated GitHub Actions workflows began compiling the solution, validating pull requests, running CodeQL, and publishing packages.",
+        references: [
+          c("307d2714775dcb26931a3851989d820cfc58ada4"),
+          c("7e67c76465a89036f9336033ae6719079af426f3"),
+          c("f31cb592cee98009150123542e7cfd5a3dafcacc"),
+          c("0f7991e1e2d88cbbd5e3e4c3c6c3d69bf49d6ea8"),
+        ],
+      },
+    ],
+  },
+  {
+    id: "0-0-4",
+    version: "0.0.4",
+    date: "August 26-31, 2021",
+    status: "release",
+    summary:
+      "The project began as a typed .NET HTTP client with Minimal API examples, tests, and package automation.",
+    href: release("0.0.4"),
+    changes: [
+      {
+        title: "Created the HIBP .NET client",
+        description:
+          "The first commit established the core solution and HTTP client that became the foundation for every subsequent release.",
+        references: [c("e267367cd0f159560dc48a9d7103b5a603d327f3")],
+      },
+      {
+        title: "Added the first Minimal API sample",
+        description:
+          "A runnable sample showed how to register and expose the client from ASP.NET Core's then-new Minimal API programming model.",
+        references: [c("ac9c3dca42ce6c22dd979961fcd620f678b0463e")],
+      },
+      {
+        title: "Published the initial public preview",
+        description:
+          "Release 0.0.4 marked the first documented NuGet-ready version after the repository's build and publishing foundations were proven.",
+        references: [rel("0.0.4"), c("5438d5e001cc5b586932f6407b356966187e1b1b")],
+      },
+    ],
+  },
+];
+
+const periodCount = periods.length;
+const entryCount = periods.reduce((count, period) => count + period.changes.length, 0);
+---
+
+<Layout
+  title="Changelog - pwned.client"
+  description="The complete history of pwned.client, with release notes and links to the commits, pull requests, and issues behind every milestone."
+  currentPath={Astro.url.pathname}
+>
+  <header class="changelog-hero">
+    <div class="container changelog-hero-grid">
+      <div>
+        <div class="eyebrow">Project history &middot; 2021-present</div>
+        <h1 class="display">Built in public,<br /><span class="accent-word">change by change.</span></h1>
+        <p class="lead">
+          A complete, curated account of the client from its first commit through today,
+          grounded in the releases, pull requests, issues, and commit history that shipped it.
+        </p>
+      </div>
+      <dl class="history-stats" aria-label="Changelog coverage">
+        <div><dt>139</dt><dd>mainline commits reviewed</dd></div>
+        <div><dt>30</dt><dd>merged pull requests</dd></div>
+        <div><dt>15</dt><dd>GitHub releases</dd></div>
+        <div><dt>{entryCount}</dt><dd>explained changes</dd></div>
+      </dl>
+    </div>
+  </header>
+
+  <div class="container changelog-shell">
+    <aside class="changelog-index" aria-label="Changelog releases">
+      <p>Jump to</p>
+      <nav>
+        {periods.map((period) => (
+          <a href={`#${period.id}`}>
+            <span>{period.version}</span>
+            <small>{period.date.split(" ").at(-1)}</small>
+          </a>
+        ))}
+      </nav>
+    </aside>
+
+    <main class="changelog-content">
+      <section class="coverage-note" aria-labelledby="coverage-title">
+        <i class="ph ph-info" aria-hidden="true"></i>
+        <div>
+          <h2 id="coverage-title">What “complete” means here</h2>
+          <p>
+            This timeline covers all {periodCount} release eras on the main branch and every merged pull request.
+            The repository has no standalone issues; the linked NuGet issue is the only external issue that directly
+            shaped a shipped workaround. Closed, unmerged dependency proposals are not presented as delivered changes.
+          </p>
+        </div>
+      </section>
+
+      {periods.map((period) => (
+        <section class="release-period" id={period.id}>
+          <div class="release-heading">
+            <div>
+              <p class="release-date">{period.date}</p>
+              <h2>
+                {period.href ? <a href={period.href}>{period.version}</a> : period.version}
+              </h2>
+            </div>
+            <span class:list={["status", `status-${period.status}`]}>
+              {period.status === "current" ? "Unreleased" : period.status}
+            </span>
+          </div>
+          <p class="release-summary">{period.summary}</p>
+
+          <div class="change-list">
+            {period.changes.map((change) => (
+              <article class="change">
+                <span class="change-marker" aria-hidden="true"></span>
+                <div>
+                  <h3>{change.title}</h3>
+                  <p>{change.description}</p>
+                  <div class="references" aria-label={`References for ${change.title}`}>
+                    {change.references.map((reference) => (
+                      <a href={reference.href} class={`reference reference-${reference.kind}`} rel="noopener">
+                        <i
+                          class:list={[
+                            "ph",
+                            reference.kind === "commit" && "ph-git-commit",
+                            reference.kind === "pull" && "ph-git-pull-request",
+                            reference.kind === "issue" && "ph-record",
+                            reference.kind === "release" && "ph-tag",
+                            reference.kind === "compare" && "ph-git-diff",
+                          ]}
+                          aria-hidden="true"
+                        ></i>
+                        {reference.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ))}
+    </main>
+  </div>
+</Layout>
+
+<style>
+  .changelog-hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(4rem, 9vw, 7rem);
+    border-bottom: 1px solid var(--line);
+    background:
+      radial-gradient(circle at 82% 18%, var(--accent-glow), transparent 28rem),
+      linear-gradient(180deg, var(--surface-raised), var(--surface));
+  }
+
+  .changelog-hero::after {
+    content: "git log";
+    position: absolute;
+    right: -0.04em;
+    bottom: -0.38em;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: clamp(6rem, 18vw, 15rem);
+    font-weight: 600;
+    opacity: 0.035;
+    pointer-events: none;
+  }
+
+  .changelog-hero-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
+    gap: clamp(3rem, 8vw, 7rem);
+    align-items: end;
+  }
+
+  .changelog-hero h1 {
+    margin-block: 1rem 1.5rem;
+    font-size: clamp(3rem, 7vw, 6rem);
+  }
+
+  .history-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    background: color-mix(in srgb, var(--surface-raised) 88%, transparent);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+  }
+
+  .history-stats div {
+    padding: 1.4rem;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .history-stats div:nth-child(even) {
+    border-right: 0;
+  }
+
+  .history-stats div:nth-child(n + 3) {
+    border-bottom: 0;
+  }
+
+  .history-stats dt {
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .history-stats dd {
+    margin: 0.45rem 0 0;
+    color: var(--ink-muted);
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+
+  .changelog-shell {
+    display: grid;
+    grid-template-columns: 12rem minmax(0, 1fr);
+    gap: clamp(2.5rem, 7vw, 6.5rem);
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+  }
+
+  .changelog-index {
+    position: sticky;
+    top: 6rem;
+    height: fit-content;
+    max-height: calc(100vh - 8rem);
+    overflow: auto;
+  }
+
+  .changelog-index > p {
+    margin-bottom: 0.75rem;
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .changelog-index nav {
+    display: grid;
+    border-left: 1px solid var(--line);
+  }
+
+  .changelog-index a {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.45rem 0 0.45rem 0.85rem;
+    border-left: 2px solid transparent;
+    color: var(--ink-muted);
+    font-size: 0.8rem;
+    transition: border-color 160ms ease, color 160ms ease;
+  }
+
+  .changelog-index a:hover {
+    border-left-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .changelog-index small {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+  }
+
+  .changelog-content {
+    min-width: 0;
+  }
+
+  .coverage-note {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    margin-bottom: 4rem;
+    padding: 1.25rem 1.4rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line));
+    border-radius: var(--r-card);
+    background: var(--accent-tint);
+  }
+
+  .coverage-note > i {
+    color: var(--accent);
+    font-size: 1.35rem;
+  }
+
+  .coverage-note h2 {
+    margin-bottom: 0.35rem;
+    font-size: 1rem;
+    line-height: 1.3;
+  }
+
+  .coverage-note p {
+    color: var(--ink-soft);
+    font-size: 0.88rem;
+    line-height: 1.65;
+  }
+
+  .release-period {
+    scroll-margin-top: 6rem;
+    padding-bottom: clamp(4rem, 8vw, 6rem);
+  }
+
+  .release-period + .release-period {
+    padding-top: clamp(3rem, 6vw, 5rem);
+    border-top: 1px solid var(--line);
+  }
+
+  .release-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .release-date {
+    margin-bottom: 0.45rem;
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .release-heading h2 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+  }
+
+  .release-heading h2 a:hover {
+    color: var(--accent);
+  }
+
+  .status {
+    flex: none;
+    padding: 0.35rem 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--ink-muted);
+    background: var(--surface-raised);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .status-current {
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    color: var(--accent-strong);
+    background: var(--accent-tint);
+  }
+
+  .status-preview {
+    border-style: dashed;
+  }
+
+  .release-summary {
+    max-width: 68ch;
+    margin-top: 1rem;
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+
+  .change-list {
+    position: relative;
+    display: grid;
+    gap: 2rem;
+    margin-top: 2.5rem;
+  }
+
+  .change-list::before {
+    content: "";
+    position: absolute;
+    top: 0.55rem;
+    bottom: 0.55rem;
+    left: 0.3rem;
+    width: 1px;
+    background: var(--line-strong);
+  }
+
+  .change {
+    position: relative;
+    display: grid;
+    grid-template-columns: 0.65rem minmax(0, 1fr);
+    gap: 1.2rem;
+  }
+
+  .change-marker {
+    z-index: 1;
+    width: 0.65rem;
+    height: 0.65rem;
+    margin-top: 0.48rem;
+    border: 2px solid var(--surface);
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  .change h3 {
+    font-size: 1.1rem;
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+  }
+
+  .change p {
+    max-width: 74ch;
+    margin-top: 0.45rem;
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+
+  .references {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.85rem;
+  }
+
+  .reference {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.26rem 0.5rem;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    color: var(--ink-muted);
+    background: var(--surface-raised);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    transition: border-color 160ms ease, color 160ms ease, transform 160ms ease;
+  }
+
+  .reference:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .reference-pull {
+    color: var(--accent-strong);
+    background: var(--accent-tint);
+  }
+
+  .reference-issue {
+    color: #9a6700;
+    background: color-mix(in srgb, #d29922 12%, var(--surface-raised));
+  }
+
+  [data-theme="dark"] .reference-issue {
+    color: #e3b341;
+  }
+
+  @media (max-width: 900px) {
+    .changelog-hero-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .history-stats {
+      max-width: 34rem;
+    }
+
+    .changelog-shell {
+      grid-template-columns: 1fr;
+    }
+
+    .changelog-index {
+      position: static;
+      max-height: none;
+      overflow: visible;
+    }
+
+    .changelog-index nav {
+      display: flex;
+      gap: 0.45rem;
+      padding-bottom: 0.5rem;
+      border-left: 0;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    .changelog-index a {
+      flex: none;
+      gap: 0.45rem;
+      padding: 0.45rem 0.65rem;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--surface-raised);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .changelog-hero-grid {
+      gap: 2.5rem;
+    }
+
+    .history-stats div {
+      padding: 1.1rem;
+    }
+
+    .release-heading {
+      align-items: flex-start;
+    }
+
+    .status {
+      margin-top: 1.7rem;
+    }
+
+    .coverage-note {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
