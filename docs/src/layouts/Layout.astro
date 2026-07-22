@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { buildInfo } from "../data/build-info";
 
 interface Props {
   title: string;
@@ -144,6 +145,36 @@ const repo = "https://github.com/IEvangelist/pwned-client";
           <span class="footer-built">
             Built with <i class="ph ph-heart" aria-hidden="true"></i> for the .NET community.
           </span>
+        </div>
+        <div class="container footer-build-wrap">
+          <details class="footer-build">
+            <summary class="footer-build-summary">
+              <i class="ph ph-package footer-build-icon" aria-hidden="true"></i>
+              <span>Build info</span>
+              <code class="footer-build-sha">{buildInfo.commit.short}</code>
+              <i class="ph ph-caret-down footer-build-caret" aria-hidden="true"></i>
+            </summary>
+            <dl class="footer-build-list">
+              {buildInfo.versions.map((item) => (
+                <div class="footer-build-row">
+                  <dt>{item.label}</dt>
+                  <dd>{item.value}</dd>
+                </div>
+              ))}
+              <div class="footer-build-row">
+                <dt>Commit</dt>
+                <dd>
+                  {buildInfo.commit.url ? (
+                    <a href={buildInfo.commit.url} rel="noopener" aria-label={`Commit ${buildInfo.commit.short} on GitHub`}>
+                      <code>{buildInfo.commit.short}</code>
+                    </a>
+                  ) : (
+                    <code>{buildInfo.commit.short}</code>
+                  )}
+                </dd>
+              </div>
+            </dl>
+          </details>
         </div>
       </div>
     </footer>

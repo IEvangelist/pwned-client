@@ -1577,6 +1577,104 @@ code, kbd, pre {
   color: var(--accent);
 }
 
+.footer-build-wrap {
+  padding-bottom: 1.4rem;
+  margin-top: -0.5rem;
+}
+
+.footer-build {
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  width: max-content;
+  max-width: 100%;
+}
+
+.footer-build-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  cursor: pointer;
+  padding: 0.32rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  list-style: none;
+  user-select: none;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.footer-build-summary::-webkit-details-marker {
+  display: none;
+}
+
+.footer-build-summary:hover {
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+
+.footer-build-summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.footer-build-icon {
+  color: var(--accent);
+}
+
+.footer-build-sha {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+}
+
+.footer-build-caret {
+  font-size: 0.85rem;
+  transition: transform 0.15s ease;
+}
+
+.footer-build[open] .footer-build-caret {
+  transform: rotate(180deg);
+}
+
+.footer-build-list {
+  display: none;
+  grid-template-columns: auto auto;
+  gap: 0.3rem 1.5rem;
+  width: max-content;
+  max-width: 100%;
+  margin: 0.6rem 0 0;
+  padding: 0.75rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface-raised);
+}
+
+.footer-build[open] .footer-build-list {
+  display: grid;
+}
+
+.footer-build-row {
+  display: contents;
+}
+
+.footer-build-list dt {
+  color: var(--ink-muted);
+}
+
+.footer-build-list dd {
+  margin: 0;
+  text-align: right;
+  font-family: var(--font-mono);
+  color: var(--ink);
+}
+
+.footer-build-list dd a {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.footer-build-list dd a:hover {
+  text-decoration: underline;
+}
+
 .site-footer a:hover {
   color: var(--accent);
 }
