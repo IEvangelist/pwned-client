@@ -1583,6 +1583,7 @@ code, kbd, pre {
 }
 
 .footer-build {
+  position: relative;
   font-size: 0.8rem;
   color: var(--ink-muted);
   width: max-content;
@@ -1636,15 +1637,20 @@ code, kbd, pre {
 
 .footer-build-list {
   display: none;
+  position: absolute;
+  bottom: calc(100% + 0.5rem);
+  left: 0;
+  z-index: 20;
   grid-template-columns: auto auto;
   gap: 0.3rem 1.5rem;
   width: max-content;
-  max-width: 100%;
-  margin: 0.6rem 0 0;
+  max-width: min(100%, 20rem);
+  margin: 0;
   padding: 0.75rem 0.95rem;
   border: 1px solid var(--line);
   border-radius: 7px;
   background: var(--surface-raised);
+  box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.35);
 }
 
 .footer-build[open] .footer-build-list {
