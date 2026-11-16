@@ -15,7 +15,7 @@ jobs:
     - name: Print tag ref
       run: echo $GITHUB_REF
       
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         fetch-depth: 0
         filter: tree:0
